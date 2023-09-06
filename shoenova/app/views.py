@@ -10,3 +10,6 @@ def base_view(request):
 
 def login_regis(request):
     return render(request, 'user/page-login-register.html')
+
+def adm_index(request):
+    return render(request, '')
