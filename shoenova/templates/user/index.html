@@ -1,5 +1,6 @@
 ﻿{% extends 'base.html' %}
 {% load static %}
+{% block title %}Shoe Nova{% endblock title %}
 {% block content %}
     <main class="main">       
         <section class="home-slider position-relative pt-50">
@@ -139,7 +140,7 @@
                                 <div class="product-cart-wrap mb-30">
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
-                                            <a href="shop-product-right.html">
+                                            <a href="{% url 'product-detail' %}">
                                                 <img class="default-img" src="{% static 'assets/imgs/shop/product-1-1.jpg' %}" alt="">
                                                 <img class="hover-img" src="{% static 'assets/imgs/shop/product-1-2.jpg' %}" alt="">
                                             </a>

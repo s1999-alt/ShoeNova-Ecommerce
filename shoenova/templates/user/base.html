@@ -3,7 +3,7 @@
 <html class="no-js" lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Shoe Nova </title>
+    <title>{% block title %}{% endblock title %}</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -180,7 +180,7 @@
                 <div class="container">
                     <div class="header-wrap">
                         <div class="logo logo-width-1">
-                            <a href="index.html"><img src="{% static 'assets/imgs/theme/logo.png' %}" alt="logo"></a>
+                            <a href="index.html"><img style="width: 30px; ,height:30px" src="{% static 'assets/imgs/theme/logo.png' %}" alt="logo"></a>
                         </div>
                         <div class="header-right">
                             <div class="search-style-2">
