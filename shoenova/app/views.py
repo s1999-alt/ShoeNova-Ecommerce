@@ -16,6 +16,8 @@ def product_details(request):
     return render(request, 'user/shop-product-left.html')
 
 
+
+
 #admin
 def adm_index(request):
     return render(request, 'admin/index.html')
