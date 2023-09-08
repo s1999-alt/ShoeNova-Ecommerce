@@ -44,7 +44,7 @@
                     </a>
                     <div class="submenu">
                         <a href="{% url 'myapp:admn-product-list' %}">Product List</a>
-                        <a href="page-categories.html">Categories</a>
+                        <a href="{% url 'myapp:admn_product_category' %}">Categories</a>
                     </div>
                 </li>
                 <li class="menu-item has-submenu">
@@ -59,12 +59,11 @@
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-store"></i>
-                        <span class="text">Sellers</span>
+                        <span class="text">Users</span>
                     </a>
                     <div class="submenu">
-                        <a href="page-sellers-cards.html">Sellers cards</a>
-                        <a href="page-sellers-list.html">Sellers list</a>
-                        <a href="page-seller-detail.html">Seller profile</a>
+                        <a href="{% url 'myapp:admn_users_list' %}">User list</a>
+                        <a href="page-seller-detail.html">User profile</a>
                     </div>
                 </li>
                 <li class="menu-item has-submenu">
@@ -72,10 +71,7 @@
                         <span class="text">Add product</span>
                     </a>
                     <div class="submenu">
-                        <a href="page-form-product-1.html">Add product 1</a>
-                        <a href="page-form-product-2.html">Add product 2</a>
-                        <a href="page-form-product-3.html">Add product 3</a>
-                        <a href="page-form-product-4.html">Add product 4</a>
+                        <a href="page-form-product-2.html">Add product</a>
                     </div>
                 </li>
                 <li class="menu-item has-submenu">
