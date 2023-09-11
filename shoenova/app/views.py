@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect,HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from django.db import IntegrityError
 from .models import UserProfile
 
 # Create your views here.
@@ -24,16 +25,19 @@ def login_regis(request):
             return redirect('/login-register')
         try:
             if UserProfile.objects.filter(username=username).exists():
-                return HttpResponse("Username Already Taken")
+                messages.info(request, "Username Is Already Taken")
+                return redirect("/login-register")
         except:
             pass
         try:
-            if UserProfile.objects.filter(username=email).exists():
-                return HttpResponse("Username Already Taken")
+            if UserProfile.objects.filter(email=email).exists():
+                messages.info(request, "Email Is Already Taken")
+                return redirect("/login-register")
         except:
             pass      
         myuser = UserProfile.objects.create_user(email=email, password=password)
         myuser.save()
+        messages.success(request, "Signup Successfully..Please Login!")
         return redirect("/login-page")
     return render(request, 'user/page-login-register.html')
 
@@ -45,7 +49,7 @@ def login_page(request):
 
         if user is not None:
             login(request, user)
-            return redirect('/')  # Replace with your desired URL after successful login
+            return redirect('/') 
         else:
             messages.warning(request, "Invalid credentials. Please try again.")
 
