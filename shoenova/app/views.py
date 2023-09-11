@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect,HttpResponse
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from .models import UserProfile
 
 # Create your views here.
 
@@ -22,22 +23,34 @@ def login_regis(request):
             messages.warning(request, "Password is Incorrect")
             return redirect('/login-register')
         try:
-            if User.objects.get(username=username):
+            if UserProfile.objects.filter(username=username).exists():
                 return HttpResponse("Username Already Taken")
         except:
             pass
         try:
-            if User.objects.get(email=email):
-                return HttpResponse("Email is already taken")  
+            if UserProfile.objects.filter(username=email).exists():
+                return HttpResponse("Username Already Taken")
         except:
             pass      
-        myuser=User.objects.create_user(username,email,password)
+        myuser = UserProfile.objects.create_user(email=email, password=password)
         myuser.save()
-        return HttpResponse("Signup Successfully")
+        return redirect("/login-page")
     return render(request, 'user/page-login-register.html')
 
 def login_page(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        user = authenticate(request, username=email, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('/')  # Replace with your desired URL after successful login
+        else:
+            messages.warning(request, "Invalid credentials. Please try again.")
+
     return render(request, 'user/page-login.html')
+    
 
 def product_details(request):
     return render(request, 'user/shop-product-left.html')
