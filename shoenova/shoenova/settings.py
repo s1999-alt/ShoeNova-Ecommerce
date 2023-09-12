@@ -90,7 +90,7 @@ WSGI_APPLICATION = 'shoenova.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'shoeapp',
+        'NAME': 'shoenova',
         'USER': 'postgres',
         'PASSWORD': 'siyad1999',
         'HOST': 'localhost',

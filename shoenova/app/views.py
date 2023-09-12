@@ -25,7 +25,7 @@ def login_regis(request):
             return redirect('/login-register')
         try:
             if UserProfile.objects.filter(username=username).exists():
-                messages.info(request, "Username Is Already Taken")
+                messages.warning(request, "Username Is Already Taken")
                 return redirect("/login-register")
         except:
             pass
@@ -35,7 +35,7 @@ def login_regis(request):
                 return redirect("/login-register")
         except:
             pass      
-        myuser = UserProfile.objects.create_user(email=email, password=password)
+        myuser = UserProfile.objects.create_user(username=username, email=email, password=password)
         myuser.save()
         messages.success(request, "Signup Successfully..Please Login!")
         return redirect("/login-page")
