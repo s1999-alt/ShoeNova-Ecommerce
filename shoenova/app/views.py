@@ -1,12 +1,13 @@
 from django.shortcuts import render,redirect,HttpResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.db import IntegrityError
 from .models import UserProfile
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
 #user
+@login_required(login_url='/login-page')
 def index(request):
     return render(request,'user/index.html')
 
@@ -41,7 +42,11 @@ def login_regis(request):
         return redirect("/login-page")
     return render(request, 'user/page-login-register.html')
 
+
+
 def login_page(request):
+    if request.user.is_authenticated:
+        return redirect('/')
     if request.method == "POST":
         email = request.POST.get("email")
         password = request.POST.get("password")
@@ -54,8 +59,17 @@ def login_page(request):
             messages.warning(request, "Invalid credentials. Please try again.")
 
     return render(request, 'user/page-login.html')
-    
 
+
+@login_required(login_url='/login-page')
+def handlelogout(request):
+    logout(request)
+    messages.info(request, "Logout Succesfully")
+    return redirect('/login-page')
+
+
+
+    
 def product_details(request):
     return render(request, 'user/shop-product-left.html')
 
