@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,HttpResponse
 from myapp.models import Product,Category
 from django.utils.text import slugify
 from django.contrib import messages
@@ -21,6 +21,9 @@ def admn_product_list(request):
     return render(request, 'admin-side/page-products-list.html',context)
 
 
+   
+
+
 
 #-------------Add Product------------------
 def admn_add_product(request):
@@ -40,6 +43,11 @@ def admn_add_product(request):
             slug = f"{slug}-{count}"
             count += 1
 
+        try:
+            category = Category.objects.get(id=category_id)
+        except Category.DoesNotExist:
+            return HttpResponse("Category does not exist.")    
+
         product=Product(
             product_name=product_name,
             category=category,
@@ -47,21 +55,22 @@ def admn_add_product(request):
             description=description,
             price=price,
             quantity=quantity,
+            slug=slug,
             product_images=product_images,
-            slug=slug
         )    
-        product.save()
-        return redirect('admn-product-list')
+        
+        product.save() 
+        return redirect('myapp:admn-product-list')
     
     categories=Category.objects.all()
     context={
         'categories':categories
     }
-
+    messages.success(request,'Product Added Succcessfully..')
     return render(request, 'admin-side/page-add-product.html',context)
 
 
-
+#--------------category list view page-----------------
 def admn_product_category(request):
     categories=Category.objects.all()
     context={
@@ -72,17 +81,16 @@ def admn_product_category(request):
 
 
 
-
-
-def admn_add_categories_page(request):
-     return render(request, 'admin-side/page-add-categories.html')
-
 #-------------Add categories------------------
 def admn_add_categories(request):
     if request.method=="POST":
         category_name=request.POST.get("category_name")
         slug=request.POST.get("slug")
         description=request.POST.get("description")
+
+        if not category_name or not slug or not description:
+            messages.warning(request,"please fill in all required fields")
+            return render(request, 'admin-side/page-add-categories.html')
 
        
         categories=Category(

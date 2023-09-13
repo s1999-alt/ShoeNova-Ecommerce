@@ -14,7 +14,7 @@
                 <div class="col-lg-6">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <form method="post" action="/admn_add_product" enctype="multipart/  form-data">
+                            <form method="post" action="{% url 'myapp:admn_add_product' %}" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <label class="form-label" for="product_name">Product Name:</label>
                                 <input class="form-control" type="text"  name="product_name" required><br>
@@ -22,7 +22,7 @@
                                 <label class="form-label" for="category">Category:</label>
                                 <select class="form-control"  name="category" required>
                                     {% for category in categories %}
-                                    <option value="1">{{category.category_name}} </option>
+                                    <option value="{{ category.id }}">{{category.category_name}} </option>
                                     {% endfor %}
                                     
                                     <!-- Add more options as needed -->

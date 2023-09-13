@@ -55,7 +55,9 @@
                             <div class="col-lg-4 col-sm-4 col-8 flex-grow-1 col-name">
                                 <a class="itemside" href="#">
                                     <div class="left">
+                                        {% if product.product_images %}
                                         <img src="{{product.product_images.url}}" class="img-sm img-thumbnail" alt="Item">
+                                        {% endif %}
                                     </div>
                                     <div class="info">
                                         <h6 class="mb-0">{{product.product_name}}</h6>
