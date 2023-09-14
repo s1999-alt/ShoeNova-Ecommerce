@@ -6,14 +6,9 @@ from django.contrib import messages
 # Create your views here.
 
 
-#admin
+#----------admin index page------------------------
 def adm_index(request):
     return render(request, 'admin-side/index.html')
-
-
-
-
-
 
 #-----------Product list-view page------------------
 def admn_product_list(request):
@@ -90,16 +85,6 @@ def admn_edit_product(request,id):
         product.save()
         return redirect('myapp:admn-product-list')
     return render(request, 'admin-side/page-edit-products.html', {'product': product,'categories': categories})
-
-
-
-
-
-
-
-
-
-
 
 
 

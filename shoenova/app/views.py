@@ -18,8 +18,10 @@ def login_regis(request):
     if request.method=="POST":
         username=request.POST.get("username")
         email=request.POST.get("email")
+        phone=request.POST.get("phone") 
         password=request.POST.get("password")
-        confirmpassword=request.POST.get("confirmpassword") 
+        confirmpassword=request.POST.get("confirmpassword")
+        
         # print(username,email,password,confirmpassword)
         if password!=confirmpassword:
             messages.warning(request, "Password is Incorrect")
@@ -36,7 +38,7 @@ def login_regis(request):
                 return redirect("/login-register")
         except:
             pass      
-        myuser = UserProfile.objects.create_user(username=username, email=email, password=password)
+        myuser = UserProfile.objects.create_user(username=username, email=email, phone=phone, password=password)
         myuser.save()
         messages.success(request, "Signup Successfully..Please Login!")
         return redirect("/login-page")
