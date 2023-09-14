@@ -1,0 +1,39 @@
+{% extends "admin-side/base1.html" %}
+{% load static %}
+{% block content %}
+<section class="content-main">
+    <div class="content-header">
+        <div>
+            <h2 class="content-title card-title">Edit Categories </h2>
+        </div>
+        <div>
+            <input type="text" placeholder="Search Categories" class="form-control bg-white">
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <form method="post">{% csrf_token %}
+                        <div class="mb-4">
+                            <label for="product_name" class="form-label">Name</label>
+                            <input type="text" placeholder="Type here" class="form-control" id="product_name" name="category_name" value="{{category.category_name}}" />
+                        </div>
+                        <div class="mb-4">
+                            <label for="product_slug" class="form-label">Slug</label>
+                            <input type="text" placeholder="Type here" class="form-control" id="product_slug" name="slug" value="{{category.slug}}" />
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Description</label>
+                            <textarea placeholder="Type here" class="form-control" name="description">{{category.description}}</textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button class="btn btn-primary" type="submit">Update category</button>
+                        </div>
+                    </form>
+                </div>
+            </div> <!-- .row // -->
+        </div> <!-- card body .// -->
+    </div> <!-- card .// -->
+</section> <!-- content-main end// -->
+{% endblock content %}

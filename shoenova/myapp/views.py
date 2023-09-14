@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect,HttpResponse
+from django.shortcuts import render,redirect,HttpResponse,get_object_or_404
 from myapp.models import Product,Category
 from django.utils.text import slugify
 from django.contrib import messages
@@ -70,6 +70,8 @@ def admn_add_product(request):
     return render(request, 'admin-side/page-add-product.html',context)
 
 
+
+
 #--------------category list view page-----------------
 def admn_product_category(request):
     categories=Category.objects.all()
@@ -77,9 +79,6 @@ def admn_product_category(request):
         'categories':categories
     }
     return render(request, 'admin-side/page-categories.html',context)
-
-
-
 
 #-------------Add categories------------------
 def admn_add_categories(request):
@@ -91,7 +90,6 @@ def admn_add_categories(request):
         if not category_name or not slug or not description:
             messages.warning(request,"please fill in all required fields")
             return render(request, 'admin-side/page-add-categories.html')
-
        
         categories=Category(
             category_name=category_name,
@@ -108,3 +106,47 @@ def admn_add_categories(request):
 
 def admn_users_list(request):
     return render(request, 'admin-side/page-users-list.html')
+
+#----------------category Enable-Disable-------------------
+def admn_enable_disable_categories(request,id):
+    category=Category.objects.get(id=id)
+    try:
+        if category.soft_deleted:
+            category.soft_deleted=False
+            category.save()
+            messages.success(request,'Category Enabled')
+            return redirect('admn_product_category')
+        else:
+            category.soft_deleted=True
+            category.save()
+            messages.success(request,'Category Disabled')
+    except:
+        messages.warning(request,'Error Occured')
+
+    return redirect('myapp:admn_product_category')
+
+#--------------------Edit categories---------------
+def admn_edit_categories(request,id):
+    category=Category.objects.get(id=id)
+
+    if request.method=='POST':
+        category.category_name=request.POST.get('category_name')
+        category.slug=request.POST.get('slug')
+        category.description=request.POST.get('description')
+        category.save()
+        return redirect('myapp:admn_product_category')
+    return render(request, 'admin-side/page-edit-categories.html',{'category':category})
+
+
+
+
+
+
+
+#-------------------Category delete--------------
+def admn_delete_categories(request,id):
+    category= get_object_or_404(Category,id=id)
+    category.delete()
+    return redirect('myapp:admn_product_category')
+
+

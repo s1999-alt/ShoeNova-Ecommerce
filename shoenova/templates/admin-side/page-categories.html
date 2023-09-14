@@ -1,6 +1,21 @@
 {% extends 'admin-side/base1.html' %}
 {% load static %}
 {% block content %}
+
+
+<div aria-live="polite" aria-atomic="true" class="toast-container position-fixed top-0 end-0 p-3" id="toastPlacement">
+    {% for message in messages %}
+      <div class="toast align-items-center text-white bg-{{ message.tags }} border-0 pe-3" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body">
+            {{ message }}
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+
         <section class="content-main">
             <div class="content-header">
                 <div>
@@ -44,18 +59,21 @@
                                             <td>{{cat.description}}</td>
                                             <td>{{cat.slug}}</td>
                                             <td class="text-end">
-                                                    <a href="#" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i>
+                                                    <a href="{% url 'myapp:admn_edit_categories' id=cat.id %}" class="btn btn-light rounded btn-sm font-sm">
                                                         Edit
                                                     </a>
-
-                                                    <a href="#" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i>
+                                                    {% if cat.soft_deleted %}
+                                                    <a href="{% url 'myapp:admn_enable_disable_categories' id=cat.id %}" class="btn btn-success rounded btn-sm font-sm">
                                                         Enable
                                                     </a>
-
-                                                    <a href="#" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i>
+                                                    {% else %}
+                                                    <a href="{% url 'myapp:admn_enable_disable_categories' id=cat.id%}" class="btn btn-danger rounded btn-sm font-sm">
                                                         Disable
                                                     </a>
-                                                        
+                                                    {% endif %}
+                                                    <a href="{% url 'myapp:admn_delete_categories' id=cat.id %}" class="btn btn-light rounded btn-sm font-sm">
+                                                        Delete
+                                                    </a>    
                                             </td>
                                         </tr>
                                         {% endfor %}
