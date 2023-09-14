@@ -6,8 +6,14 @@ app_name = 'myapp'
 urlpatterns = [
   path('admin-index/', views.adm_index, name='admin-index'),
 
+
+
+
   path('admn-product-list/', views.admn_product_list, name='admn-product-list'),
   path('admn_add_product/', views.admn_add_product, name='admn_add_product'),
+  path('admn_edit_product/<int:id>/', views.admn_edit_product, name='admn_edit_product'),
+  path('admn_delete_product/<int:id>', views.admn_delete_product, name='admn_delete_product'),
+
 
 
   path('admn_product_category/', views.admn_product_category, name='admn_product_category'),

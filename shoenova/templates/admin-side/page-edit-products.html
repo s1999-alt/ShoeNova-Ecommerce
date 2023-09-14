@@ -1,0 +1,57 @@
+{% extends 'admin-side/base1.html' %}
+{% load static %}
+{% block content %}
+        <section class="content-main">
+            <div class="row">
+                <div class="col-6">
+                    <div class="content-header">
+                        <h2 class="content-title">Edit Product</h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <label class="form-label" for="product_name">Product Name:</label>
+                                <input class="form-control" type="text"  name="product_name" required value={{product.product_name}}><br>
+                        
+                                <label class="form-label" for="category">Category:</label>
+                                <select class="form-control"  name="category" required>
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}" {% if category.id == product.category.id %}selected{% endif %}>{{ category.category_name }}</option>
+                                    {% endfor %}
+                                    
+                                    <!-- Add more options as needed -->
+                                </select><br>
+                        
+                                <label class="form-label" for="brand">Brand:</label>
+                                <input class="form-control" type="text"  name="brand" value="{{product.brand}}"><br>
+                        
+                                <label class="form-label" for="description">Description:</label><br>
+                                <textarea class="form-control"  name="description" rows="4" cols="50">{{product.description}}</textarea><br>
+                        
+                                <label class="form-label" for="price">Price:</label>
+                                <input class="form-control" type="number"  name="price" value="{{product.price}}" required><br>
+                        
+                                <label class="form-label" for="quantity">Quantity:</label>
+                                <input class="form-control" type="number"  name="quantity" value="{{product.quantity}}" required><br>
+                        
+                                <label class="form-label" for="product_images">Product Images:</label>
+                                <input class="form-control" type="file" name="product_images" accept="image/*" required><br>
+                        
+                                <div>
+                                    <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
+                                    <button type="submit" class="btn btn-md rounded font-sm hover-up">Update Product</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> <!-- content-main end// -->
+        {% endblock content %}
+        

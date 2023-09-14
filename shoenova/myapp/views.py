@@ -12,6 +12,9 @@ def adm_index(request):
 
 
 
+
+
+
 #-----------Product list-view page------------------
 def admn_product_list(request):
     products = Product.objects.all()
@@ -20,12 +23,7 @@ def admn_product_list(request):
     }
     return render(request, 'admin-side/page-products-list.html',context)
 
-
-   
-
-
-
-#-------------Add Product------------------
+#-------------Add Product---------------------------
 def admn_add_product(request):
     if request.method=="POST":
         product_name=request.POST.get("product_name")
@@ -58,7 +56,7 @@ def admn_add_product(request):
             slug=slug,
             product_images=product_images,
         )    
-        
+
         product.save() 
         return redirect('myapp:admn-product-list')
     
@@ -68,6 +66,43 @@ def admn_add_product(request):
     }
     messages.success(request,'Product Added Succcessfully..')
     return render(request, 'admin-side/page-add-product.html',context)
+
+#--------------Delete product--------------------------
+def admn_delete_product(request,id):
+    product=get_object_or_404(Product,id=id)
+    product.delete()
+    return redirect('myapp:admn-product-list')
+
+#-----------------Edit Product---------------------------
+def admn_edit_product(request,id):
+    product=Product.objects.get(id=id)
+    categories=Category.objects.all()
+
+    if request.method=='POST':
+        product.product_name=request.POST.get('product_name')
+        category_id=request.POST.get('category')
+        product.category = Category.objects.get(id=category_id) 
+        product.brand=request.POST.get('brand')
+        product.description=request.POST.get('description')
+        product.price=request.POST.get('price')
+        product.quantity=request.POST.get('quantity')
+        product.product_images=request.FILES.get('product_images')
+        product.save()
+        return redirect('myapp:admn-product-list')
+    return render(request, 'admin-side/page-edit-products.html', {'product': product,'categories': categories})
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -102,11 +137,6 @@ def admn_add_categories(request):
     messages.warning(request,'Unexpected error occurred, please retry.')
     return render(request, 'admin-side/page-add-categories.html')
 
-
-
-def admn_users_list(request):
-    return render(request, 'admin-side/page-users-list.html')
-
 #----------------category Enable-Disable-------------------
 def admn_enable_disable_categories(request,id):
     category=Category.objects.get(id=id)
@@ -135,18 +165,19 @@ def admn_edit_categories(request,id):
         category.description=request.POST.get('description')
         category.save()
         return redirect('myapp:admn_product_category')
-    return render(request, 'admin-side/page-edit-categories.html',{'category':category})
+    context={
+        'category':category
+    }
+    return render(request, 'admin-side/page-edit-categories.html',context)
 
-
-
-
-
-
-
-#-------------------Category delete--------------
+#-------------------Category delete----------------------
 def admn_delete_categories(request,id):
     category= get_object_or_404(Category,id=id)
     category.delete()
     return redirect('myapp:admn_product_category')
 
 
+
+
+def admn_users_list(request):
+    return render(request, 'admin-side/page-users-list.html')
