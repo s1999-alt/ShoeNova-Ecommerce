@@ -2,18 +2,12 @@
 {% load static %}
 {% block content %}
 
-
-<div aria-live="polite" aria-atomic="true" class="toast-container position-fixed top-0 end-0 p-3" id="toastPlacement">
-    {% for message in messages %}
-      <div class="toast align-items-center text-white bg-{{ message.tags }} border-0 pe-3" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-          <div class="toast-body">
-            {{ message }}
-          </div>
-        </div>
-      </div>
-    {% endfor %}
-  </div>
+{% for message in messages %}
+<div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+  <strong></strong>{{message}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
 
 
         <section class="content-main">

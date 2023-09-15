@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect,HttpResponse,get_object_or_404
 from myapp.models import Product,Category
 from django.utils.text import slugify
 from django.contrib import messages
+from app.models import UserProfile
 
 # Create your views here.
 
@@ -9,6 +10,9 @@ from django.contrib import messages
 #----------admin index page------------------------
 def adm_index(request):
     return render(request, 'admin-side/index.html')
+
+
+
 
 #-----------Product list-view page------------------
 def admn_product_list(request):
@@ -117,9 +121,8 @@ def admn_add_categories(request):
             description=description
         )
         categories.save()
+        messages.success(request, 'Category Added Successfully')
         return redirect('myapp:admn_product_category')
-    
-    messages.warning(request,'Unexpected error occurred, please retry.')
     return render(request, 'admin-side/page-add-categories.html')
 
 #----------------category Enable-Disable-------------------
@@ -134,10 +137,9 @@ def admn_enable_disable_categories(request,id):
         else:
             category.soft_deleted=True
             category.save()
-            messages.success(request,'Category Disabled')
+            messages.warning(request,'Category Disabled')
     except:
         messages.warning(request,'Error Occured')
-
     return redirect('myapp:admn_product_category')
 
 #--------------------Edit categories---------------
@@ -164,5 +166,37 @@ def admn_delete_categories(request,id):
 
 
 
+
+#--------------------Admin side user list page------------
 def admn_users_list(request):
-    return render(request, 'admin-side/page-users-list.html')
+    users=UserProfile.objects.all().exclude(is_superuser=True)
+    context={
+        'users':users
+    }
+    return render(request, 'admin-side/page-users-list.html',context)
+
+#------------------Admin side user block unblock-------------
+def admn_users_block_unblock(request,id):
+    user=UserProfile.objects.get(id=id)
+    try:
+        if user.is_blocked:
+            user.is_blocked=False
+            user.is_active=True
+            user.save()
+            messages.success(request, 'User is Unblocked')
+        else:
+            user.is_blocked=True
+            user.is_active=False
+            user.save()
+            messages.warning(request, 'User is Blocked')
+    except UserProfile.DoesNotExist:
+        messages.warning(request,'User does not Exist')
+    return redirect('myapp:admn_users_list')    
+
+
+
+
+
+
+
+

@@ -22,7 +22,6 @@ def login_regis(request):
         password=request.POST.get("password")
         confirmpassword=request.POST.get("confirmpassword")
         
-        # print(username,email,password,confirmpassword)
         if password!=confirmpassword:
             messages.warning(request, "Password is Incorrect")
             return redirect('/login-register')

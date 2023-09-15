@@ -1,6 +1,7 @@
 {% extends 'admin-side/base1.html' %}
 {% load static %}
 {% block content %}
+
         <section class="content-main">
             <div class="row">
                 <div class="col-6">
@@ -22,7 +23,9 @@
                                 <label class="form-label" for="category">Category:</label>
                                 <select class="form-control"  name="category" required>
                                     {% for category in categories %}
+                                    {% if category.soft_deleted %}
                                     <option value="{{ category.id }}">{{category.category_name}} </option>
+                                    {% endif %}
                                     {% endfor %}
                                     
                                     <!-- Add more options as needed -->

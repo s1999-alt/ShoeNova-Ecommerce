@@ -1,9 +1,18 @@
 {% extends 'admin-side/base1.html' %}
 {% load static %}
 {% block content %}
+
+{% for message in messages %}
+<div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+  <strong></strong>{{message}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+
+
         <section class="content-main">
             <div class="content-header">
-                <h2 class="content-title">Sellers list</h2>
+                <h2 class="content-title">Users list</h2>
                 <div>
                     <a href="#" class="btn btn-primary"><i class="material-icons md-plus"></i> Create new</a>
                 </div>
@@ -36,204 +45,49 @@
                         <table class="table table-hover">
                             <thead>
                                 <tr>
-                                    <th>Seller</th>
+                                    <th>Username</th>
                                     <th>Email</th>
+                                    <th>mobile</th>
                                     <th>Status</th>
                                     <th>Registered</th>
                                     <th class="text-end"> Action </th>
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for user in users %}
                                 <tr>
                                     <td width="40%">
                                         <a href="#" class="itemside">
                                             <div class="left">
-                                                <img src="assets/imgs/people/avatar1.jpg" class="img-sm img-avatar" alt="Userpic">
+                                                <img src="{% static 'assets-back/imgs/people/avatar1.jpg' %}" class="img-sm img-avatar" alt="Userpic">
                                             </div>
                                             <div class="info pl-3">
-                                                <h6 class="mb-0 title">Eleanor Pena</h6>
-                                                <small class="text-muted">Seller ID: #439</small>
+                                                <h6 class="mb-0 title">{{user.username}}</h6>
+                                                <small class="text-muted">Seller ID:#{{user.id}}</small>
                                             </div>
                                         </a>
                                     </td>
-                                    <td><template class="__cf_email__" data-cfemail="2c4940494d42435e1e1c1e1c6c49544d415c4049024f4341">[email&#160;protected]</template></td>
+                                    <td>{{user.email}}</td>
+                                    <td>{{user.phone}}</td>
+
+                                    {% if user.is_active %}
                                     <td><span class="badge rounded-pill alert-success">Active</span></td>
-                                    <td>08.07.2020</td>
-                                    <td class="text-end">
-                                        <a href="#" class="btn btn-sm btn-brand rounded font-sm mt-15">View details</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="40%">
-                                        <a href="#" class="itemside">
-                                            <div class="left">
-                                                <img src="assets/imgs/people/avatar2.jpg" class="img-sm img-avatar" alt="Userpic">
-                                            </div>
-                                            <div class="info pl-3">
-                                                <h6 class="mb-0 title">Mary Monasa</h6>
-                                                <small class="text-muted">Seller ID: #129</small>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td><template class="__cf_email__" data-cfemail="c3aeacada2afaab0a283a6bba2aeb3afa6eda0acae">[email&#160;protected]</template></td>
-                                    <td><span class="badge rounded-pill alert-success">Active</span></td>
-                                    <td>11.07.2020</td>
-                                    <td class="text-end">
-                                        <a href="#" class="btn btn-sm btn-brand rounded font-sm mt-15">View details</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="40%">
-                                        <a href="#" class="itemside">
-                                            <div class="left">
-                                                <img src="assets/imgs/people/avatar3.jpg" class="img-sm img-avatar" alt="Userpic">
-                                            </div>
-                                            <div class="info pl-3">
-                                                <h6 class="mb-0 title">Jonatan Ive</h6>
-                                                <small class="text-muted">Seller ID: #400</small>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td><template class="__cf_email__" data-cfemail="d1bca3bbbeb9bf91b4a9b0bca1bdb4ffb2bebc">[email&#160;protected]</template></td>
-                                    <td><span class="badge rounded-pill alert-success">Active</span></td>
-                                    <td>08.07.2020</td>
-                                    <td class="text-end">
-                                        <a href="#" class="btn btn-sm btn-brand rounded font-sm mt-15">View details</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="40%">
-                                        <a href="#" class="itemside">
-                                            <div class="left">
-                                                <img src="assets/imgs/people/avatar4.jpg" class="img-sm img-avatar" alt="Userpic">
-                                            </div>
-                                            <div class="info pl-3">
-                                                <h6 class="mb-0 title">Eleanor Pena</h6>
-                                                <small class="text-muted">Seller ID: #439</small>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td><template class="__cf_email__" data-cfemail="b9dcd5dcd8d7d6cb8b898b89f9dcc1d8d4c9d5dc97dad6d4">[email&#160;protected]</template></td>
+                                    {% else %}
                                     <td><span class="badge rounded-pill alert-danger">Inactive</span></td>
-                                    <td>08.07.2020</td>
+                                    {% endif %}
+                                    <td>{{user.date_joined}}</td> 
+
+                                    {% if user.is_blocked %}
                                     <td class="text-end">
-                                        <a href="#" class="btn btn-sm btn-brand rounded font-sm mt-15">View details</a>
+                                        <a href="{% url 'myapp:admn_users_block_unblock' id=user.id %}" class="btn btn-sm btn-brand rounded font-sm mt-15">Unblock</a>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td width="40%">
-                                        <a href="#" class="itemside">
-                                            <div class="left">
-                                                <img src="assets/imgs/people/avatar1.jpg" class="img-sm img-avatar" alt="Userpic">
-                                            </div>
-                                            <div class="info pl-3">
-                                                <h6 class="mb-0 title">Albert Pushkin</h6>
-                                                <small class="text-muted">Seller ID: #439</small>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td><template class="__cf_email__" data-cfemail="f5869a98909a9b90b5988c98949c99db969a98">[email&#160;protected]</template></td>
-                                    <td><span class="badge rounded-pill alert-success">Active</span></td>
-                                    <td>20.11.2019</td>
+                                    {% else %}
                                     <td class="text-end">
-                                        <a href="#" class="btn btn-sm btn-brand rounded font-sm mt-15">View details</a>
+                                        <a href="{% url 'myapp:admn_users_block_unblock' id=user.id%}" class="btn btn-sm btn-brand rounded font-sm mt-15">Block</a>
                                     </td>
+                                    {% endif %}
                                 </tr>
-                                <tr>
-                                    <td width="40%">
-                                        <a href="#" class="itemside">
-                                            <div class="left">
-                                                <img src="assets/imgs/people/avatar2.jpg" class="img-sm img-avatar" alt="Userpic">
-                                            </div>
-                                            <div class="info pl-3">
-                                                <h6 class="mb-0 title">Alexandra Pena</h6>
-                                                <small class="text-muted">Seller ID: #439</small>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td><template class="__cf_email__" data-cfemail="37525b52565958450507050777524f565a475b521954585a">[email&#160;protected]</template></td>
-                                    <td><span class="badge rounded-pill alert-danger">Inactive</span></td>
-                                    <td>08.07.2020</td>
-                                    <td class="text-end">
-                                        <a href="#" class="btn btn-sm btn-brand rounded font-sm mt-15">View details</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="40%">
-                                        <a href="#" class="itemside">
-                                            <div class="left">
-                                                <img src="assets/imgs/people/avatar3.jpg" class="img-sm img-avatar" alt="Userpic">
-                                            </div>
-                                            <div class="info pl-3">
-                                                <h6 class="mb-0 title">Eleanor Pena</h6>
-                                                <small class="text-muted">Seller ID: #439</small>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td><template class="__cf_email__" data-cfemail="50353c35313e3f2262606260103528313d203c357e333f3d">[email&#160;protected]</template></td>
-                                    <td><span class="badge rounded-pill alert-danger">Inactive</span></td>
-                                    <td>08.07.2020</td>
-                                    <td class="text-end">
-                                        <a href="#" class="btn btn-sm btn-brand rounded font-sm mt-15">View details</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="40%">
-                                        <a href="#" class="itemside">
-                                            <div class="left">
-                                                <img src="assets/imgs/people/avatar4.jpg" class="img-sm img-avatar" alt="Userpic">
-                                            </div>
-                                            <div class="info pl-3">
-                                                <h6 class="mb-0 title">Alex Pushkina</h6>
-                                                <small class="text-muted">Seller ID: #439</small>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td><template class="__cf_email__" data-cfemail="20414c455860474d41494c0e4f5247">[email&#160;protected]</template></td>
-                                    <td><span class="badge rounded-pill alert-success">Active</span></td>
-                                    <td>08.07.2020</td>
-                                    <td class="text-end">
-                                        <a href="#" class="btn btn-sm btn-brand rounded font-sm mt-15">View details</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="40%">
-                                        <a href="#" class="itemside">
-                                            <div class="left">
-                                                <img src="assets/imgs/people/avatar1.jpg" class="img-sm img-avatar" alt="Userpic">
-                                            </div>
-                                            <div class="info pl-3">
-                                                <h6 class="mb-0 title">Eleanor Pena</h6>
-                                                <small class="text-muted">Seller ID: #439</small>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td><template class="__cf_email__" data-cfemail="40252c25212e2f3272707270002538212d302c256e232f2d">[email&#160;protected]</template></td>
-                                    <td><span class="badge rounded-pill alert-success">Active</span></td>
-                                    <td>08.07.2020</td>
-                                    <td class="text-end">
-                                        <a href="#" class="btn btn-sm btn-brand rounded font-sm mt-15">View details</a>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td width="40%">
-                                        <a href="#" class="itemside">
-                                            <div class="left">
-                                                <img src="assets/imgs/people/avatar2.jpg" class="img-sm img-avatar" alt="Userpic">
-                                            </div>
-                                            <div class="info pl-3">
-                                                <h6 class="mb-0 title">Eleanor Pena</h6>
-                                                <small class="text-muted">Seller ID: #439</small>
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td><template class="__cf_email__" data-cfemail="8eebe2ebefe0e1fcbcbebcbeceebf6efe3fee2eba0ede1e3">[email&#160;protected]</template></td>
-                                    <td><span class="badge rounded-pill alert-success">Active</span></td>
-                                    <td>08.07.2020</td>
-                                    <td class="text-end">
-                                        <a href="#" class="btn btn-sm btn-brand rounded font-sm mt-15">View details</a>
-                                    </td>
-                                </tr>
+                                {% endfor %}                       
                             </tbody>
                         </table> <!-- table-responsive.// -->
                     </div>
