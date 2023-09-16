@@ -3,13 +3,18 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
+from myapp.models import Product
 
 # Create your views here.
 
 #user
 @login_required(login_url='/login-page')
 def index(request):
-    return render(request,'user/index.html')
+    products=Product.objects.all()
+    context={
+        'products':products
+    }
+    return render(request,'user/index.html',context)
 
 def base_view(request):
     return render(request, 'user/base.html')

@@ -31,8 +31,13 @@ def admn_add_product(request):
         brand=request.POST.get("brand")
         description=request.POST.get("description")
         price=request.POST.get("price")
+        max_price=request.POST.get("max_price")
         quantity=request.POST.get("quantity")
         product_images=request.FILES.get('product_images')
+        product_images2=request.FILES.get('product_images2')
+        product_images3=request.FILES.get('product_images3')
+        product_images4=request.FILES.get('product_images4')
+        product_images5=request.FILES.get('product_images5')
         slug = slugify(product_name)
         count = 1
 
@@ -51,9 +56,14 @@ def admn_add_product(request):
             brand=brand,
             description=description,
             price=price,
+            max_price=max_price,
             quantity=quantity,
             slug=slug,
             product_images=product_images,
+            product_images2=product_images2,
+            product_images3=product_images3,
+            product_images4=product_images4,
+            product_images5=product_images5,
         )    
 
         product.save() 
@@ -86,6 +96,10 @@ def admn_edit_product(request,id):
         product.price=request.POST.get('price')
         product.quantity=request.POST.get('quantity')
         product.product_images=request.FILES.get('product_images')
+        product.product_images2=request.FILES.get('product_images2')
+        product.product_images3=request.FILES.get('product_images3')
+        product.product_images4=request.FILES.get('product_images4')
+        product.product_images5=request.FILES.get('product_images5')
         product.save()
         return redirect('myapp:admn-product-list')
     return render(request, 'admin-side/page-edit-products.html', {'product': product,'categories': categories})
@@ -111,6 +125,7 @@ def admn_add_categories(request):
         slug=request.POST.get("slug")
         description=request.POST.get("description")
 
+
         if not category_name or not slug or not description:
             messages.warning(request,"please fill in all required fields")
             return render(request, 'admin-side/page-add-categories.html')
@@ -118,7 +133,8 @@ def admn_add_categories(request):
         categories=Category(
             category_name=category_name,
             slug=slug,
-            description=description
+            description=description,
+
         )
         categories.save()
         messages.success(request, 'Category Added Successfully')
