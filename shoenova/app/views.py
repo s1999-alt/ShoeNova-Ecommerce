@@ -8,7 +8,7 @@ from myapp.models import Product
 # Create your views here.
 
 #user
-@login_required(login_url='/login-page')
+
 def index(request):
     products=Product.objects.all()
     context={

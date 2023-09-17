@@ -1,4 +1,7 @@
 from django.shortcuts import render,redirect,HttpResponse,get_object_or_404
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_control
 from myapp.models import Product,Category
 from django.utils.text import slugify
 from django.contrib import messages
@@ -8,11 +11,55 @@ from app.models import UserProfile
 
 
 #----------admin index page------------------------
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+@login_required
 def adm_index(request):
-    return render(request, 'admin-side/index.html')
+    if request.user.is_authenticated and request.user.is_superuser:
+        messages.success(request, 'Login Successfully')
+        return render(request, 'admin-side/index.html')
+    return render(request, 'admin-side/page-admin-login.html')
+
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+def admin_login(request):
+        if request.user.is_authenticated and request.user.is_superuser:
+            messages.success(request, 'Login Successfully')
+            return render(request, 'admin-side/index.html')
+        
+        if request.method=='POST':
+            email=request.POST['email']
+            password=request.POST['password']
+            user=authenticate(request,email=email,password=password)
+       
+
+            if user is not None and user.is_superuser:
+                login(request,user)
+                request.session['email']=user.email
+                messages.success(request, "Login Successfully")
+                return redirect('myapp:admin-index')
+            else:
+                 messages.error(request,'Invalid credentials or not a superuser.')
+
+        return render(request, 'admin-side/page-admin-login.html')
+
+def admin_logout(request):
+    if request.session['email']:
+        del request.session['email']
+    logout(request)
+    messages.info(request,"Logout Successfully")
+    return render(request, 'admin-side/page-admin-login.html')    
 
 
 
+
+    
+
+
+
+
+
+########################## ADMIN-PRODUCT ################################
 
 #-----------Product list-view page------------------
 def admn_product_list(request):
@@ -107,8 +154,7 @@ def admn_edit_product(request,id):
 
 
 
-
-
+######################### ADMIN-CATEGORY #####################################
 
 #--------------category list view page-----------------
 def admn_product_category(request):

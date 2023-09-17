@@ -5,6 +5,9 @@ app_name = 'myapp'
 
 urlpatterns = [
   path('admin-index/', views.adm_index, name='admin-index'),
+  path('admin-login/', views.admin_login, name='admin-login'),
+  path('admin-logout/', views.admin_logout, name='admin-logout'),
+
 
 
 
@@ -21,6 +24,8 @@ urlpatterns = [
   path('admn_enable_disable_categories/<int:id>', views.admn_enable_disable_categories, name='admn_enable_disable_categories'),
   path('admn_delete_categories/<int:id>', views.admn_delete_categories, name='admn_delete_categories'),
   path('admn_edit_categories/<int:id>', views.admn_edit_categories, name='admn_edit_categories'),
+
+
 
   path('admn_users_list/', views.admn_users_list, name='admn_users_list'),
   path('admn_users_block_unblock/<int:id>', views.admn_users_block_unblock, name='admn_users_block_unblock'),
