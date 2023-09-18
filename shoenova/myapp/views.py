@@ -9,7 +9,6 @@ from app.models import UserProfile
 
 # Create your views here.
 
-
 #----------admin index page------------------------
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)

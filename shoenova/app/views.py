@@ -1,13 +1,17 @@
-from django.shortcuts import render,redirect,HttpResponse
+from django.shortcuts import render,redirect,HttpResponse,get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
 from myapp.models import Product
-
+from .utils import send_otp
+from datetime import datetime
+import pyotp
 # Create your views here.
 
 #user
+
+
 
 def index(request):
     products=Product.objects.all()
@@ -18,6 +22,8 @@ def index(request):
 
 def base_view(request):
     return render(request, 'user/base.html')
+
+
 
 def login_regis(request):
     if request.method=="POST":
@@ -42,12 +48,43 @@ def login_regis(request):
                 return redirect("/login-register")
         except:
             pass      
-        myuser = UserProfile.objects.create_user(username=username, email=email, phone=phone, password=password)
+        myuser = UserProfile.objects.create_user(email=email, phone=phone, password=password)
         myuser.save()
         messages.success(request, "Signup Successfully..Please Login!")
         return redirect("/login-page")
     return render(request, 'user/page-login-register.html')
 
+
+def otp_regis(request):
+    if request.method=="POST":
+        otp=request.POST['otp']
+        email=request.session['email'] 
+
+        otp_secret_key=request.session['otp_secret_key']
+        otp_valid_until=request.session['otp_valid_date']
+
+        if otp_secret_key and otp_valid_until is not None:
+            valid_until=datetime.fromisoformat(otp_valid_until)
+
+            if valid_until > datetime.now():
+                totp=pyotp.TOTP(otp_secret_key, interval=120)
+
+                if totp.verify(otp):
+                     user=get_object_or_404(UserProfile,email=email)
+                     login(request, user)
+
+                     del request.session['otp_secret_key']
+                     del request.session['otp_valid_date']
+
+                     return redirect('/')
+                else:
+                    messages.warning(request, 'Invalid One time Password')
+            else:
+                messages.warning(request,'One time password has Expired')
+        else:
+            messages.warning(request, 'oops...something went wrong')            
+
+    return render(request, 'user/otp.html')
 
 
 def login_page(request):
@@ -59,8 +96,11 @@ def login_page(request):
         user = authenticate(request, username=email, password=password)
 
         if user is not None:
-            login(request, user)
-            return redirect('/') 
+            send_otp(request, email)
+            request.session['email']=email 
+            return redirect('otp-regis')
+            # login(request, user)
+            # return redirect('/') 
         else:
             messages.warning(request, "Invalid credentials. Please try again.")
 
