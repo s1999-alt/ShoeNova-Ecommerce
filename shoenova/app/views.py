@@ -131,5 +131,8 @@ def product_details(request, id):
     }
     return render(request, 'user/shop-product-details.html',context)
 
+def shop_product(request):
+    return render(request, 'user/page-shop.html')
+
 
 
