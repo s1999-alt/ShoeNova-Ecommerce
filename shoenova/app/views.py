@@ -5,7 +5,7 @@ from .models import UserProfile
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from myapp.models import Product,Category
-from .utils import send_otp
+from .utils import send_otp,resend_otp
 from datetime import datetime
 import pyotp
 # Create your views here.
@@ -63,6 +63,10 @@ def login_regis(request):
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def otp_regis(request):
     if request.method=="POST":
+        if 'otp_resend' in request.POST:  # Check if Resend OTP button was clicked
+            resend_otp(request)
+            return redirect('otp-regis')  # Redirect back to OTP page after resending
+
         otp=request.POST['otp']
         email=request.session['email']
 
