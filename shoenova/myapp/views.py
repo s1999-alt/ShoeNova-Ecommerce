@@ -42,8 +42,10 @@ def admin_login(request):
 
         return render(request, 'admin-side/page-admin-login.html')
 
+@login_required
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admin_logout(request):
-    if request.session['email']:
+    if 'email' in request.session:
         del request.session['email']
     logout(request)
     messages.info(request,"Logout Successfully")
@@ -61,6 +63,8 @@ def admin_logout(request):
 ########################## ADMIN-PRODUCT ################################
 
 #-----------Product list-view page------------------
+@login_required
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admn_product_list(request):
     products = Product.objects.all()
     context = {
@@ -69,6 +73,8 @@ def admn_product_list(request):
     return render(request, 'admin-side/page-products-list.html',context)
 
 #-------------Add Product---------------------------
+@login_required
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admn_add_product(request):
     if request.method=="POST":
         product_name=request.POST.get("product_name")
@@ -123,12 +129,16 @@ def admn_add_product(request):
     return render(request, 'admin-side/page-add-product.html',context)
 
 #--------------Delete product--------------------------
+@login_required
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admn_delete_product(request,id):
     product=get_object_or_404(Product,id=id)
     product.delete()
     return redirect('myapp:admn-product-list')
 
 #-----------------Edit Product---------------------------
+@login_required
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admn_edit_product(request,id):
     product=Product.objects.get(id=id)
     categories=Category.objects.all()
@@ -156,6 +166,8 @@ def admn_edit_product(request,id):
 ######################### ADMIN-CATEGORY #####################################
 
 #--------------category list view page-----------------
+@login_required
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admn_product_category(request):
     categories=Category.objects.all()
     context={
@@ -164,6 +176,8 @@ def admn_product_category(request):
     return render(request, 'admin-side/page-categories.html',context)
 
 #-------------Add categories------------------
+@login_required
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admn_add_categories(request):
     if request.method=="POST":
         category_name=request.POST.get("category_name")
@@ -187,6 +201,8 @@ def admn_add_categories(request):
     return render(request, 'admin-side/page-add-categories.html')
 
 #----------------category Enable-Disable-------------------
+@login_required
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admn_enable_disable_categories(request,id):
     category=Category.objects.get(id=id)
     try:
@@ -204,6 +220,8 @@ def admn_enable_disable_categories(request,id):
     return redirect('myapp:admn_product_category')
 
 #--------------------Edit categories---------------
+@login_required
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admn_edit_categories(request,id):
     category=Category.objects.get(id=id)
 
@@ -219,6 +237,8 @@ def admn_edit_categories(request,id):
     return render(request, 'admin-side/page-edit-categories.html',context)
 
 #-------------------Category delete----------------------
+@login_required
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admn_delete_categories(request,id):
     category= get_object_or_404(Category,id=id)
     category.delete()
@@ -229,6 +249,8 @@ def admn_delete_categories(request,id):
 
 
 #--------------------Admin side user list page------------
+@login_required
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admn_users_list(request):
     users=UserProfile.objects.all().exclude(is_superuser=True)
     context={
@@ -237,6 +259,8 @@ def admn_users_list(request):
     return render(request, 'admin-side/page-users-list.html',context)
 
 #------------------Admin side user block unblock-------------
+@login_required
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admn_users_block_unblock(request,id):
     user=UserProfile.objects.get(id=id)
     try:

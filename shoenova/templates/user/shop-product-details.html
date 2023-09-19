@@ -23,21 +23,22 @@
                                     <div class="detail-gallery">
                                         <span class="zoom-icon"><i class="fi-rs-search"></i></span>
                                         <!-- MAIN SLIDES -->
+                                        
                                         <div class="product-image-slider">
                                             <figure class="border-radius-10">
-                                                <img src="{% static 'assets/imgs/shop/product-16-2.jpg' %}" alt="product image">
+                                                <img src="{{products.product_images3.url}}" alt="product image">
                                             </figure>
                                             <figure class="border-radius-10">
-                                                <img src="{% static 'assets/imgs/shop/product-16-1.jpg' %}" alt="product image">
+                                                <img src="{{products.product_images2.url}}" alt="product image">
                                             </figure>
                                             <figure class="border-radius-10">
-                                                <img src="{% static 'assets/imgs/shop/product-16-3.jpg' %}" alt="product image">
+                                                <img src="{{products.product_images3.url}}" alt="product image">
                                             </figure>
                                             <figure class="border-radius-10">
-                                                <img src="assets/imgs/shop/product-16-4.jpg" alt="product image">
+                                                <img src="{{products.product_images4.url}}">
                                             </figure>
                                             <figure class="border-radius-10">
-                                                <img src="{% static 'assets/imgs/shop/product-16-5.jpg' %}" alt="product image">
+                                                <img src="{{products.product_images5.url}}" alt="product image">
                                             </figure>
                                             <figure class="border-radius-10">
                                                 <img src="{% static 'assets/imgs/shop/product-16-6.jpg' %}" alt="product image">
@@ -48,11 +49,11 @@
                                         </div>
                                         <!-- THUMBNAILS -->
                                         <div class="slider-nav-thumbnails pl-15 pr-15">
-                                            <div><img src="{% static 'assets/imgs/shop/thumbnail-3.jpg' %}" alt="product image"></div>
-                                            <div><img src="assets/imgs/shop/thumbnail-4.jpg" alt="product image"></div>
-                                            <div><img src="{% static 'assets/imgs/shop/thumbnail-5.jpg' %}" alt="product image"></div>
-                                            <div><img src="{% static 'assets/imgs/shop/thumbnail-6.jpg' %}" alt="product image"></div>
-                                            <div><img src="{% static 'assets/imgs/shop/thumbnail-7.jpg' %}" alt="product image"></div>
+                                            <div><img src="{{products.product_images3.url}}" alt="product image"></div>
+                                            <div><img src="{{products.product_images2.url}}" alt="product image"></div>
+                                            <div><img src="{{products.product_images3.url}}" alt="product image"></div>
+                                            <div><img src="{{products.product_images4.url}}" alt="product image"></div>
+                                            <div><img src="{{products.product_images5.url}}" alt="product image"></div>
                                             <div><img src="{% static 'assets/imgs/shop/thumbnail-8.jpg' %}" alt="product image"></div>
                                             <div><img src="{% static 'assets/imgs/shop/thumbnail-9.jpg' %}" alt="product image"></div>
                                         </div>
@@ -68,12 +69,13 @@
                                         </ul>
                                     </div>
                                 </div>
+                                
                                 <div class="col-md-6 col-sm-12 col-xs-12">
                                     <div class="detail-info">
-                                        <h2 class="title-detail">Colorful Pattern Shirts HD450</h2>
+                                        <h2 class="title-detail">{{products.product_name}}</h2>
                                         <div class="product-detail-rating">
                                             <div class="pro-details-brand">
-                                                <span> Brands: <a href="shop-grid-right.html">Bootstrap</a></span>
+                                                <span> Brands: <a href="shop-grid-right.html">{{products.brand}}</a></span>
                                             </div>
                                             <div class="product-rate-cover text-end">
                                                 <div class="product-rate d-inline-block">
@@ -85,18 +87,18 @@
                                         </div>
                                         <div class="clearfix product-price-cover">
                                             <div class="product-price primary-color float-left">
-                                                <ins><span class="text-brand">$120.00</span></ins>
-                                                <ins><span class="old-price font-md ml-15">$200.00</span></ins>
-                                                <span class="save-price  font-md color3 ml-15">25% Off</span>
+                                                <ins><span class="text-brand">${{products.price}}</span></ins>
+                                                <ins><span class="old-price font-md ml-15">${{products.max_price}}</span></ins>
+                                                <span class="save-price  font-md color3 ml-15">30% Off</span>
                                             </div>
                                         </div>
                                         <div class="bt-1 border-color-1 mt-15 mb-15"></div>
                                         <div class="short-desc mb-30">
-                                            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Aliquam rem officia, corrupti reiciendis minima nisi modi, quasi, odio minus dolore impedit fuga eum eligendi? Officia doloremque facere quia. Voluptatum, accusantium!</p>
+                                            <p>The radiance lives on in the Nike Air Force 1 '07, the basketball original that puts a fresh spin on what you know best: durably stitched overlays, clean finishes and the perfect amount of flash to make you shine.</p>
                                         </div>
                                         <div class="product_sort_info font-xs mb-30">
                                             <ul>
-                                                <li class="mb-10"><i class="fi-rs-crown mr-5"></i> 1 Year AL Jazeera Brand Warranty</li>
+                                                <li class="mb-10"><i class="fi-rs-crown mr-5"></i> 1 Year Nike Brand Warranty</li>
                                                 <li class="mb-10"><i class="fi-rs-refresh mr-5"></i> 30 Day Return Policy</li>
                                                 <li><i class="fi-rs-credit-card mr-5"></i> Cash on Delivery available</li>
                                             </ul>
@@ -116,11 +118,11 @@
                                         <div class="attr-detail attr-size">
                                             <strong class="mr-10">Size</strong>
                                             <ul class="list-filter size-filter font-small">
-                                                <li><a href="#">S</a></li>
-                                                <li class="active"><a href="#">M</a></li>
-                                                <li><a href="#">L</a></li>
-                                                <li><a href="#">XL</a></li>
-                                                <li><a href="#">XXL</a></li>
+                                                <li><a href="#">6</a></li>
+                                                <li class="active"><a href="#">7</a></li>
+                                                <li><a href="#">8</a></li>
+                                                <li><a href="#">9</a></li>
+                                                <li><a href="#">10</a></li>
                                             </ul>
                                         </div>
                                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
@@ -139,11 +141,12 @@
                                         <ul class="product-meta font-xs color-grey mt-50">
                                             <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
                                             <li class="mb-5">Tags: <a href="#" rel="tag">Cloth</a>, <a href="#" rel="tag">Women</a>, <a href="#" rel="tag">Dress</a> </li>
-                                            <li>Availability:<span class="in-stock text-success ml-5">8 Items In Stock</span></li>
+                                            <li>Availability:<span class="in-stock text-success ml-5">{{products.quantity}} Items In Stock</span></li>
                                         </ul>
                                     </div>
                                     <!-- Detail Info -->
                                 </div>
+                                
                             </div>
                             <div class="tab-style3">
                                 <ul class="nav nav-tabs text-uppercase">
@@ -572,6 +575,7 @@
                                     <h2 class="fw-600 mb-20">We're an Apple <br>Authorised Service Provider</h2>
                                 </div>
                             </div>
+                        
                         </div>
                     </div>
                     <div class="col-lg-3 primary-sidebar sticky-sidebar">

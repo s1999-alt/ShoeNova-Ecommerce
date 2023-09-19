@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_control
 from myapp.models import Product
 from .utils import send_otp
 from datetime import datetime
@@ -12,7 +13,7 @@ import pyotp
 #user
 
 
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def index(request):
     products=Product.objects.all()
     context={
@@ -20,11 +21,12 @@ def index(request):
     }
     return render(request,'user/index.html',context)
 
+
 def base_view(request):
     return render(request, 'user/base.html')
 
 
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def login_regis(request):
     if request.method=="POST":
         username=request.POST.get("username")
@@ -55,10 +57,11 @@ def login_regis(request):
     return render(request, 'user/page-login-register.html')
 
 
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def otp_regis(request):
     if request.method=="POST":
         otp=request.POST['otp']
-        email=request.session['email'] 
+        email=request.session['email']
 
         otp_secret_key=request.session['otp_secret_key']
         otp_valid_until=request.session['otp_valid_date']
@@ -71,7 +74,9 @@ def otp_regis(request):
 
                 if totp.verify(otp):
                      user=get_object_or_404(UserProfile,email=email)
+                     request.session['email_']=email
                      login(request, user)
+                     del request.session['email']
 
                      del request.session['otp_secret_key']
                      del request.session['otp_valid_date']
@@ -87,6 +92,7 @@ def otp_regis(request):
     return render(request, 'user/otp.html')
 
 
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def login_page(request):
     if request.user.is_authenticated:
         return redirect('/')
@@ -97,7 +103,7 @@ def login_page(request):
 
         if user is not None:
             send_otp(request, email)
-            request.session['email']=email 
+            request.session['email'] = email
             return redirect('otp-regis')
             # login(request, user)
             # return redirect('/') 
@@ -106,18 +112,24 @@ def login_page(request):
 
     return render(request, 'user/page-login.html')
 
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='/login-page')
 def handlelogout(request):
+    if 'email_' in request.session:
+        del request.session['email_']
     logout(request)
     messages.info(request, "Logout Succesfully")
     return redirect('/login-page')
 
 
 
-    
-def product_details(request):
-    return render(request, 'user/shop-product-left.html')
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)   
+def product_details(request, id):
+    products=Product.objects.get(id=id)
+    context={
+        'products':products
+    }
+    return render(request, 'user/shop-product-details.html',context)
 
 
 
