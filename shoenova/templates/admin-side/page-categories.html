@@ -34,6 +34,7 @@
                                                 </div>
                                             </th>
                                             <th>ID</th>
+                                            <th>Image</th>
                                             <th>Name</th>
                                             <th>Description</th>
                                             <th>Slug</th>
@@ -49,6 +50,15 @@
                                                 </div>
                                             </td>
                                             <td>{{cat.id}}</td>
+                                            <td>
+                                                
+                                                    {% if cat.category_image %}
+                                                    <img src="{{cat.category_image.url}}" class="img-sm img-thumbnail" alt="Item">
+                                                    {% else %}
+                                                    <img src="" class="img-sm img-thumbnail" alt="Item">
+                                                    {% endif %}
+                                                
+                                            </td>
                                             <td><b>{{cat.category_name}}</b></td>
                                             <td>{{cat.description}}</td>
                                             <td>{{cat.slug}}</td>

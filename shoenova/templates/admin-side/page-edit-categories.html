@@ -14,7 +14,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-3">
-                    <form method="post">{% csrf_token %}
+                    <form method="post" enctype="multipart/form-data" >{% csrf_token %}
                         <div class="mb-4">
                             <label for="product_name" class="form-label">Name</label>
                             <input type="text" placeholder="Type here" class="form-control" id="product_name" name="category_name" value="{{category.category_name}}" />
@@ -26,6 +26,10 @@
                         <div class="mb-4">
                             <label class="form-label">Description</label>
                             <textarea placeholder="Type here" class="form-control" name="description">{{category.description}}</textarea>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label" for="category_images">Category Image:</label>
+                            <input class="form-control" type="file" name="category_images" accept="image/*" required><br>
                         </div>
                         <div class="d-grid">
                             <button class="btn btn-primary" type="submit">Update category</button>

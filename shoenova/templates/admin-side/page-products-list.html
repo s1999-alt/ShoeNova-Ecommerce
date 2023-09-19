@@ -71,9 +71,15 @@
                                 </a>
                             </div>
                             <div class="col-lg-2 col-sm-2 col-4 col-price"> <span><i class="fa-solid fa-indian-rupee-sign"></i>{{product.price}}</span> </div>
+                            {% if product.soft_deleted %}
+                            <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                <span class="badge rounded-pill alert-danger">InActive</span>
+                            </div>
+                            {% else %}
                             <div class="col-lg-2 col-sm-2 col-4 col-status">
                                 <span class="badge rounded-pill alert-success">Active</span>
                             </div>
+                            {% endif %}
                             <div class="col-lg-1 col-sm-2 col-4 col-date">
                                 <span>02.11.2021</span>
                             </div>
@@ -83,9 +89,15 @@
                                     <i class="material-icons md-edit"></i> Edit
                                 </a>
 
+                                {% if product.soft_deleted %}
                                 <a href="{% url 'myapp:admn_delete_product' id=product.id %}" class="btn btn-sm font-sm btn-light rounded">
-                                    <i class="material-icons md-delete_forever"></i> Delete
+                                    <i class="material-icons md-delete_forever"></i> List
                                 </a>
+                                {% else %}
+                                <a href="{% url 'myapp:admn_delete_product' id=product.id %}" class="btn btn-sm font-sm btn-light rounded">
+                                    <i class="material-icons md-delete_forever"></i> Unlist
+                                </a>
+                                {% endif %}
 
                             </div>
                         </div> <!-- row .// -->

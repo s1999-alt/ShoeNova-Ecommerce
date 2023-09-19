@@ -133,7 +133,11 @@ def admn_add_product(request):
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admn_delete_product(request,id):
     product=get_object_or_404(Product,id=id)
-    product.delete()
+    if product.soft_deleted:
+        product.soft_deleted=False
+    else:
+        product.soft_deleted=True
+    product.save()    
     return redirect('myapp:admn-product-list')
 
 #-----------------Edit Product---------------------------
@@ -183,9 +187,10 @@ def admn_add_categories(request):
         category_name=request.POST.get("category_name")
         slug=request.POST.get("slug")
         description=request.POST.get("description")
+        category_images=request.FILES.get("category_images")
 
 
-        if not category_name or not slug or not description:
+        if not category_name or not slug or not description or not category_images:
             messages.warning(request,"please fill in all required fields")
             return render(request, 'admin-side/page-add-categories.html')
        
@@ -193,6 +198,8 @@ def admn_add_categories(request):
             category_name=category_name,
             slug=slug,
             description=description,
+            category_image=category_images,
+
 
         )
         categories.save()
@@ -229,6 +236,7 @@ def admn_edit_categories(request,id):
         category.category_name=request.POST.get('category_name')
         category.slug=request.POST.get('slug')
         category.description=request.POST.get('description')
+        category.category_image=request.FILES.get('category_images')
         category.save()
         return redirect('myapp:admn_product_category')
     context={

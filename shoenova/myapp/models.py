@@ -6,7 +6,7 @@ class Category(models.Model):
     description = models.TextField(max_length=100,blank= True)
     is_available = models.BooleanField(default=True)
     soft_deleted = models.BooleanField(default=False)
-    category_image = models.ImageField(upload_to='photos/categories')
+    category_image = models.ImageField(upload_to='photos/categories',blank= True)
     
     class Meta:
         verbose_name = 'category'

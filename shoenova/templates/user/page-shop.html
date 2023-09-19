@@ -63,13 +63,15 @@
                             </div>
                         </div>
                         <div class="row product-grid-3">
+                            {% for product in products %}
+                            {% if not product.soft_deleted %}
                             <div class="col-lg-4 col-md-4 col-12 col-sm-6">
                                 <div class="product-cart-wrap mb-30">
                                     <div class="product-img-action-wrap">
                                         <div class="product-img product-img-zoom">
                                             <a href="shop-product-right.html">
-                                                <img class="default-img" src="{% static "assets/imgs/shop/product-2-1.jpg" %}" alt="">
-                                                <img class="hover-img" src="{% static "assets/imgs/shop/product-2-2.jpg" %}" alt="">
+                                                <img class="default-img" src="{{product.product_images.url}}" alt="">
+                                                <img class="hover-img" src="{{product.product_images2.url}}" alt="">
                                             </a>
                                         </div>
                                         <div class="product-action-1">
@@ -84,17 +86,17 @@
                                     </div>
                                     <div class="product-content-wrap">
                                         <div class="product-category">
-                                            <a href="shop-grid-right.html">Music</a>
+                                            <a href="shop-grid-right.html">{{product.category}}</a>
                                         </div>
-                                        <h2><a href="shop-product-right.html">Colorful Pattern Shirts</a></h2>
+                                        <h2><a href="shop-product-right.html">{{product.product_name}}</a></h2>
                                         <div class="rating-result" title="90%">
                                             <span>
                                                 <span>90%</span>
                                             </span>
                                         </div>
                                         <div class="product-price">
-                                            <span>$238.85 </span>
-                                            <span class="old-price">$245.8</span>
+                                            <span>{{products.price}}</span>
+                                            <span class="old-price">{{product.max_price}}</span>
                                         </div>
                                         <div class="product-action-1 show">
                                             <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
@@ -102,6 +104,8 @@
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
+                            {% endfor %}
                         </div>
                         <!--pagination-->
                         <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">

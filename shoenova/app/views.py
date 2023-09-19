@@ -4,7 +4,7 @@ from django.contrib import messages
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
-from myapp.models import Product
+from myapp.models import Product,Category
 from .utils import send_otp
 from datetime import datetime
 import pyotp
@@ -16,10 +16,13 @@ import pyotp
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def index(request):
     products=Product.objects.all()
+    categories=Category.objects.all()
     context={
-        'products':products
+        'products':products,
+        'categories':categories
     }
     return render(request,'user/index.html',context)
+
 
 
 def base_view(request):
@@ -132,7 +135,11 @@ def product_details(request, id):
     return render(request, 'user/shop-product-details.html',context)
 
 def shop_product(request):
-    return render(request, 'user/page-shop.html')
+    products=Product.objects.all()
+    context={
+        'products':products
+    }
+    return render(request, 'user/page-shop.html',context)
 
 
 
