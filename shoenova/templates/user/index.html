@@ -813,7 +813,7 @@
                         {% for cat in categories  %}
                         <div class="card-1">
                             <figure class=" img-hover-scale overflow-hidden">
-                                <a href="shop-grid-right.html"><img src="{% static 'assets/imgs/shop/category-thumb-1.jpg' %}" alt=""></a>
+                                <a href="shop-grid-right.html"><img src="{{cat.category_image.url}}" alt=""></a>
                             </figure>
                             <h5><a href="shop-grid-right.html">{{cat.category_name}}</a></h5>
                         </div>
