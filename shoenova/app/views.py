@@ -24,10 +24,8 @@ def index(request):
     return render(request,'user/index.html',context)
 
 
-
 def base_view(request):
     return render(request, 'user/base.html')
-
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def login_regis(request):
@@ -115,7 +113,7 @@ def login_page(request):
             # login(request, user)
             # return redirect('/') 
         else:
-            messages.warning(request, "Invalid credentials. Please try again.")
+            messages.warning(request, "Ivalid Credentials. Please try again.")      
 
     return render(request, 'user/page-login.html')
 

@@ -23,7 +23,6 @@ def adm_index(request):
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def admin_login(request):
         if request.user.is_authenticated and request.user.is_superuser:
-            messages.success(request, 'Login Successfully')
             return render(request, 'admin-side/index.html')
         
         if request.method=='POST':
@@ -216,12 +215,12 @@ def admn_enable_disable_categories(request,id):
         if category.soft_deleted:
             category.soft_deleted=False
             category.save()
-            messages.success(request,'Category Enabled')
+            messages.warning(request,'Category Disabled')
             return redirect('admn_product_category')
         else:
             category.soft_deleted=True
             category.save()
-            messages.warning(request,'Category Disabled')
+            messages.success(request,'Category Enabled')
     except:
         messages.warning(request,'Error Occured')
     return redirect('myapp:admn_product_category')
