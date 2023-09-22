@@ -58,6 +58,8 @@ def login_regis(request):
     return render(request, 'user/page-login-register.html')
 
 
+
+
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def otp_regis(request):
     if request.method=="POST":
@@ -97,6 +99,82 @@ def otp_regis(request):
     return render(request, 'user/otp.html')
 
 
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+def password_reset_request(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try:
+            if email is not None:
+                send_otp(request, email)
+                request.session['email'] = email
+                return redirect('forgot-password-otp')
+        except UserProfile.DoesNotExist:
+            messages.warning(request, "Invalid Email. Please Enter a Valid One.") 
+    return render(request, 'password-reset-request.html')
+
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+def forgot_password_otp(request):
+    if request.method=="POST":
+        if 'otp_resend' in request.POST:  # Check if Resend OTP button was clicked
+            resend_otp(request)
+            return redirect('forgot-password-otp')  # Redirect back to OTP page after resending
+
+        otp=request.POST['otp']
+        email=request.session['email']
+
+        otp_secret_key=request.session['otp_secret_key']
+        otp_valid_until=request.session['otp_valid_date']
+
+        if otp_secret_key and otp_valid_until is not None:
+            valid_until=datetime.fromisoformat(otp_valid_until)
+
+            if valid_until > datetime.now():
+                totp=pyotp.TOTP(otp_secret_key, interval=120)
+                
+                if totp.verify(otp):
+                     request.session['email_']=email
+
+                     del request.session['otp_secret_key']
+                     del request.session['otp_valid_date']
+
+                     return redirect('reset-password')
+                else:
+                    messages.warning(request, 'Invalid One time Password')
+            else:
+                messages.warning(request,'One time password has Expired')
+        else:
+            messages.warning(request, 'oops...something went wrong') 
+
+    return render(request, 'user/forgot-password-otp.html')
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+def reset_password(request):
+    if request.method == "POST":
+        password = request.POST.get("password")
+        confirm_password = request.POST.get("confirm-password")
+        
+        if password != confirm_password:
+            return render(request, 'user/reset-password.html', {'error_message': 'Passwords do not match'})
+        
+        try:
+            user = UserProfile.objects.get(email=request.session['email'])
+            user.set_password(password)
+            user.save()
+            return redirect('password-reset-success')
+        except UserProfile.DoesNotExist:
+            return render(request, 'reset-password.html', {'error_message': 'Invalid email address'})
+
+    return render(request, 'reset-password.html')
+
+
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+def password_reset_success(request):
+    return render(request, 'password-reset-success.html')
+
+
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def login_page(request):
     if request.user.is_authenticated:
@@ -117,6 +195,9 @@ def login_page(request):
 
     return render(request, 'user/page-login.html')
 
+
+
+
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 @login_required(login_url='/login-page')
 def handlelogout(request):
@@ -136,6 +217,8 @@ def product_details(request, id):
     }
     return render(request, 'user/shop-product-details.html',context)
 
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)  
 def shop_product(request):
     products=Product.objects.all()
     context={
