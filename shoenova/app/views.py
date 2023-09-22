@@ -8,6 +8,7 @@ from myapp.models import Product,Category
 from .utils import send_otp,resend_otp
 from datetime import datetime
 import pyotp
+
 # Create your views here.
 
 #user
@@ -27,36 +28,73 @@ def index(request):
 def base_view(request):
     return render(request, 'user/base.html')
 
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
-def login_regis(request):
-    if request.method=="POST":
-        username=request.POST.get("username")
-        email=request.POST.get("email")
-        phone=request.POST.get("phone") 
-        password=request.POST.get("password")
-        confirmpassword=request.POST.get("confirmpassword")
-        
-        if password!=confirmpassword:
-            messages.warning(request, "Password is Incorrect")
-            return redirect('/login-register')
-        try:
-            if UserProfile.objects.filter(username=username).exists():
-                messages.warning(request, "Username Is Already Taken")
-                return redirect("/login-register")
-        except:
-            pass
-        try:
-            if UserProfile.objects.filter(email=email).exists():
-                messages.info(request, "Email Is Already Taken")
-                return redirect("/login-register")
-        except:
-            pass      
-        myuser = UserProfile.objects.create_user(email=email, phone=phone, password=password)
-        myuser.save()
-        messages.success(request, "Signup Successfully..Please Login!")
-        return redirect("/login-page")
-    return render(request, 'user/page-login-register.html')
 
+
+# @cache_control(no_cache=True,must_revalidate=True,no_store=True)
+# def login_regis(request):
+#     if request.method=="POST":
+#         username=request.POST.get("username")
+#         email=request.POST.get("email")
+#         phone=request.POST.get("phone") 
+#         password=request.POST.get("password")
+#         confirmpassword=request.POST.get("confirmpassword")
+        
+#         if password!=confirmpassword:
+#             messages.warning(request, "Password is Incorrect")
+#             return redirect('/login-register')
+#         try:
+#             if UserProfile.objects.filter(username=username).exists():
+#                 messages.warning(request, "Username Is Already Taken")
+#                 return redirect("/login-register")
+#         except:
+#             pass
+#         try:
+#             if UserProfile.objects.filter(email=email).exists():
+#                 messages.info(request, "Email Is Already Taken")
+#                 return redirect("/login-register")
+#         except:
+#             pass      
+#         myuser = UserProfile.objects.create_user(email=email, phone=phone, password=password)
+#         myuser.save()
+#         messages.success(request, "Signup Successfully..Please Login!")
+#         return redirect("/login-page")
+#     return render(request, 'user/page-login-register.html')
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+def login_regis(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        phone = request.POST.get("phone") 
+        password = request.POST.get("password")
+        confirmpassword = request.POST.get("confirmpassword")
+        
+        if password != confirmpassword:
+            messages.warning(request, "Password is Incorrect")
+        else:
+            try:
+                if UserProfile.objects.filter(username=username).exists():
+                    messages.warning(request, "Username Is Already Taken")
+                elif UserProfile.objects.filter(email=email).exists():
+                    messages.info(request, "Email Is Already Taken")
+                else:
+                    myuser = UserProfile.objects.create_user(email=email, phone=phone, password=password)
+                    myuser.save()
+                    messages.success(request, "Signup Successfully..Please Login!")
+                    return redirect("/login-page")
+            except Exception as e:
+                # Handle any other exceptions here
+                messages.error(request, f"An error occurred: {str(e)}")
+
+        # Retain form data after an error
+        retained_data = {
+            "username": username,
+            "email": email,
+            "phone": phone
+        }
+        return render(request, 'user/page-login-register.html', {'retained_data': retained_data})
+    else:
+        return render(request, 'user/page-login-register.html')
 
 
 
