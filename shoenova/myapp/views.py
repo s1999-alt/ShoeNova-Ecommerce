@@ -184,12 +184,18 @@ def admn_product_category(request):
 def admn_add_categories(request):
     if request.method=="POST":
         category_name=request.POST.get("category_name")
-        slug=request.POST.get("slug")
+        slug=slugify(category_name)
         description=request.POST.get("description")
         category_images=request.FILES.get("category_images")
+        count = 1
+
+        
+        while Category.objects.filter(slug=slug).exists():
+            slug = f"{slug}-{count}"
+            count += 1
 
 
-        if not category_name or not slug or not description or not category_images:
+        if not category_name or not description or not category_images:
             messages.warning(request,"please fill in all required fields")
             return render(request, 'admin-side/page-add-categories.html')
        

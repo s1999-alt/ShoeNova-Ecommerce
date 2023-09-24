@@ -36,12 +36,15 @@ Shoe Nova
                     </div>
                     <form method="post">
                       {% csrf_token %}
-                      <div class="form-group">
+                      <div class="form-group" action="">
                         <input type="text" required="" name="otp" placeholder="OTP" />
                       </div>
 
                       <div class="form-group">
-                        <button type="submit" class="btn btn-fill-out btn-block hover-up" name="login">Confirm</button>
+                        <button type="submit" class="btn btn-fill-out btn-block hover-up" name="">Confirm</button>
+                      </div>
+                      <div class="form-group">
+                        <div id="otp-timer">Time remaining: <span id="countdown"></span></div>
                       </div>
                     </form>
                     <form method="post"> <!-- Add a new form for Resend OTP -->
@@ -58,5 +61,22 @@ Shoe Nova
       </div>
     </section>
   </main>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var countdownElement = document.getElementById('countdown');
+        var count = 60; // Set the initial countdown time in seconds
+
+        var countdownTimer = setInterval(function() {
+            count--;
+            countdownElement.textContent = count + ' seconds';
+
+            if (count <= 0) {
+                clearInterval(countdownTimer);
+                countdownElement.textContent = 'Time expired';
+            }
+        }, 1000);
+    });
+</script>
+
               
 {% endblock content %}

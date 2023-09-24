@@ -5,7 +5,7 @@ from email.mime.text import MIMEText
 from django.contrib import messages
 
 def send_otp(request,email):
-  totp=pyotp.TOTP(pyotp.random_base32(),interval=120)
+  totp = pyotp.TOTP(request.session['otp_secret_key'], interval=60)
   otp=totp.now()
 
   email=request.POST.get("email")

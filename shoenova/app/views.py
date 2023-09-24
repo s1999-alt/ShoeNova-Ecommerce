@@ -60,6 +60,7 @@ def base_view(request):
 #         return redirect("/login-page")
 #     return render(request, 'user/page-login-register.html')
 
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def login_regis(request):
     if request.method == "POST":
@@ -108,14 +109,14 @@ def otp_regis(request):
         otp=request.POST['otp']
         email=request.session['email']
 
-        otp_secret_key=request.session['otp_secret_key']
-        otp_valid_until=request.session['otp_valid_date']
+        otp_secret_key=request.session.get('otp_secret_key')
+        otp_valid_until=request.session.get('otp_valid_date')
 
         if otp_secret_key and otp_valid_until is not None:
             valid_until=datetime.fromisoformat(otp_valid_until)
 
             if valid_until > datetime.now():
-                totp=pyotp.TOTP(otp_secret_key, interval=120)
+                totp=pyotp.TOTP(request.session['otp_secret_key'], interval=60)
 
                 if totp.verify(otp):
                      user=get_object_or_404(UserProfile,email=email)
@@ -150,6 +151,7 @@ def password_reset_request(request):
         except UserProfile.DoesNotExist:
             messages.warning(request, "Invalid Email. Please Enter a Valid One.") 
     return render(request, 'password-reset-request.html')
+
 
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
@@ -187,6 +189,8 @@ def forgot_password_otp(request):
 
     return render(request, 'user/forgot-password-otp.html')
 
+
+
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def reset_password(request):
     if request.method == "POST":
@@ -223,11 +227,12 @@ def login_page(request):
         user = authenticate(request, username=email, password=password)
 
         if user is not None:
+            totp = pyotp.TOTP(pyotp.random_base32(), interval=60)
+            request.session['otp_secret_key'] = totp.secret 
             send_otp(request, email)
             request.session['email'] = email
-            return redirect('otp-regis')
-            # login(request, user)
-            # return redirect('/') 
+            
+            return redirect('otp-regis') 
         else:
             messages.warning(request, "Ivalid Credentials. Please try again.")      
 
@@ -258,11 +263,19 @@ def product_details(request, id):
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)  
 def shop_product(request):
-    products=Product.objects.all()
+    products=Product.objects.all().filter(is_available=True)
+    product_count=products.count()
+    categories=Category.objects.all()
     context={
-        'products':products
+        'products':products,
+        'product_count':product_count,
+        'categories':categories,
+
     }
     return render(request, 'user/page-shop.html',context)
+
+def shop_cart(request):
+    return render(request, 'shop-cart.html')
 
 
 
