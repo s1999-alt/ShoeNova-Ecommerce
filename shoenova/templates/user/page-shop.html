@@ -126,7 +126,7 @@
                             <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
                             {% for cat in categories %}
                             <ul class="categories">
-                                <li><a href="shop-grid-right.html">{{cat.category_name}}</a></li>
+                                <li><a href="{% url 'shop-product-by-category' category_slug=cat.slug %}">{{cat.category_name}}</a></li>
                             </ul>
                             {% endfor %}
                         </div>

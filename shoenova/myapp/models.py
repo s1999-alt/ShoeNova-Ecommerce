@@ -1,4 +1,8 @@
 from django.db import models
+from django.utils.text import slugify
+
+
+
 
 class Category(models.Model):
     category_name = models.CharField(max_length=20, unique=True)
@@ -13,7 +17,12 @@ class Category(models.Model):
         verbose_name_plural = 'categories'
 
     def __str__(self):
-        return self.category_name
+        return self.category_name   
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.category_name)
+        super().save(*args, **kwargs)   
     
 
 class Product(models.Model):
@@ -34,7 +43,8 @@ class Product(models.Model):
     product_images5 = models.ImageField(upload_to='photos/products',null=True)
 
     def __str__(self):
-           return self.product_name    
-    
+           return self.product_name  
+
+
 
 

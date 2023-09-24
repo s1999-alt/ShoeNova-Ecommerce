@@ -274,6 +274,31 @@ def shop_product(request):
     }
     return render(request, 'user/page-shop.html',context)
 
+
+
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)  
+def shop_product_by_category(request, category_slug):
+    category = get_object_or_404(Category, slug=category_slug)
+    products = Product.objects.filter(category=category, is_available=True)
+    product_count = products.count()
+    categories = Category.objects.all()
+    context = {
+        'products': products,
+        'product_count': product_count,
+        'categories': categories,
+        'selected_category': category,  # Optional: To highlight the selected category
+    }
+    return render(request, 'user/page-shop.html', context)
+
+
+
+
+
+
+
+
 def shop_cart(request):
     return render(request, 'shop-cart.html')
 
