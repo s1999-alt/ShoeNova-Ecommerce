@@ -3,6 +3,14 @@
 {% block title %}Shoe Nova{% endblock title %}
 {% block content %}
 <body>
+
+    {% for message in messages %}
+    <div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+      <strong></strong>{{message}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+     {% endfor %}
+     
     <!-- Quick view -->
     <main class="main">
         <div class="page-header breadcrumb-wrap">
@@ -99,7 +107,7 @@
                                             <span class="old-price">{{product.max_price}}</span>
                                         </div>
                                         <div class="product-action-1 show">
-                                            <a aria-label="Add To Cart" class="action-btn hover-up" href="shop-cart.html"><i class="fi-rs-shopping-bag-add"></i></a>
+                                            <a aria-label="Add To Cart" class="action-btn hover-up" href="{% url 'add-cart' id=product.id %}"><i class="fi-rs-shopping-bag-add"></i></a>
                                         </div>
                                     </div>
                                 </div>
@@ -124,6 +132,9 @@
                     <div class="col-lg-3 primary-sidebar sticky-sidebar">
                         <div class="widget-category mb-30">
                             <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
+                            <ul class="categories">
+                                <li><a href="{% url 'shop-product' %}">All products</a></li>
+                            </ul>
                             {% for cat in categories %}
                             <ul class="categories">
                                 <li><a href="{% url 'shop-product-by-category' category_slug=cat.slug %}">{{cat.category_name}}</a></li>

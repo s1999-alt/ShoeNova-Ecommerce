@@ -2,6 +2,15 @@
 {% load static %}
 {% block title %}Shoe Nova{% endblock title %}
 {% block content %}
+
+{% for message in messages %}
+<div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+  <strong></strong>{{message}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+ {% endfor %}
+
+
     <main class="main">
         <div class="page-header breadcrumb-wrap">
             <div class="container">
@@ -14,6 +23,13 @@
         </div>
         <section class="mt-50 mb-50">
             <div class="container">
+                {% if not cart_items %}
+                <h2 class="text-center">Your Shopping Cart is Empty</h2>
+                <br>
+                <div class="text-center">
+                    <a href="{% url "shop-product" %}" class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                </div>
+                {% else %}
                 <div class="row">
                     <div class="col-12">
                         <div class="table-responsive">
@@ -29,70 +45,45 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    {% for cart_item in cart_items %}
                                     <tr>
-                                        <td class="image product-thumbnail"><img src="{% static "assets/imgs/shop/product-1-2.jpg" %}" alt="#"></td>
+                                        <td class="image product-thumbnail"><img src="{{cart_item.product.product_images.url}}" alt="#"></td>
                                         <td class="product-des product-name">
-                                            <h5 class="product-name"><a href="shop-product-right.html">J.Crew Mercantile Women's Short-Sleeve</a></h5>
-                                            <p class="font-xs">Maboriosam in a tonto nesciung eget<br> distingy magndapibus.
+                                            <h5 class="product-name"><a href="{{cart_item.product.get_url}}">{{cart_item.product.product_name}}</a></h5>
+                                            <p class="font-xs">Color:<br> Size:
                                             </p>
                                         </td>
-                                        <td class="price" data-title="Price"><span>$65.00 </span></td>
+
+                                        <td class="price" data-title="Price"><span>${{cart_item.product.price}} </span></td>
                                         <td class="text-center" data-title="Stock">
-                                            <div class="detail-qty border radius  m-auto">
-                                                <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                                                <span class="qty-val">1</span>
-                                                <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
-                                            </div>
+
+                                            <form method="post" class="detail-qty border radius mx-auto">
+                                                {% csrf_token %}
+                                                <div>
+                                                    <a type=""  href="{% url 'add-cart' id=cart_item.product.id %}" class="add_quantity" data-product-id="{{ cart_item.product.id }}"><i class="fi-rs-angle-small-up"></i></a>
+                                                </div>
+                                                <div>
+                                                    <span class="quantity">{{ cart_item.quantity }}</span>
+                                                </div>
+                                                <div>
+                                                    <a type="" href="{% url 'remove-cart' id=cart_item.product.id %}" class="delete_quantity" data-product-id="{{ cart_item.product.id }}"><i class="fi-rs-angle-small-down"></i></a>
+                                                </div>
+                                            </form> 
                                         </td>
+
                                         <td class="text-right" data-title="Cart">
-                                            <span>$65.00 </span>
+                                            <span>${{cart_item.sub_total}} </span>
                                         </td>
-                                        <td class="action" data-title="Remove"><a href="#" class="text-muted"><i class="fi-rs-trash"></i></a></td>
+                                        <td class="action" data-title="Remove"><a href="{% url 'delete-cart' id=cart_item.product.id %}" class="text-muted" ><i class="fi-rs-trash"></i></a></td>
                                     </tr>
-                                    <tr>
-                                        <td class="image"><img src="{% static "assets/imgs/shop/product-11-2.jpg" %}" alt="#"></td>
-                                        <td class="product-des">
-                                            <h5 class="product-name"><a href="shop-product-right.html">Amazon Essentials Women's Tank</a></h5>
-                                            <p class="font-xs">Sit at ipsum amet clita no est,<br> sed amet sadipscing et gubergren</p>
-                                        </td>
-                                        <td class="price" data-title="Price"><span>$75.00 </span></td>
-                                        <td class="text-center" data-title="Stock">
-                                            <div class="detail-qty border radius  m-auto">
-                                                <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                                                <span class="qty-val">2</span>
-                                                <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
-                                            </div>
-                                        </td>
-                                        <td class="text-right" data-title="Cart">
-                                            <span>$150.00 </span>
-                                        </td>
-                                        <td class="action" data-title="Remove"><a href="#" class="text-muted"><i class="fi-rs-trash"></i></a></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="image"><img src="{% static "assets/imgs/shop/product-6-1.jpg" %}" alt="#"></td>
-                                        <td class="product-des">
-                                            <h5 class="product-name"><a href="shop-product-right.html">Amazon Brand - Daily Ritual Women's Jersey </a></h5>
-                                            <p class="font-xs">Erat amet et et amet diam et et.<br> Justo amet at dolore
-                                            </p>
-                                        </td>
-                                        <td class="price" data-title="Price"><span>$62.00 </span></td>
-                                        <td class="text-center" data-title="Stock">
-                                            <div class="detail-qty border radius  m-auto">
-                                                <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
-                                                <span class="qty-val">1</span>
-                                                <a href="#" class="qty-up"><i class="fi-rs-angle-small-up"></i></a>
-                                            </div>
-                                        </td>
-                                        <td class="text-right" data-title="Cart">
-                                            <span>$62.00 </span>
-                                        </td>
-                                        <td class="action" data-title="Remove"><a href="#" class="text-muted"><i class="fi-rs-trash"></i></a></td>
-                                    </tr>
+                                    
+                                    
                                     <tr>
                                         <td colspan="6" class="text-end">
                                             <a href="#" class="text-muted"> <i class="fi-rs-cross-small"></i> Clear Cart</a>
                                         </td>
                                     </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
@@ -407,7 +398,7 @@
                                             <tbody>
                                                 <tr>
                                                     <td class="cart_total_label">Cart Subtotal</td>
-                                                    <td class="cart_total_amount"><span class="font-lg fw-900 text-brand">$240.00</span></td>
+                                                    <td class="cart_total_amount"><span class="font-lg fw-900 text-brand">${{total}}</span></td>
                                                 </tr>
                                                 <tr>
                                                     <td class="cart_total_label">Shipping</td>
@@ -415,7 +406,7 @@
                                                 </tr>
                                                 <tr>
                                                     <td class="cart_total_label">Total</td>
-                                                    <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-brand">$240.00</span></strong></td>
+                                                    <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-brand">${{total}}</span></strong></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -426,7 +417,29 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </section>
     </main>
+
+
+
+
+{% comment %} 
+    <td class="text-center" data-title="Stock">
+        <form method="post" class="detail-qty border radius mx-auto">
+            {% csrf_token %}
+            <div>
+                <a type=""  href="{% url 'add_quantity' id=cartitem.product.id %}" class="add_quantity" data-product-id="{{ cartitem.product.id }}"><i class="fi-rs-angle-small-up"></i></a>
+            </div>
+            <div>
+                <span class="quantity">{{ cartitem.quantity }}</span>
+            </div>
+            <div>
+                <a type="" href="{% url 'delete_quantity' id=cartitem.product.id %}" class="delete_quantity" data-product-id="{{ cartitem.product.id }}"><i class="fi-rs-angle-small-down"></i></a>
+            </div>
+        </form>
+    </td> {% endcomment %}
     {% endblock content %}
+
+    

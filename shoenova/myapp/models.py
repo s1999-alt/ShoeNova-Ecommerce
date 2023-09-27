@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
+from app.models import UserProfile
+from django.urls import reverse
 
 
 
@@ -42,8 +44,37 @@ class Product(models.Model):
     product_images4 = models.ImageField(upload_to='photos/products',null=True)
     product_images5 = models.ImageField(upload_to='photos/products',null=True)
 
+
+    def get_url(self):
+         return reverse('product-details', args=[self.id])
+    
+
     def __str__(self):
-           return self.product_name  
+           return self.product_name 
+     
+    
+
+class Cart(models.Model):
+    cart_id=models.CharField(max_length=250,blank=True)
+    date_added=models.DateField(auto_now_add=True)
+    user = models.ForeignKey(UserProfile, on_delete =models.CASCADE,null=True)
+
+
+    def __str__(self):
+        return self.cart_id
+
+class CartItem(models.Model):
+    product=models.ForeignKey(Product, on_delete=models.CASCADE)  
+    cart=models.ForeignKey(Cart, on_delete=models.CASCADE)
+    quantity=models.IntegerField()
+    subtotal=models.DecimalField(max_digits=10,decimal_places=2, default=0)
+    is_active=models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.product
+
+    def sub_total(self):
+        return self.product.price * self.quantity      
 
 
 

@@ -10,12 +10,20 @@ urlpatterns = [
     path('product-details/<int:id>/', views.product_details, name='product-details'),
     path('shop-product/', views.shop_product, name='shop-product'),
     path('shop/category/<slug:category_slug>/', views.shop_product_by_category, name='shop-product-by-category'),
+
+
+
     path('otp-regis/', views.otp_regis, name='otp-regis'),
     path('password-reset-request/', views.password_reset_request, name='password-reset-request'),
     path('forgot-password-otp/', views.forgot_password_otp, name='forgot-password-otp'),
     path('reset-password/', views.reset_password, name='reset-password'),
     path('password-reset-success/', views.password_reset_success, name='password-reset-success'),
-    path('shop-cart/', views.shop_cart, name='shop-cart'),
+
+
+    path('add-cart/<int:id>/', views.add_cart, name='add-cart'),
+    path('cart/', views.cart, name='cart'),
+    path('remove-cart/<int:id>/', views.remove_cart, name='remove-cart'),#decrement one from quantity
+    path('delete-cart/<int:id>/', views.delete_cart, name='delete-cart'),
 
     
 
