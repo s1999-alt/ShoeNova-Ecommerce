@@ -118,14 +118,23 @@
                         <!--pagination-->
                         <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">
                             <nav aria-label="Page navigation example">
-                                <ul class="pagination justify-content-start">
-                                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">02</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">03</a></li>
-                                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">16</a></li>
-                                    <li class="page-item"><a class="page-link" href="#"><i class="fi-rs-angle-double-small-right"></i></a></li>
-                                </ul>
+                                {% if products.has_other_pages %}
+                                    <ul class="pagination justify-content-start">
+                                        {% for i in products.paginator.page_range %}
+                                           {% if products.number == i %}
+                                             <li class="page-item active"><a class="page-link" href="#">{{i}}</a></li>
+                                           {% else %}
+                                             <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                                           {% endif %}   
+                                        {% endfor %}
+
+                                        {% if products.has_next %}
+                                            <li class="page-item"><a class="page-link" href="?page={{products.next_page_number}}"><i class="fi-rs-angle-double-small-right"></i></a></li>
+                                        {% else %}
+                                            <li class="page-item disabled"><a class="page-link" href="#"><i class="fi-rs-angle-double-small-right"></i></a></li>   
+                                        {% endif %}
+                                    </ul>
+                                {% endif %}
                             </nav>
                         </div>
                     </div>

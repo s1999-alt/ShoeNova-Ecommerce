@@ -8,7 +8,9 @@ from myapp.models import Product,Category,Cart,CartItem
 from .utils import send_otp,resend_otp
 from datetime import datetime
 import pyotp
-from django.http import JsonResponse
+from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
+from django.core.exceptions import ObjectDoesNotExist
+
 
 # Create your views here.
 
@@ -253,22 +255,29 @@ def handlelogout(request):
 
 
 
+
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)   
 def product_details(request, id):
     products=Product.objects.get(id=id)
+    in_cart = CartItem.objects.filter(cart__cart_id=_cart_id(request), product=products).exists()
     context={
-        'products':products
+        'products':products,
+        'in_cart' :in_cart,
     }
     return render(request, 'user/shop-product-details.html',context)
 
 
+
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)  
 def shop_product(request):
-    products=Product.objects.all().filter(is_available=True)
+    products=Product.objects.all().filter(is_available=True).order_by('id')
+    paginator=Paginator(products,3)
+    page=request.GET.get('page')
+    paged_products=paginator.get_page(page)
     product_count=products.count()
     categories=Category.objects.all()
     context={
-        'products':products,
+        'products':paged_products,
         'product_count':product_count,
         'categories':categories,
 
@@ -283,18 +292,19 @@ def shop_product(request):
 def shop_product_by_category(request, category_slug):
     category = get_object_or_404(Category, slug=category_slug)
     products = Product.objects.filter(category=category, is_available=True)
+    paginator=Paginator(products,9)
+    page=request.GET.get('page')
+    paged_products=paginator.get_page(page)
+    product_count=products.count()
     product_count = products.count()
     categories = Category.objects.all()
     context = {
-        'products': products,
+        'products': paged_products,
         'product_count': product_count,
         'categories': categories,
         'selected_category': category,  # Optional: To highlight the selected category
     }
     return render(request, 'user/page-shop.html', context)
-
-
-
 
 
 
@@ -304,10 +314,7 @@ def _cart_id(request):
         cart=request.session.create()
     return cart    
 
-
-
-
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def add_cart(request,id):
     product=get_object_or_404(Product,id=id)
     if product.quantity > 0:
@@ -336,7 +343,7 @@ def add_cart(request,id):
 
 
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def cart(request, total=0, quantity=0, cart_item=None):
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -344,7 +351,7 @@ def cart(request, total=0, quantity=0, cart_item=None):
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
-    except ObjectNotExist:
+    except ObjectDoesNotExist:
         pass 
 
     context = {
@@ -355,6 +362,9 @@ def cart(request, total=0, quantity=0, cart_item=None):
     return render(request, 'shop-cart.html',context)
 
 
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def remove_cart(request,id): #decrementing the the product quantity
     cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=id)
@@ -368,6 +378,8 @@ def remove_cart(request,id): #decrementing the the product quantity
 
 
 
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def delete_cart(request,id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=id)
