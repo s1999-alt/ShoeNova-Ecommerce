@@ -62,19 +62,57 @@ class Cart(models.Model):
 
     def __str__(self):
         return self.cart_id
+    
+
+
+
+class variation_manager(models.Manager):
+    def colors(self):
+        return super(variation_manager, self).filter(variation_category='color', is_active=True)
+    
+    def sizes(self):
+        return super(variation_manager, self).filter(variation_category='size', is_active=True)
+
+
+
+variation_category_choice=(
+    ('color', 'color'),
+    ('size','size')
+)
+
+
+class Variations(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE) 
+    variation_category = models.CharField(max_length=50, choices=variation_category_choice)
+    variation_value = models.CharField(max_length=100)
+    is_active = models.BooleanField(default=True)
+    created_date = models.DateTimeField(auto_now=True)
+
+    objects = variation_manager()
+
+    def __str__(self):
+        return self.variation_value
+
+
+
+
 
 class CartItem(models.Model):
-    product=models.ForeignKey(Product, on_delete=models.CASCADE)  
+    product=models.ForeignKey(Product, on_delete=models.CASCADE)
+    variations=models.ManyToManyField(Variations, blank=True) 
     cart=models.ForeignKey(Cart, on_delete=models.CASCADE)
     quantity=models.IntegerField()
     subtotal=models.DecimalField(max_digits=10,decimal_places=2, default=0)
     is_active=models.BooleanField(default=True)
 
-    def __str__(self):
+    def __unicode__(self):
         return self.product
 
     def sub_total(self):
-        return self.product.price * self.quantity      
+        return self.product.price * self.quantity  
+
+
+
 
 
 

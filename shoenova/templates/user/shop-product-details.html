@@ -62,8 +62,6 @@
                                             <div><img src="{{products.product_images3.url}}" alt="product image"></div>
                                             <div><img src="{{products.product_images4.url}}" alt="product image"></div>
                                             <div><img src="{{products.product_images5.url}}" alt="product image"></div>
-                                            <div><img src="{% static 'assets/imgs/shop/thumbnail-8.jpg' %}" alt="product image"></div>
-                                            <div><img src="{% static 'assets/imgs/shop/thumbnail-9.jpg' %}" alt="product image"></div>
                                         </div>
                                     </div>
                                     <!-- End Gallery -->
@@ -79,6 +77,8 @@
                                 </div>
                                 
                                 <div class="col-md-6 col-sm-12 col-xs-12">
+                                 <form action="{% url "add-cart" id=products.id%}" method="POST">
+                                    {% csrf_token %}
                                     <div class="detail-info">
                                         <h2 class="title-detail">{{products.product_name}}</h2>
                                         <div class="product-detail-rating">
@@ -113,29 +113,25 @@
                                         </div>
                                         <div class="attr-detail attr-color mb-15">
                                             <strong class="mr-10">Color</strong>
-                                            <ul class="list-filter color-filter">
-                                                <li><a href="#" data-color="Red"><span class="product-color-red"></span></a></li>
-                                                <li><a href="#" data-color="Yellow"><span class="product-color-yellow"></span></a></li>
-                                                <li class="active"><a href="#" data-color="White"><span class="product-color-white"></span></a></li>
-                                                <li><a href="#" data-color="Orange"><span class="product-color-orange"></span></a></li>
-                                                <li><a href="#" data-color="Cyan"><span class="product-color-cyan"></span></a></li>
-                                                <li><a href="#" data-color="Green"><span class="product-color-green"></span></a></li>
-                                                <li><a href="#" data-color="Purple"><span class="product-color-purple"></span></a></li>
-                                            </ul>
+                                            <select name="color" class="form-control" required>
+                                                <option value="" disabled selected>Select</option>
+                                                {% for i in products.variations_set.colors %}
+                                                <option value="{{i.variation_value | lower}}">{{i.variation_value | capfirst }}</option>
+                                                {% endfor %}
+                                            </select>
                                         </div>
                                         <div class="attr-detail attr-size">
                                             <strong class="mr-10">Size</strong>
-                                            <ul class="list-filter size-filter font-small">
-                                                <li><a href="#">6</a></li>
-                                                <li class="active"><a href="#">7</a></li>
-                                                <li><a href="#">8</a></li>
-                                                <li><a href="#">9</a></li>
-                                                <li><a href="#">10</a></li>
-                                            </ul>
+                                            <select name="size" class="form-control">
+                                                <option value="" disabled selected>Select</option>
+                                                {% for i in products.variations_set.sizes %}
+                                                <option value="{{i.variation_value | lower }}">{{i.variation_value | capfirst }}</option>
+                                                {% endfor %}
+                                            </select>
                                         </div>
                                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                                         <div class="detail-extralink">
-                                            <form action="{% url "add-cart" id=products.id%}">
+                                            {% comment %} <form action="{% url "add-cart" id=products.id%}"> {% endcomment %}
                                             <div class="detail-qty border radius">
                                                 <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
                                                 <span class="qty-val">1</span>
@@ -156,7 +152,7 @@
                                                 <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
                                                 <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                             </div>
-                                        </form>
+                                        {% comment %} </form> {% endcomment %}
                                         </div>
                                         <ul class="product-meta font-xs color-grey mt-50">
                                             <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
@@ -164,6 +160,7 @@
                                             <li>Availability:<span class="in-stock text-success ml-5">{{products.quantity}} Items In Stock</span></li>
                                         </ul>
                                     </div>
+                                 </form>
                                     <!-- Detail Info -->
                                 </div>
                                 

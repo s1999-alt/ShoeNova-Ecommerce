@@ -4,7 +4,7 @@ from django.contrib import messages
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
-from myapp.models import Product,Category,Cart,CartItem
+from myapp.models import Product,Category,Cart,CartItem,Variations
 from .utils import send_otp,resend_otp
 from datetime import datetime
 import pyotp
@@ -314,9 +314,23 @@ def _cart_id(request):
         cart=request.session.create()
     return cart    
 
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def add_cart(request,id):
-    product=get_object_or_404(Product,id=id)
+    product=get_object_or_404(Product, id=id)
+    product_variation = []
+    if request.method == "POST":
+        for item in request.POST:
+            key = item
+            value = request.POST[key]
+            
+            try:
+                variation = Variations.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
+                product_variation.append(variation)
+            except:
+                pass    
+
+    
     if product.quantity > 0:
         try:
             cart=Cart.objects.get(cart_id=_cart_id(request))#get the cart using cart_id present in the session
@@ -375,8 +389,6 @@ def remove_cart(request,id): #decrementing the the product quantity
     else:
         cart_item.delete()
     return redirect('cart')        
-
-
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
