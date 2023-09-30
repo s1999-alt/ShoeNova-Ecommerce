@@ -7,7 +7,7 @@ urlpatterns = [
     path('login-register/', views.login_regis, name='login-register'),
     path('login-page/', views.login_page, name='login-page'),
     path('handlelogout/', views.handlelogout, name='handlelogout'),
-    path('product-details/<int:id>/', views.product_details, name='product-details'),
+    path('category/product-details/<int:id>/', views.product_details, name='product-details'),
     path('shop-product/', views.shop_product, name='shop-product'),
     path('shop/category/<slug:category_slug>/', views.shop_product_by_category, name='shop-product-by-category'),
 
@@ -22,9 +22,11 @@ urlpatterns = [
 
     path('add-cart/<int:id>/', views.add_cart, name='add-cart'),
     path('cart/', views.cart, name='cart'),
-    path('remove-cart/<int:id>/', views.remove_cart, name='remove-cart'),#decrement one from quantity
-    path('delete-cart/<int:id>/', views.delete_cart, name='delete-cart'),
+    path('remove-cart/<int:id>/<int:cart_item_id>/', views.remove_cart, name='remove-cart'),#decrement one from quantity
+    path('delete-cart/<int:id>/<int:cart_item_id>/', views.delete_cart, name='delete-cart'),
 
-    
+
+
+    path('search/', views.search, name='search'),
 
 ]

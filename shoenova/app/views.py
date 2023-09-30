@@ -10,6 +10,8 @@ from datetime import datetime
 import pyotp
 from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
 from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
+from django.db.models import Q
 
 
 # Create your views here.
@@ -317,7 +319,7 @@ def _cart_id(request):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def add_cart(request,id):
-    product=get_object_or_404(Product, id=id)
+    product=Product.objects.get(id=id)
     product_variation = []
     if request.method == "POST":
         for item in request.POST:
@@ -330,7 +332,6 @@ def add_cart(request,id):
             except:
                 pass    
 
-    
     if product.quantity > 0:
         try:
             cart=Cart.objects.get(cart_id=_cart_id(request))#get the cart using cart_id present in the session
@@ -338,22 +339,119 @@ def add_cart(request,id):
             cart=Cart.objects.create(cart_id=_cart_id(request))
         cart.save()
 
-        try:
-            cart_item = CartItem.objects.get(product=product, cart=cart)
-            cart_item.quantity += 1
-            cart_item.save()
-        except CartItem.DoesNotExist:
+        is_cart_item_exists = CartItem.objects.filter(product=product, cart=cart).exists()
+
+        if is_cart_item_exists:
+            cart_item = CartItem.objects.filter(product=product, cart=cart)
+
+            #existing_variations -> database
+            #current_variation -> product_variation
+            #item_id -> database
+
+            ex_var_list = []
+            id = []
+            for item in cart_item:
+                existing_variation = item.variations.all()
+                ex_var_list.append(list(existing_variation))
+                id.append(item.id)
+
+            if product_variation in ex_var_list:
+                #increase the cart item quantity
+                index = ex_var_list.index(product_variation)
+                item_id = id[index]
+                item = CartItem.objects.get(product=product, id=item_id)
+                item.quantity += 1
+                item.save()
+            else:
+                item = CartItem.objects.create(product=product, quantity=1, cart=cart)
+                if len(product_variation) > 0:
+                    item.variations.clear()
+                    item.variations.add(*product_variation)
+                item.save()
+        else:
             cart_item = CartItem.objects.create(
                 product = product,
                 quantity = 1,
                 cart = cart,
             )
+            if len(product_variation) > 0:
+                cart_item.variations.clear()
+                cart_item.variations.add(*product_variation)
             cart_item.save()        
-
         return redirect('cart')
     else:
         messages.info(request, "The product is out of stock.")
         return redirect('cart')
+
+# @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
+# def add_cart(request, id):
+#     product = Product.objects.get(id=id)
+#     product_variation = []
+
+#     if request.method == "POST":
+#         for item in request.POST:
+#             key = item
+#             value = request.POST[key]
+            
+#             try:
+#                 variation = Variations.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
+#                 product_variation.append(variation)
+#             except:
+#                 pass    
+
+#     if product.quantity > 0:
+#         try:
+#             cart = Cart.objects.get(cart_id=_cart_id(request))
+#         except Cart.DoesNotExist:
+#             cart = Cart.objects.create(cart_id=_cart_id(request))
+#             cart.save()  # Moved this line inside the except block
+
+#         is_cart_item_exists = CartItem.objects.filter(product=product, cart=cart).exists()
+
+#         if is_cart_item_exists:
+#             cart_item = CartItem.objects.filter(product=product, cart=cart)
+
+#             ex_var_list = []
+#             id = []
+#             for item in cart_item:
+#                 existing_variation = item.variations.all()
+#                 ex_var_list.append(list(existing_variation))
+#                 id.append(item.id)
+
+#             # Adjusted comparison logic
+#             match_found = False
+#             for var_list in ex_var_list:
+#                 if set(var_list) == set(product_variation):
+#                     match_found = True
+#                     break
+
+#             if match_found:  # Added this condition
+#                 index = ex_var_list.index(var_list)
+#                 item_id = id[index]
+#                 item = CartItem.objects.get(product=product, id=item_id)
+#                 item.quantity += 1
+#                 item.save()
+#             else:
+#                 item = CartItem.objects.create(product=product, quantity=1, cart=cart)
+#                 if len(product_variation) > 0:
+#                     item.variations.clear()
+#                     item.variations.add(*product_variation)
+#                 item.save()
+#         else:
+#             cart_item = CartItem.objects.create(
+#                 product=product,
+#                 quantity=1,
+#                 cart=cart,
+#             )
+#             if len(product_variation) > 0:
+#                 cart_item.variations.clear()
+#                 cart_item.variations.add(*product_variation)
+#             cart_item.save()        
+#         return redirect('cart')
+#     else:
+#         messages.info(request, "The product is out of stock.")
+#         return redirect('cart')
+
 
 
 
@@ -379,25 +477,43 @@ def cart(request, total=0, quantity=0, cart_item=None):
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
-def remove_cart(request,id): #decrementing the the product quantity
+def remove_cart(request,id, cart_item_id): #decrementing the the product quantity
     cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=id)
-    cart_item = CartItem.objects.get(product=product,cart=cart)
-    if cart_item.quantity > 1:
-        cart_item.quantity -= 1
-        cart_item.save()
-    else:
-        cart_item.delete()
+    try:
+        cart_item = CartItem.objects.get(product=product,cart=cart,id=cart_item_id)
+        if cart_item.quantity > 1:
+            cart_item.quantity -= 1
+            cart_item.save()
+        else:
+            cart_item.delete()
+    except:
+        pass        
     return redirect('cart')        
 
 
+
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
-def delete_cart(request,id):
+def delete_cart(request,id,cart_item_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=id)
-    cart_item = CartItem.objects.get(product=product,cart=cart)
+    cart_item = CartItem.objects.get(product=product,cart=cart,id=cart_item_id)
     cart_item.delete()
     return redirect('cart')
 
 
 
+def search(request):
+    categories=Category.objects.all()
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        if keyword:
+            products = Product.objects.order_by('-is_available').filter(Q(description__icontains=keyword) | Q(product_name__icontains=keyword))
+            product_count=products.count()   
+    context = {
+        'products':products,
+        'categories':categories,
+        'product_count':product_count,
+    }        
+    return render(request, 'user/page-shop.html', context)

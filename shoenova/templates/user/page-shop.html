@@ -16,8 +16,13 @@
         <div class="page-header breadcrumb-wrap">
             <div class="container">
                 <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
-                    <span></span> Shop
+                    {% if 'search' in request.path %}
+                        <a href="index.html" rel="nofollow">Home</a>
+                        <span></span> Search Result
+                    {% else %}
+                        <a href="index.html" rel="nofollow">Home</a>
+                        <span></span> Shop
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -71,6 +76,7 @@
                             </div>
                         </div>
                         <div class="row product-grid-3">
+                         {% if products %}
                             {% for product in products %}
                             {% if not product.soft_deleted %}
                             <div class="col-lg-4 col-md-4 col-12 col-sm-6">
@@ -114,6 +120,11 @@
                             </div>
                             {% endif %}
                             {% endfor %}
+                         {% else %}
+                          <div>
+                            <h2>No Result found!Please Try Again...</h2>
+                          </div>
+                         {% endif %}
                         </div>
                         <!--pagination-->
                         <div class="pagination-area mt-15 mb-sm-5 mb-lg-0">

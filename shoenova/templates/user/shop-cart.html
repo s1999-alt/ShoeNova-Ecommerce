@@ -50,23 +50,33 @@
                                         <td class="image product-thumbnail"><img src="{{cart_item.product.product_images.url}}" alt="#"></td>
                                         <td class="product-des product-name">
                                             <h5 class="product-name"><a href="{{cart_item.product.get_url}}">{{cart_item.product.product_name}}</a></h5>
-                                            <p class="font-xs">Color:<br> Size:
+                                            <p class="font-xs">
+                                                {% if cart_item.variations.all %}
+                                                  {% for item in cart_item.variations.all %}
+                                                    {{item.variation_category | capfirst}} : {{item.variation_value | capfirst}}<br>
+                                                  {% endfor %}
+                                                {% endif %}
                                             </p>
                                         </td>
 
                                         <td class="price" data-title="Price"><span>${{cart_item.product.price}} </span></td>
                                         <td class="text-center" data-title="Stock">
 
-                                            <form method="post" class="detail-qty border radius mx-auto">
+                                            <form method="POST" action="{% url 'add-cart' cart_item.product.id %}" class="detail-qty border radius mx-auto">
                                                 {% csrf_token %}
+                                                {% for item in cart_item.variations.all %}
+                                                <input type="hidden" name="{{item.variation_category | lower }}" value="{{item.variation_value | capfirst}}" >
+                                                {% endfor %}
                                                 <div>
-                                                    <a type=""  href="{% url 'add-cart' id=cart_item.product.id %}" class="add_quantity" data-product-id="{{ cart_item.product.id }}"><i class="fi-rs-angle-small-up"></i></a>
+                                                    <button type="submit" class="add_quantity" data-product-id="{{ cart_item.product.id }}" style="background-color: transparent; border: none; padding: 0; cursor: pointer; font-size: inherit; color: inherit;">
+                                                        <i class="fi-rs-angle-small-up" style="font-size: 1.2em;"></i>
+                                                    </button>    
                                                 </div>
                                                 <div>
                                                     <span class="quantity">{{ cart_item.quantity }}</span>
                                                 </div>
                                                 <div>
-                                                    <a type="" href="{% url 'remove-cart' id=cart_item.product.id %}" class="delete_quantity" data-product-id="{{ cart_item.product.id }}"><i class="fi-rs-angle-small-down"></i></a>
+                                                    <a type="" href="{% url 'remove-cart' cart_item.product.id cart_item.id %}" class="delete_quantity" data-product-id="{{ cart_item.product.id }}"><i class="fi-rs-angle-small-down"></i></a>
                                                 </div>
                                             </form> 
                                         </td>
@@ -74,7 +84,7 @@
                                         <td class="text-right" data-title="Cart">
                                             <span>${{cart_item.sub_total}} </span>
                                         </td>
-                                        <td class="action" data-title="Remove"><a href="{% url 'delete-cart' id=cart_item.product.id %}" class="text-muted" ><i class="fi-rs-trash"></i></a></td>
+                                        <td class="action" data-title="Remove"><a href="{% url 'delete-cart' cart_item.product.id cart_item.id %}" onclick="return confirm('Are You Sure to Delete this Item?')" class="text-muted" ><i class="fi-rs-trash"></i></a></td>
                                     </tr>
                                     
                                     
