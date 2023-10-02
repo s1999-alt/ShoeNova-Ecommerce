@@ -98,9 +98,10 @@ class Variations(models.Model):
 
 
 class CartItem(models.Model):
+    user=models.ForeignKey(UserProfile,on_delete=models.CASCADE,null=True)
     product=models.ForeignKey(Product, on_delete=models.CASCADE)
     variations=models.ManyToManyField(Variations, blank=True) 
-    cart=models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart=models.ForeignKey(Cart, on_delete=models.CASCADE, null=True)
     quantity=models.IntegerField()
     subtotal=models.DecimalField(max_digits=10,decimal_places=2, default=0)
     is_active=models.BooleanField(default=True)

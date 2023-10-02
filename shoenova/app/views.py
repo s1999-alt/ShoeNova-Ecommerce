@@ -1,69 +1,36 @@
-from django.shortcuts import render,redirect,get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
-from myapp.models import Product,Category,Cart,CartItem,Variations
-from .utils import send_otp,resend_otp
+from myapp.models import Product, Category, Cart, CartItem, Variations
+from .utils import send_otp, resend_otp
 from datetime import datetime
 import pyotp
-from django.core.paginator import EmptyPage,PageNotAnInteger,Paginator
+from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse
 from django.db.models import Q
 
 
 # Create your views here.
 
-#user
+# user
 
 
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def index(request):
-    products=Product.objects.all()
-    categories=Category.objects.all()
-    context={
-        'products':products,
-        'categories':categories
+    products = Product.objects.all()
+    categories = Category.objects.all()
+    context = {
+        'products': products,
+        'categories': categories
     }
-    return render(request,'user/index.html',context)
+    return render(request, 'user/index.html',context)
 
 
 def base_view(request):
     return render(request, 'user/base.html')
-
-
-
-# @cache_control(no_cache=True,must_revalidate=True,no_store=True)
-# def login_regis(request):
-#     if request.method=="POST":
-#         username=request.POST.get("username")
-#         email=request.POST.get("email")
-#         phone=request.POST.get("phone") 
-#         password=request.POST.get("password")
-#         confirmpassword=request.POST.get("confirmpassword")
-        
-#         if password!=confirmpassword:
-#             messages.warning(request, "Password is Incorrect")
-#             return redirect('/login-register')
-#         try:
-#             if UserProfile.objects.filter(username=username).exists():
-#                 messages.warning(request, "Username Is Already Taken")
-#                 return redirect("/login-register")
-#         except:
-#             pass
-#         try:
-#             if UserProfile.objects.filter(email=email).exists():
-#                 messages.info(request, "Email Is Already Taken")
-#                 return redirect("/login-register")
-#         except:
-#             pass      
-#         myuser = UserProfile.objects.create_user(email=email, phone=phone, password=password)
-#         myuser.save()
-#         messages.success(request, "Signup Successfully..Please Login!")
-#         return redirect("/login-page")
-#     return render(request, 'user/page-login-register.html')
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -84,7 +51,9 @@ def login_regis(request):
                 elif UserProfile.objects.filter(email=email).exists():
                     messages.info(request, "Email Is Already Taken")
                 else:
-                    myuser = UserProfile.objects.create_user(email=email, phone=phone, password=password)
+                    myuser = UserProfile.objects.create_user(email=email,
+                                                             phone=phone,
+                                                             password=password)
                     myuser.save()
                     messages.success(request, "Signup Successfully..Please Login!")
                     return redirect("/login-page")
@@ -124,19 +93,19 @@ def otp_regis(request):
                 totp=pyotp.TOTP(request.session['otp_secret_key'], interval=60)
 
                 if totp.verify(otp):
-                     user=get_object_or_404(UserProfile,email=email)
-                     request.session['email_']=email
-                     login(request, user)
-                     del request.session['email']
+                    user = get_object_or_404(UserProfile, email=email)
+                    request.session['email_'] = email
+                    login(request, user)
+                    del request.session['email']
 
-                     del request.session['otp_secret_key']
-                     del request.session['otp_valid_date']
+                    del request.session['otp_secret_key']
+                    del request.session['otp_valid_date']
 
-                     return redirect('/')
+                    return redirect('/')
                 else:
                     messages.warning(request, 'Invalid One time Password')
             else:
-                messages.warning(request,'One time password has Expired')
+                messages.warning(request, 'One time password has Expired')
         else:
             messages.warning(request, 'oops...something went wrong')            
 
@@ -144,7 +113,7 @@ def otp_regis(request):
 
 
 
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def password_reset_request(request):
     if request.method == "POST":
         email = request.POST.get("email")
@@ -159,36 +128,37 @@ def password_reset_request(request):
 
 
 
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def forgot_password_otp(request):
-    if request.method=="POST":
+    if request.method == "POST":
         if 'otp_resend' in request.POST:  # Check if Resend OTP button was clicked
             resend_otp(request)
             return redirect('forgot-password-otp')  # Redirect back to OTP page after resending
 
-        otp=request.POST['otp']
-        email=request.session['email']
+        otp = request.POST['otp']
+        email = request.session['email']
 
-        otp_secret_key=request.session['otp_secret_key']
-        otp_valid_until=request.session['otp_valid_date']
+        otp_secret_key = request.session['otp_secret_key']
+        otp_valid_until = request.session['otp_valid_date']
 
         if otp_secret_key and otp_valid_until is not None:
-            valid_until=datetime.fromisoformat(otp_valid_until)
+            valid_until = datetime.fromisoformat(otp_valid_until)
 
             if valid_until > datetime.now():
-                totp=pyotp.TOTP(otp_secret_key, interval=120)
+                totp = pyotp.TOTP(otp_secret_key, interval=120)
                 
                 if totp.verify(otp):
-                     request.session['email_']=email
+                    request.session['email_']=email
 
-                     del request.session['otp_secret_key']
-                     del request.session['otp_valid_date']
+                    del request.session['otp_secret_key']
+                    del request.session['otp_valid_date']
 
-                     return redirect('reset-password')
+                    return redirect('reset-password')
                 else:
                     messages.warning(request, 'Invalid One time Password')
             else:
-                messages.warning(request,'One time password has Expired')
+                messages.warning(request, 'One time password has Expired')
         else:
             messages.warning(request, 'oops...something went wrong') 
 
@@ -196,7 +166,8 @@ def forgot_password_otp(request):
 
 
 
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def reset_password(request):
     if request.method == "POST":
         password = request.POST.get("password")
@@ -217,9 +188,12 @@ def reset_password(request):
 
 
 
+
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def password_reset_success(request):
     return render(request, 'password-reset-success.html')
+
+
 
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
@@ -232,6 +206,42 @@ def login_page(request):
         user = authenticate(request, username=email, password=password)
 
         if user is not None:
+            try:
+                cart = Cart.objects.get(cart_id = _cart_id(request))
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)
+                    
+                    #getting the product variation by cart id
+                    product_variation = []
+                    for item in cart_item:
+                        variation = item.variations.all()
+                        product_variation.append(list(variation))
+
+                    #get the cart items from the user to access his product_variations    
+                    cart_item = CartItem.objects.filter(user=user)
+                    ex_var_list = []
+                    id = []
+                    for item in cart_item:
+                        existing_variation = item.variations.all()
+                        ex_var_list.append(list(existing_variation))
+                        id.append(item.id)
+
+                    for i in product_variation:
+                        if i in ex_var_list:
+                            index = ex_var_list.index(i)
+                            item_id = id[index]
+                            item = CartItem.objects.get(id=item_id)
+                            item.quantity += 1
+                            item.user = user
+                            item.save()
+                        else:
+                            cart_item = CartItem.objects.filter(cart=cart)    
+                            for item in cart_item:
+                                item.user = user
+                                item.save()
+            except:
+                pass    
             totp = pyotp.TOTP(pyotp.random_base32(), interval=60)
             request.session['otp_secret_key'] = totp.secret 
             send_otp(request, email)
@@ -317,149 +327,143 @@ def _cart_id(request):
     return cart    
 
 
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def add_cart(request,id):
+    current_user = request.user
     product=Product.objects.get(id=id)
-    product_variation = []
-    if request.method == "POST":
-        for item in request.POST:
-            key = item
-            value = request.POST[key]
+
+    #if the user is authenticated
+    if current_user.is_authenticated:
+        product_variation = []
+        if request.method == "POST":
+            for item in request.POST:
+                key = item
+                value = request.POST[key]
+                
+                try:
+                    variation = Variations.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
+                    product_variation.append(variation)
+                except:
+                    pass    
+
+
+            is_cart_item_exists = CartItem.objects.filter(product=product, user=current_user).exists()
             
-            try:
-                variation = Variations.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
-                product_variation.append(variation)
-            except:
-                pass    
+            if is_cart_item_exists:
+                cart_item = CartItem.objects.filter(product=product, user=current_user)
+                ex_var_list = []
+                id = []
+                for item in cart_item:
+                    existing_variation = item.variations.all()
+                    ex_var_list.append(list(existing_variation))
+                    id.append(item.id)
 
-    if product.quantity > 0:
-        try:
-            cart=Cart.objects.get(cart_id=_cart_id(request))#get the cart using cart_id present in the session
-        except Cart.DoesNotExist:
-            cart=Cart.objects.create(cart_id=_cart_id(request))
-        cart.save()
-
-        is_cart_item_exists = CartItem.objects.filter(product=product, cart=cart).exists()
-
-        if is_cart_item_exists:
-            cart_item = CartItem.objects.filter(product=product, cart=cart)
-
-            #existing_variations -> database
-            #current_variation -> product_variation
-            #item_id -> database
-
-            ex_var_list = []
-            id = []
-            for item in cart_item:
-                existing_variation = item.variations.all()
-                ex_var_list.append(list(existing_variation))
-                id.append(item.id)
-
-            if product_variation in ex_var_list:
-                #increase the cart item quantity
-                index = ex_var_list.index(product_variation)
-                item_id = id[index]
-                item = CartItem.objects.get(product=product, id=item_id)
-                item.quantity += 1
-                item.save()
+                if product_variation in ex_var_list:
+                    #increase the cart item quantity
+                    index = ex_var_list.index(product_variation)
+                    item_id = id[index]
+                    item = CartItem.objects.get(product=product, id=item_id)
+                    item.quantity += 1
+                    item.save()
+                else:
+                    item = CartItem.objects.create(product=product, quantity=1, user=current_user)
+                    if len(product_variation) > 0:
+                        item.variations.clear()
+                        item.variations.add(*product_variation)
+                    item.save()
             else:
-                item = CartItem.objects.create(product=product, quantity=1, cart=cart)
+                cart_item = CartItem.objects.create(
+                    product = product,
+                    quantity = 1,
+                    user=current_user,
+                )
                 if len(product_variation) > 0:
-                    item.variations.clear()
-                    item.variations.add(*product_variation)
-                item.save()
+                    cart_item.variations.clear()
+                    cart_item.variations.add(*product_variation)
+                cart_item.save()        
+            return redirect('cart')
         else:
-            cart_item = CartItem.objects.create(
-                product = product,
-                quantity = 1,
-                cart = cart,
-            )
-            if len(product_variation) > 0:
-                cart_item.variations.clear()
-                cart_item.variations.add(*product_variation)
-            cart_item.save()        
-        return redirect('cart')
-    else:
-        messages.info(request, "The product is out of stock.")
-        return redirect('cart')
+            messages.info(request, "The product is out of stock.")
+            return redirect('cart')
+        
+    #if the user is not authenticated    
+    else:       
+        product_variation = []
+        if request.method == "POST":
+            for item in request.POST:
+                key = item
+                value = request.POST[key]
+                
+                try:
+                    variation = Variations.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
+                    product_variation.append(variation)
+                except:
+                    pass    
 
-# @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
-# def add_cart(request, id):
-#     product = Product.objects.get(id=id)
-#     product_variation = []
+        if product.quantity > 0:
+            try:
+                cart=Cart.objects.get(cart_id=_cart_id(request))#get the cart using cart_id present in the session
+            except Cart.DoesNotExist:
+                cart=Cart.objects.create(cart_id=_cart_id(request))
+            cart.save()
 
-#     if request.method == "POST":
-#         for item in request.POST:
-#             key = item
-#             value = request.POST[key]
-            
-#             try:
-#                 variation = Variations.objects.get(product=product, variation_category__iexact=key, variation_value__iexact=value)
-#                 product_variation.append(variation)
-#             except:
-#                 pass    
+            is_cart_item_exists = CartItem.objects.filter(product=product, cart=cart).exists()
 
-#     if product.quantity > 0:
-#         try:
-#             cart = Cart.objects.get(cart_id=_cart_id(request))
-#         except Cart.DoesNotExist:
-#             cart = Cart.objects.create(cart_id=_cart_id(request))
-#             cart.save()  # Moved this line inside the except block
+            if is_cart_item_exists:
+                cart_item = CartItem.objects.filter(product=product, cart=cart)
 
-#         is_cart_item_exists = CartItem.objects.filter(product=product, cart=cart).exists()
+                #existing_variations -> database
+                #current_variation -> product_variation
+                #item_id -> database
 
-#         if is_cart_item_exists:
-#             cart_item = CartItem.objects.filter(product=product, cart=cart)
+                ex_var_list = []
+                id = []
+                for item in cart_item:
+                    existing_variation = item.variations.all()
+                    ex_var_list.append(list(existing_variation))
+                    id.append(item.id)
 
-#             ex_var_list = []
-#             id = []
-#             for item in cart_item:
-#                 existing_variation = item.variations.all()
-#                 ex_var_list.append(list(existing_variation))
-#                 id.append(item.id)
-
-#             # Adjusted comparison logic
-#             match_found = False
-#             for var_list in ex_var_list:
-#                 if set(var_list) == set(product_variation):
-#                     match_found = True
-#                     break
-
-#             if match_found:  # Added this condition
-#                 index = ex_var_list.index(var_list)
-#                 item_id = id[index]
-#                 item = CartItem.objects.get(product=product, id=item_id)
-#                 item.quantity += 1
-#                 item.save()
-#             else:
-#                 item = CartItem.objects.create(product=product, quantity=1, cart=cart)
-#                 if len(product_variation) > 0:
-#                     item.variations.clear()
-#                     item.variations.add(*product_variation)
-#                 item.save()
-#         else:
-#             cart_item = CartItem.objects.create(
-#                 product=product,
-#                 quantity=1,
-#                 cart=cart,
-#             )
-#             if len(product_variation) > 0:
-#                 cart_item.variations.clear()
-#                 cart_item.variations.add(*product_variation)
-#             cart_item.save()        
-#         return redirect('cart')
-#     else:
-#         messages.info(request, "The product is out of stock.")
-#         return redirect('cart')
+                if product_variation in ex_var_list:
+                    #increase the cart item quantity
+                    index = ex_var_list.index(product_variation)
+                    item_id = id[index]
+                    item = CartItem.objects.get(product=product, id=item_id)
+                    item.quantity += 1
+                    item.save()
+                else:
+                    item = CartItem.objects.create(product=product, quantity=1, cart=cart)
+                    if len(product_variation) > 0:
+                        item.variations.clear()
+                        item.variations.add(*product_variation)
+                    item.save()
+            else:
+                cart_item = CartItem.objects.create(
+                    product = product,
+                    quantity = 1,
+                    cart = cart,
+                )
+                if len(product_variation) > 0:
+                    cart_item.variations.clear()
+                    cart_item.variations.add(*product_variation)
+                cart_item.save()        
+            return redirect('cart')
+        else:
+            messages.info(request, "The product is out of stock.")
+            return redirect('cart')
 
 
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def cart(request, total=0, quantity=0, cart_item=None):
+    cart_items = []
     try:
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        if request.user.is_authenticated:
+            cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+        else:    
+            cart = Cart.objects.get(cart_id=_cart_id(request))
+            cart_items = CartItem.objects.filter(cart=cart, is_active=True)
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
@@ -478,10 +482,13 @@ def cart(request, total=0, quantity=0, cart_item=None):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def remove_cart(request,id, cart_item_id): #decrementing the the product quantity
-    cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=id)
     try:
-        cart_item = CartItem.objects.get(product=product,cart=cart,id=cart_item_id)
+        if request.user.is_authenticated:
+            cart_item = CartItem.objects.get(product=product,user=request.user,id=cart_item_id)
+        else:
+            cart = Cart.objects.get(cart_id=_cart_id(request))    
+            cart_item = CartItem.objects.get(product=product,cart=cart,id=cart_item_id)
         if cart_item.quantity > 1:
             cart_item.quantity -= 1
             cart_item.save()
@@ -496,14 +503,17 @@ def remove_cart(request,id, cart_item_id): #decrementing the the product quantit
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def delete_cart(request,id,cart_item_id):
-    cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=id)
-    cart_item = CartItem.objects.get(product=product,cart=cart,id=cart_item_id)
+    if request.user.is_authenticated:
+        cart_item = CartItem.objects.get(product=product,user=request.user,id=cart_item_id)
+    else:
+        cart = Cart.objects.get(cart_id=_cart_id(request))    
+        cart_item = CartItem.objects.get(product=product,cart=cart,id=cart_item_id)
     cart_item.delete()
     return redirect('cart')
 
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def search(request):
     categories=Category.objects.all()
     if 'keyword' in request.GET:
@@ -517,3 +527,26 @@ def search(request):
         'product_count':product_count,
     }        
     return render(request, 'user/page-shop.html', context)
+
+
+@login_required(login_url='/login-page')
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)  
+def checkout(request, total=0, quantity=0, cart_item=None):
+    try:
+        if request.user.is_authenticated:
+            cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+        else:    
+            cart = Cart.objects.get(cart_id=_cart_id(request))
+            cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        for cart_item in cart_items:
+            total += (cart_item.product.price * cart_item.quantity)
+            quantity += cart_item.quantity
+    except ObjectDoesNotExist:
+        pass 
+
+    context = {
+        'total':total,
+        'quantity':quantity,
+        'cart_items':cart_items,
+    }         
+    return render(request, 'checkout.html',context)
