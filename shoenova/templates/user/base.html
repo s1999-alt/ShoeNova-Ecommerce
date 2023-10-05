@@ -220,10 +220,12 @@
                             <div class="header-action-right">
                                 <div class="header-action-2">
                                     <div class="header-action-icon-2">
-                                        <a href="shop-wishlist.html">
+
+                                        <a href="{% url 'wishlist-page' %}">
                                             <img class="svgInject" alt="Evara" src="{% static 'assets/imgs/theme/icons/icon-heart.svg' %}">
                                             <span class="pro-count blue">4</span>
                                         </a>
+
                                     </div>
                                     <div class="header-action-icon-2">
                                         <a class="mini-cart-icon" href="{% url 'cart' %}">
@@ -268,6 +270,13 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="header-action-icon-2">
+                                        <a href="{% url 'user-profile' %}">
+                                            <img class="svgInject" alt="Evara" src="{% static 'assets\imgs\theme\icons\icons8-my-account-50.png' %}">
+                                        </a>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

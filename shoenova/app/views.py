@@ -4,7 +4,8 @@ from django.contrib import messages
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
-from myapp.models import Product, Category, Cart, CartItem, Variations
+from myapp.models import Product, Category, Cart, CartItem, Variations, Wishlist
+from orders.models import Order
 from .utils import send_otp, resend_otp
 from datetime import datetime
 import pyotp
@@ -551,3 +552,57 @@ def checkout(request, total=0, quantity=0, cart_item=None):
         'cart_items':cart_items,
     }         
     return render(request, 'checkout.html',context)
+
+
+def user_profile(request):
+    order = Order.objects.filter(user=request.user,is_ordered=True)
+    print(order)
+    context = {
+        'order': order
+    }
+    return render(request, 'user-profile.html', context)
+
+
+
+def wishlist_page(request):
+    wishlist = Wishlist.objects.filter(user=request.user)
+    print(wishlist)
+    context = {
+        'wishlist':wishlist
+    }
+    return render(request, 'wishlist.html', context)
+
+
+
+
+
+
+def add_to_wishlist(request, id):
+    product = Product.objects.get(id=id)
+    wishlist_item, created = Wishlist.objects.get_or_create(user=request.user, product=product)
+    
+    if not created:
+        existing_wishlist_item = Wishlist.objects.get(user=request.user, product=product)
+        existing_wishlist_item.save()
+        messages.info(request, 'This product is already in your wishlist.')
+    else:
+        messages.success(request, 'Product added to your wishlist.')
+
+    wishlist = Wishlist.objects.filter(user=request.user)  # Fetch the updated wishlist
+    
+    context = {
+        'wishlist': wishlist
+    }
+    return render(request, 'wishlist.html', context)
+
+
+
+def order_details_view(request):
+    order = Order.objects.filter(user=request.user,is_ordered=True)
+    print(order)
+    context = {
+        'order': order
+    }
+    return render(request, 'user-profile.html', context)
+
+
