@@ -41,9 +41,9 @@
                     </div>
 
                     <div class="card">
-                        <h5 class="card-header">Payment Methods</h5>
+                        <h5 class="card-header">Payment Mode</h5>
                         <div class="card-body">
-                          <p class="card-text">Paypal</p>  
+                          <p class="card-text">{{payment_method.method_name}}</p>  
                         </div>
                     </div>
 
@@ -107,13 +107,61 @@
                         <div class="col-md-4 col-lg-12 mt-md-3 mt-lg-0">
                             <img class="wow fadeIn animated" style='max-width:30%' src="{% static 'assets/imgs/theme/payment-method.png' %}" alt="">
                         </div>
-                        
-                        
+                        {% if payment_method.method_name == 'RAZORPAY' %}
+                        <button id="rzp-button1">Pay with Razorpay</button>
+                        {% else %}
+                        <button id="cod-button1">Proceed with COD</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
     </section>
 </main>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    document.getElementById('cod-button1').onclick = function(e){
+        window.location.href = `{{success_url}}?order_id={{order.order_number}}&method=COD`
+    }
+
+</script>
+
+
+<script>
+    var options = {
+        "key": "rzp_test_EvWpssBtdyaLfZ", // Enter the Key ID generated from the Dashboard
+        "amount": "50000", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+        "currency": "INR",
+        "name": "shoenova",
+        "description": "Purchases",
+        "image": "https://example.com/your_logo",
+        "order_id": "order_IluGWxBm9U8zJ8", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+        "handler": function (response){
+            alert(response.razorpay_payment_id);
+            alert(response.razorpay_order_id);
+            alert(response.razorpay_signature)
+        },
+
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+    rzp1.on('payment.failed', function (response){
+            alert(response.error.code);
+            alert(response.error.description);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id);
+    });
+    document.getElementById('rzp-button1').onclick = function(e){
+        rzp1.open();
+        e.preventDefault();
+    }
+    </script>
 {% endblock content %}
 

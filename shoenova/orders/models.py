@@ -2,12 +2,25 @@ from django.db import models
 from app.models import UserProfile
 from myapp.models import Product,Variations
 
+class PaymentMethod(models.Model):
+   method_name = models.CharField(max_length=50)
+   is_active = models.BooleanField(default=True)
+   created_at = models.DateTimeField(auto_now_add=True)
+
+
+
 
 
 class Payment(models.Model):
+  PAYMENT_STATUS_CHOICES =(
+        ("PENDING", "Pending"),
+        ("FAILED", "Failed"),
+        ("SUCCESS", "Success"),
+      )
   user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
   payment_id = models.CharField(max_length=100)
-  payment_method = models.CharField(max_length=100)
+  payment_order_id = models.CharField(max_length=100,null=True,blank=True)
+  payment_method = models.ForeignKey(PaymentMethod, on_delete=models.CASCADE)
   amount_paid = models.CharField(max_length=100)#total amount paid
   status = models.CharField(max_length=100)
   created_at = models.DateTimeField(auto_now_add=True)
@@ -59,14 +72,32 @@ class Order(models.Model):
   
 
 
+# class OrderProduct(models.Model):
+#    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+#    payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True)
+#    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+#    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+#    variation = models.ForeignKey(Variations, on_delete=models.CASCADE)
+#    color = models.CharField(max_length=50)
+#    size = models.CharField(max_length=50)
+#    quantity = models.IntegerField()
+#    product_price = models.FloatField
+#    ordered =models.BooleanField(default=False)
+#    created_at = models.DateTimeField(auto_now_add=True)
+#    updated_at = models.DateTimeField(auto_now=True)
+
+#    def __str__(self):
+#       return self.product.product_name 
+
+
 class OrderProduct(models.Model):
    order = models.ForeignKey(Order, on_delete=models.CASCADE)
-   payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True)
+   # payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True)
    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-   variation = models.ForeignKey(Variations, on_delete=models.CASCADE)
-   color = models.CharField(max_length=50)
-   size = models.CharField(max_length=50)
+   variation = models.ManyToManyField(Variations)
+   # color = models.CharField(max_length=50)
+   # size = models.CharField(max_length=50)
    quantity = models.IntegerField()
    product_price = models.FloatField
    ordered =models.BooleanField(default=False)

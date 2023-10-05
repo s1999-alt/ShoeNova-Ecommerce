@@ -166,3 +166,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
+razor_pay_key_id = 'rzp_test_EvWpssBtdyaLfZ'
+key_secret = 'CDe1rTAlNPgCdGiRM4wBOYbo'
+
+
