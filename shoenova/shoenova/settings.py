@@ -167,7 +167,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 
-razor_pay_key_id = 'rzp_test_EvWpssBtdyaLfZ'
-key_secret = 'CDe1rTAlNPgCdGiRM4wBOYbo'
+RAZORPAY_KEY_ID = 'rzp_test_EvWpssBtdyaLfZ'
+RAZORPAY_KEY_SECRET = 'CDe1rTAlNPgCdGiRM4wBOYbo'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
 

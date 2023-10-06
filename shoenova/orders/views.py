@@ -11,17 +11,13 @@ from myapp.models import Product
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
+from django.conf import settings
 
 
 
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def payments(request):
-  # current_user = request.user
-  # cart_items = CartItem.objects.filter(user=current_user)
-  # client = razorpay.Client(auth = (settings.razor_pay_key_id , settings.key_secret))
-  # payment = client.order.create({'amount' : 123465})
-  # context =
   return render(request, 'user/payments.html')
 
 
@@ -108,11 +104,19 @@ def place_order(request, id, total=0, quantity=0):
       order = Order.objects.get(user = request.user, is_ordered = False, order_number = order_number)
     except Exception as e:
       print(e)
-
-    if payment_option == 'COD':
+    
+    try:
+      if total == 0:
+        raise Exception  
+      if payment_option == 'COD':
+        payment = False
+      elif payment_option == 'RAZORPAY':
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        payment = client.order.create({'amount':float(total)*100, "currency":"INR"})
+      else:
+        payment = False
+    except:
       payment = False
-    elif payment_option == 'RAZORPAY':
-      payment = True
 
     # request.build_absolute_uri()
     success_url = request.build_absolute_uri(reverse('orders:payment-success'))    
@@ -126,7 +130,7 @@ def place_order(request, id, total=0, quantity=0):
       'payment_method':payment_method,
       'payment':payment,
     }  
-        
+    print(payment)    
     return render(request, 'user/payments.html',context)
             
   order = Order.objects.get(id=id)
@@ -196,10 +200,62 @@ def payment_success(request):
         request.session["payment_id"] = 'PID-COD'+order_id
         return redirect('orders:payment-success-page')
       
-      else:
-        messages.error(request, "Invalid Payment Method Found")
-        return redirect('payment-failed')
+    else:
+      messages.error(request, "Invalid Payment Method Found")
+      return redirect('payment-failed')
 
+  elif method == 'RAZORPAY':
+    order = Order.objects.get(user = request.user, is_ordered = False, order_number = order_id)
+    payment_method_is_active = PaymentMethod.objects.filter(method_name = method, is_active = True)
+
+    if payment_method_is_active.exists():
+      payment = Payment(
+        user = request.user,
+        payment_id = payment_id,
+        payment_order_id = payment_order_id,
+        payment_method = payment_method_is_active[0],
+        amount_paid = order.order_total,
+        status = 'SUCCESS',
+      )
+      payment.save()
+
+      order.payment = payment
+      order.is_ordered = True
+      order.save()
+
+      cart_items = CartItem.objects.filter(user = request.user)
+
+      for item in cart_items:
+        orderproduct = OrderProduct()
+        orderproduct.order= order
+        orderproduct.user = request.user
+        orderproduct.product = item.product
+        orderproduct.quantity = item.quantity
+        orderproduct.product_price = item.product.price
+
+        orderproduct.ordered = True
+        orderproduct.save()
+        orderproduct.variation.set(item.variations.all())
+
+        product = Product.objects.get(id=item.product_id)
+        product.quantity -= item.quantity
+        product.save()
+
+        CartItem.objects.filter(user=request.user).delete()
+
+        request.session["order_number"] = order_id
+        request.session["payment_id"] = 'PID-COD'+order_id
+        return redirect('orders:payment-success-page')
+      
+    else:
+      messages.error(request, "Invalid Payment Method Found")
+      return redirect('payment-failed')
+  else:
+    return redirect('user-profile')   
+        
+
+
+    
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def payment_failed(request):
   return HttpResponse('failed')
