@@ -554,6 +554,8 @@ def checkout(request, total=0, quantity=0, cart_item=None):
     return render(request, 'checkout.html',context)
 
 
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def user_profile(request):
     order = Order.objects.filter(user=request.user,is_ordered=True)
     print(order)
@@ -564,6 +566,9 @@ def user_profile(request):
 
 
 
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def wishlist_page(request):
     wishlist = Wishlist.objects.filter(user=request.user)
     print(wishlist)
@@ -574,9 +579,7 @@ def wishlist_page(request):
 
 
 
-
-
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def add_to_wishlist(request, id):
     product = Product.objects.get(id=id)
     wishlist_item, created = Wishlist.objects.get_or_create(user=request.user, product=product)
@@ -597,12 +600,13 @@ def add_to_wishlist(request, id):
 
 
 
-def order_details_view(request):
-    order = Order.objects.filter(user=request.user,is_ordered=True)
-    print(order)
-    context = {
-        'order': order
-    }
-    return render(request, 'user-profile.html', context)
-
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)  
+def remove_from_wishlist(request,id):
+    try:
+        wishlist_item = Wishlist.objects.get(user=request.user, product__id=id)
+        wishlist_item.delete()
+        messages.success(request, 'Product removed from your wishlist.')
+    except:
+        messages.error(request, 'Product not found in your wishlist.')
+    return redirect('wishlist-page')    
+    

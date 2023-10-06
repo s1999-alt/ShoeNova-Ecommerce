@@ -24,6 +24,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12">
+                        {% if wishlist %}
                         <div class="table-responsive">
                             <table class="table shopping-summery text-center">
                                 <thead>
@@ -49,19 +50,28 @@
                                             {% if i.product.quantity > 0 %}
                                             <span class="color3 font-weight-bold">In Stock</span>
                                             {% else %}
-                                            <span class="color3 font-weight-bold">Out of Stock</span>
+                                            <span class="text-danger font-weight-bold">Out of stock</span>
                                             {% endif %}
                                         </td>
                                         <td class="text-right" data-title="Cart">
                                             <a class="btn btn-sm" href="{% url 'product-details' id=i.product.id %}"><i class="fi-rs-eye mr-5"></i>View-Details</a>
                                         </td>
-                                        <td class="action" data-title="Remove"><a href="#"><i class="fi-rs-trash"></i></a></td>
+                                        <td class="action" data-title="Remove"><a href="{% url 'remove_from_wishlist' id=i.product.id %}"><i class="fi-rs-trash"></i></a></td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
 
                             </table>
                         </div>
+                        {% else %}
+                        <div class="text-center">
+                            <img src="{% static 'assets\imgs\theme\wishlist-empty.svg' %}" alt="Funny Image">
+                            <h2>Your wishlist is empty!</h2>
+                        </div>
+                        <div class="text-center mt-20" >
+                            <a href="{% url "shop-product" %}" class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                        </div>
+                        {% endif %}  
                     </div>
                 </div>
             </div>

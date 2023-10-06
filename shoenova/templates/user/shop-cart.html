@@ -431,25 +431,6 @@
             </div>
         </section>
     </main>
-
-
-
-
-{% comment %} 
-    <td class="text-center" data-title="Stock">
-        <form method="post" class="detail-qty border radius mx-auto">
-            {% csrf_token %}
-            <div>
-                <a type=""  href="{% url 'add_quantity' id=cartitem.product.id %}" class="add_quantity" data-product-id="{{ cartitem.product.id }}"><i class="fi-rs-angle-small-up"></i></a>
-            </div>
-            <div>
-                <span class="quantity">{{ cartitem.quantity }}</span>
-            </div>
-            <div>
-                <a type="" href="{% url 'delete_quantity' id=cartitem.product.id %}" class="delete_quantity" data-product-id="{{ cartitem.product.id }}"><i class="fi-rs-angle-small-down"></i></a>
-            </div>
-        </form>
-    </td> {% endcomment %}
     {% endblock content %}
 
     

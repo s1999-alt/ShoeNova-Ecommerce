@@ -8,10 +8,14 @@ import datetime
 import razorpay
 from django.contrib import messages
 from myapp.models import Product
-
-
-
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_control
+
+
+
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def payments(request):
   # current_user = request.user
   # cart_items = CartItem.objects.filter(user=current_user)
@@ -22,8 +26,7 @@ def payments(request):
 
 
 
-
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def order_summary(request ,total=0, quantity=0):
   current_user = request.user
 
@@ -83,8 +86,7 @@ def order_summary(request ,total=0, quantity=0):
 
 
 
-
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def place_order(request, id, total=0, quantity=0):
   current_user = request.user
   #if the cart count is less than equal to 0, then redirect back to shop
@@ -137,15 +139,13 @@ def place_order(request, id, total=0, quantity=0):
   
 
 
-
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def payment_success(request):
   method = request.GET.get('method')
   payment_id = request.GET.get('payment_id')
   payment_order_id = request.GET.get('payment_order_id')
   order_id = request.GET.get('order_id')
-  print("order_id")
-  print(order_id)
+
   if method == 'COD':
     try:
       order = Order.objects.get(user=request.user, is_ordered=False, order_number=order_id)
@@ -200,11 +200,12 @@ def payment_success(request):
         messages.error(request, "Invalid Payment Method Found")
         return redirect('payment-failed')
 
-
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def payment_failed(request):
   return HttpResponse('failed')
 
 
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def payment_success_page(request):
   return render(request, 'user/payment-success-page.html')
 
