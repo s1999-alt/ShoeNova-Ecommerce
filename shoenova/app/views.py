@@ -1,11 +1,11 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404,HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from myapp.models import Product, Category, Cart, CartItem, Variations, Wishlist
-from orders.models import Order
+from orders.models import Order,Coupon
 from .utils import send_otp, resend_otp
 from datetime import datetime
 import pyotp
@@ -543,15 +543,38 @@ def checkout(request, total=0, quantity=0, cart_item=None):
         for cart_item in cart_items:
             total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
+        
     except ObjectDoesNotExist:
         pass 
+    
+    coupon = None
 
+    avlb_coupons = Coupon.objects.filter(active = True)
+    print(avlb_coupons)
+
+    if request.method == 'POST':
+        coupon = request.POST.get('coupon')
+        print(coupon)
+        coupon_obj = Coupon.objects.filter(coupon_code__icontains=coupon)
+        if not coupon_obj.exists():
+            messages.warning(request, 'Invalid Coupon.')
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
+        if coupon_obj:
+            coupon = coupon_obj[0]
+            total -= coupon.discount
+            messages.success(request, 'Coupon Applied')  
+    
     context = {
         'total':total,
         'quantity':quantity,
+        'coupon': coupon,
         'cart_items':cart_items,
+        'available_coupons':avlb_coupons,
     }         
     return render(request, 'checkout.html',context)
+
+
 
 
 
@@ -610,3 +633,4 @@ def remove_from_wishlist(request,id):
         messages.error(request, 'Product not found in your wishlist.')
     return redirect('wishlist-page')    
     
+
