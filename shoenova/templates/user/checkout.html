@@ -25,7 +25,7 @@
                         <div class="mb-25">
                             <h4>Billing Details</h4>
                         </div>
-                     <form action="{% url 'orders:order_summary' %}" method="POST">
+                        <form action="{% url 'orders:order_summary' %}" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
                                 <input type="text" required="" name="first_name" placeholder="First name *">
@@ -114,29 +114,8 @@
                                     </table>
                                 </div>
 
-                                {% comment %} <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="toggle_info">
-                                            <span><i class="fi-rs-label mr-10"></i><span class="text-muted">Have a coupon?</span> <a href="#coupon" data-bs-toggle="collapse" class="collapsed" aria-expanded="false">Click here to enter your code</a></span>
-                                        </div>
-                                        <div class="panel-collapse collapse coupon_form " id="coupon">
-                                            <div class="panel-body">
-                                                <p class="mb-30 font-sm">If you have a coupon code, please apply it below.</p>
-                                                <form method="post">
-                                                    <div class="form-group">
-                                                        <input type="text" placeholder="Enter Coupon Code...">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <button class="btn  btn-md" name="login">Apply Coupon</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div> {% endcomment %}
-
                                 <button type="submit" name="submit" class="btn btn-fill-out btn-block mt-30">Confirm</a>
-                            </form>      
+                         </form>      
                             </div>
 
                             {% for message in messages %}
@@ -145,17 +124,32 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             {% endfor %}
-                            <h4>Available coupons</h4>
-                            {% for coupon in available_coupons %}
-                            {{coupon.coupon_code}}
-                            {% endfor %}
 
-        
                             <div class="mb-30 mt-50">
                                 <div class="heading_s1 mb-3">
-                                    <h4>Apply Coupon</h4>
+                                    <h4>Available Coupons</h4>
+                                </div>
+                                <div class="coupon-list">
+                                    {% for coupon in available_coupons %}
+                                        <div class="coupon-item">
+                                            <span class="coupon-code">{{ coupon.coupon_code }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                           
+                            <div class="mb-30 mt-50">
+                                <div class="heading_s1 mb-3">
+                                    <h4>Applied Coupons</h4>
                                 </div>
                                 <div class="total-amount">
+                                    {% if coupon %}
+                                        <div class="applied-coupon">
+                                            <div class="coupon-code">{{ coupon.coupon_code }}</div>
+                                            <a href="{% url 'checkout' %}" class="remove-coupon">Remove</a>
+                                        </div>
+                                    {% endif %}
                                     <div class="left">
                                         <div class="coupon">
                                             <form action="#" method="POST">
@@ -165,23 +159,77 @@
                                                         <input class="font-medium" name="coupon" placeholder="Enter Your Coupon">
                                                     </div>
                                                     <div class="form-group col-lg-6">
-                                                        {%if not coupon%}
-                                                            <button type="submit" class="btn  btn-sm"><i class="fi-rs-label mr-10"></i>Apply</button>
-                                                        {% else %}
-                                                            <div class="bg-succes">{{coupon.coupon_code}}</div>
-                                                            <a href="{% url 'checkout' %}" class="btn "> <i class="fi-rs-box-alt mr-10"></i>Remove</a>
-                                                        {% endif %}
+                                                        <button type="submit" class="btn  btn-sm"><i class="fi-rs-label mr-10"></i>Apply</button>
                                                     </div>
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div>                           
                         </div>
                     </div>
             </div>
         </section>
     </main>
+    
+    <style>
+        .applied-coupon {
+            background-color: #e6f2ff; 
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+    
+        .coupon-code {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+    
+        .remove-coupon {
+            background-color: #ff6f6f; 
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none; 
+        }
+    
+        .remove-coupon:hover {
+            background-color: #ff4949;
+        }
+    
+        .coupon-list {
+            display: flex;
+            flex-wrap: wrap;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+    
+        .coupon-item {
+            background-color: #f7f7f7;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px;
+            text-align: center;
+        }
+    
+        .coupon-code {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+    
     {% endblock content %}
     

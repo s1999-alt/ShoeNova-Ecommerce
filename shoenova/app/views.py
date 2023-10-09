@@ -12,6 +12,7 @@ import pyotp
 from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
+from decimal import Decimal
 
 
 
@@ -515,6 +516,7 @@ def delete_cart(request,id,cart_item_id):
     return redirect('cart')
 
 
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def search(request):
     categories=Category.objects.all()
@@ -529,6 +531,7 @@ def search(request):
         'product_count':product_count,
     }        
     return render(request, 'user/page-shop.html', context)
+
 
 
 @login_required(login_url='/login-page')
@@ -548,13 +551,11 @@ def checkout(request, total=0, quantity=0, cart_item=None):
         pass 
     
     coupon = None
-
     avlb_coupons = Coupon.objects.filter(active = True)
-    print(avlb_coupons)
+    coupon_discount = Decimal(0)
 
     if request.method == 'POST':
         coupon = request.POST.get('coupon')
-        print(coupon)
         coupon_obj = Coupon.objects.filter(coupon_code__icontains=coupon)
         if not coupon_obj.exists():
             messages.warning(request, 'Invalid Coupon.')
@@ -562,19 +563,22 @@ def checkout(request, total=0, quantity=0, cart_item=None):
 
         if coupon_obj:
             coupon = coupon_obj[0]
+            coupon_discount = coupon.discount
             total -= coupon.discount
-            messages.success(request, 'Coupon Applied')  
+            messages.success(request, 'Coupon Applied')
+
+            request.session['coupon_code'] = coupon.coupon_code
+            request.session['coupon_discount'] = float(coupon.discount)  
     
     context = {
         'total':total,
         'quantity':quantity,
         'coupon': coupon,
+        'coupon_discount': float(coupon_discount),
         'cart_items':cart_items,
         'available_coupons':avlb_coupons,
     }         
     return render(request, 'checkout.html',context)
-
-
 
 
 
@@ -599,6 +603,7 @@ def wishlist_page(request):
         'wishlist':wishlist
     }
     return render(request, 'wishlist.html', context)
+
 
 
 

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect,reverse
 from django.http import HttpResponse
 from myapp.models import CartItem
 from .forms import OrderForm
-from .models import Order,PaymentMethod,Payment,OrderProduct
+from .models import Order,PaymentMethod,Payment,OrderProduct,Coupon
 from myapp.models import Variations
 import datetime
 import razorpay
@@ -25,17 +25,26 @@ def payments(request):
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def order_summary(request ,total=0, quantity=0):
   current_user = request.user
-
-  #if the cart count is less than equal to 0, then redirect back to shop
-
   cart_items = CartItem.objects.filter(user=current_user)
   cart_count = cart_items.count()
+
+  #if the cart count is less than equal to 0, then redirect back to shop
   if cart_count <=0:
     return redirect('shop-product')
   
   for cart_item in cart_items:
     total += (cart_item.product.price * cart_item.quantity)
     quantity += cart_item.quantity
+
+  coupon_discount = 0
+  coupon_code = request.session.get('coupon_code')
+  if coupon_code:
+      try:
+        coupon = Coupon.objects.get(coupon_code = coupon_code)
+      except Exception as e:
+        print(e)
+      coupon_discount = float(request.session.get('coupon_discount'))
+      total -= coupon_discount
 
   if request.method == 'POST':
     form = OrderForm(request.POST)
@@ -56,7 +65,9 @@ def order_summary(request ,total=0, quantity=0):
       data.order_note = form.cleaned_data['order_note']
       data.order_total = total
       data.ip = request.META.get('REMOTE_ADDR')
+      data.coupon = coupon
       data.save()
+
       #generate order number
       yr = int(datetime.date.today().strftime('%Y'))
       dt = int(datetime.date.today().strftime('%d'))
@@ -68,6 +79,14 @@ def order_summary(request ,total=0, quantity=0):
       data.save()
 
       order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+      coupon_code = request.session.get('coupon_code')
+      coupon_discount = request.session.get('coupon_discount')
+
+      if coupon_code:
+        order.coupon_code = coupon_code
+        order.discount = coupon_discount
+        order.save()
+
       context = {
         'paymentmethods':PaymentMethod.objects.all(),
         'order':order,
@@ -75,10 +94,17 @@ def order_summary(request ,total=0, quantity=0):
         'total':total,
       }
       return render(request, 'user/order-summary.html',context)
-    
+    context = {
+      'paymentmethods': PaymentMethod.objects.all(),
+      'order': order,
+      'cart_items': cart_items,
+      'total': total,
+    }
+    return render(request, 'user/order-summary.html', context)
   else:
     messages.success('hellooooooo')
     return redirect('checkout')
+  
 
 
 
@@ -95,10 +121,15 @@ def place_order(request, id, total=0, quantity=0):
     total += (cart_item.product.price * cart_item.quantity)
     quantity += cart_item.quantity
 
+  coupon_code = request.session.get('coupon_code')
+  coupon_discount = request.session.get('coupon_discount')
+
+  if coupon_code:
+    total -= coupon_discount    
+
   if request.method == "POST":
     payment_option = request.POST['payment_option']
     order_number = request.POST['order_number']
-    print(order_number)
     try:
       payment_method = PaymentMethod.objects.get(method_name=payment_option)
       order = Order.objects.get(user = request.user, is_ordered = False, order_number = order_number)
