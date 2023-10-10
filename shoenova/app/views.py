@@ -5,7 +5,7 @@ from .models import UserProfile
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from myapp.models import Product, Category, Cart, CartItem, Variations, Wishlist
-from orders.models import Order,Coupon
+from orders.models import Order,Coupon,OrderProduct
 from .utils import send_otp, resend_otp
 from datetime import datetime
 import pyotp
@@ -585,11 +585,34 @@ def checkout(request, total=0, quantity=0, cart_item=None):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def user_profile(request):
     order = Order.objects.filter(user=request.user,is_ordered=True)
-    print(order)
     context = {
         'order': order
     }
     return render(request, 'user-profile.html', context)
+
+
+
+
+def order_details(request, order_number):
+    try:
+        order = Order.objects.get(order_number=order_number)
+    except Exception as e:
+        print(e)
+    ordered_products = OrderProduct.objects.filter(order=order)
+
+    context = {               
+        'order': order,
+        'ordered_products': ordered_products,
+    }
+    return render(request, 'order-details.html', context)
+
+
+
+
+
+
+
+
 
 
 

@@ -225,11 +225,11 @@ def payment_success(request):
         product.quantity -= item.quantity
         product.save()
 
-        CartItem.objects.filter(user=request.user).delete()
+      CartItem.objects.filter(user=request.user).delete()
 
-        request.session["order_number"] = order_id
-        request.session["payment_id"] = 'PID-COD'+order_id
-        return redirect('orders:payment-success-page')
+      request.session["order_number"] = order_id
+      request.session["payment_id"] = 'PID-COD'+order_id
+      return redirect('orders:payment-success-page')
       
     else:
       messages.error(request, "Invalid Payment Method Found")
@@ -272,11 +272,11 @@ def payment_success(request):
         product.quantity -= item.quantity
         product.save()
 
-        CartItem.objects.filter(user=request.user).delete()
+      CartItem.objects.filter(user=request.user).delete()
 
-        request.session["order_number"] = order_id
-        request.session["payment_id"] = 'PID-COD'+order_id
-        return redirect('orders:payment-success-page')
+      request.session["order_number"] = order_id
+      request.session["payment_id"] = 'PID-COD'+order_id
+      return redirect('orders:payment-success-page')
       
     else:
       messages.error(request, "Invalid Payment Method Found")
