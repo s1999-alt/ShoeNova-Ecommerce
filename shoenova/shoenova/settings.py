@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'myapp',
     'orders',
     'wallet',
+    'django.contrib.humanize',
     
 ]
 

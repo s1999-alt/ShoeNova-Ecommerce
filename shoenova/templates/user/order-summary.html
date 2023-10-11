@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load humanize %}
 {% block title %}Shoe Nova{% endblock title %}
 {% block content %}
 
@@ -109,24 +110,136 @@
                                 <h5>Payment</h5>
                             </div>
                             <div class="payment_option">
-                                <input hidden name="order_number" type="text" value="{{order.order_number}}">
+                                <input hidden name="order_number" id="order_number" type="text" value="{{order.order_number}}">
+
                                 {% for method in paymentmethods %}
-    
-                                <div class="custome-radio">
-                                    <input class="form-check-input" required type="radio" name="payment_option" id="method{{forloop.counter}}" value = {{method.method_name}}>
-                                    <label class="form-check-label" for="method{{forloop.counter}}">{{method.method_name}}</label>
-                                </div>
-                                
+                                   {% if method.method_name != 'WALLET' %}
+                                    <div class="">
+                                        <input class="form-check-input" required type="radio" name="payment_option" id="id_payment_div_{{method.method_name}}" value = {{method.method_name}}>
+                                        <label class="form-check-label" for="method{{forloop.counter}}">{{method.method_name}}</label>
+                                    </div>
+                                   {% endif %}
                                 {% endfor %}
+
+                                <input disabled checked type="radio" class="form-check-input" id="id_payment_div_WALLET" name="payment_option" value="WALLET">
+
+                                <dl class="dlist-align">
+                                    <dt>
+                                        <i class="fa fa-wallet"></i> Wallet :
+                                        <span id="wallet_updated_balance">{{wallet.balance}}</span>
+                                    </dt>
+                                    <dd class="text-right align-items-center">
+                                        <label class="checkbox-inline custom-checkbox-label">
+                                            <input type="checkbox" class="custom-input" id="wallet_balance" name="wallet_balance" value="0" onclick="wallet_balance_add();"/>
+                                            Use Wallet
+                                        </label>
+                                    </dd>
+                                </dl>                                
+
                             </div>
                         </div>
-                        <button type="submit" name="submit" class="btn btn-fill-out btn-block mt-30">Proceed To Pay</button>                    
+                        <button type="submit" name="submit" id="payment-form-btn" class="btn btn-fill-out btn-block mt-30">Pay
+                            <span id="grand_total_update">
+                                {{total|intcomma}}
+                            </span>
+                        </button>                    
                     </form>
                 </div>
             </div>
         </div>
     </section>
 </main>
-{% endblock content %}
+
+<style>
+    .custom-input {
+        width: 18px; /* Adjust the width as needed */
+        height: 15px; /* Adjust the height as needed */
+        font-size: 14px; /* Adjust the font size as needed */
+    }
+    
+    .custom-checkbox-label {
+        display: flex;
+        align-items: center;
+    }
+    
+    .custom-checkbox-label input {
+        margin: 0;
+    }
+
+    .wallet-text {
+        color: #ff5733; /* Change the color to your preference */
+    }
+    
+    .use-wallet-text {
+        color: #337dff; /* Change the color to your preference */
+    }
+</style>
 
 
+<script>
+    function wallet_balance_add()
+    {
+        console.log("wallet_balance_add function called")
+        if (document.getElementById('wallet_balance').checked) 
+        {
+            console.log("hiiiii");
+            document.getElementById('wallet_balance').value = 1
+            get_wallet_grand_total(document.getElementById('order_number').value)
+
+
+        } else {
+            document.getElementById('wallet_balance').value = 0
+            get_wallet_grand_total(document.getElementById('order_number').value,false)
+            console.log("haiii")
+            document.getElementById('id_payment_div_RAZORPAY').disabled = false
+            document.getElementById('id_payment_div_COD').disabled = false
+            document.getElementById('id_payment_div_WALLET').disabled = true
+        }
+    }
+
+
+    
+    function get_wallet_grand_total(order_number,check=true)
+    {
+        var data ={
+            'order_number':order_number,
+            'check':check
+        }
+        $.ajax({
+            type: "GET",
+            url: "/wallet/getwallet_total",
+            data: data,
+            headers: {
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            success: (data) => {
+                if (data.status === "success") {
+                    console.log(data);
+                    document.getElementById('wallet_updated_balance').innerHTML = data.wallet_balance
+                    document.getElementById('grand_total_update').innerHTML     = data.grand_total
+                    if (data.grand_total == 0)
+                    {
+                        document.getElementById('id_payment_div_RAZORPAY').disabled = true
+                        document.getElementById('id_payment_div_COD').disabled      = true
+                        document.getElementById('id_payment_div_WALLET').disabled   = false
+                    }
+                    
+
+
+                } else {
+                    // Password change error
+                    console.log(data);
+                }
+        
+            },
+            error: (xhr, status, error) => {
+                // Display the error message on the page
+                console.log("error");
+                console.log(error);
+            }
+        });
+
+
+    }
+</script>
+{% endblock %}

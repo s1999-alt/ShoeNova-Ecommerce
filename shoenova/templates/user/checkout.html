@@ -129,15 +129,25 @@
                                 <div class="heading_s1 mb-3">
                                     <h4>Available Coupons</h4>
                                 </div>
-                                <div class="coupon-list">
+                                <div class="coupon-list row">
                                     {% for coupon in available_coupons %}
-                                        <div class="coupon-item">
-                                            <span class="coupon-code">{{ coupon.coupon_code }}</span>
-                                        </div>
+                                    <div class="col-8 coupon-item d-flex justify-content-start">
+                                        <span id="coupon{{forloop.counter}}" class="coupon-code">{{ coupon.coupon_code }}</span>
+                                    </div>
+                                    <div class="col-3">
+                                        <a class="btn btn-outline-primary" onclick="select_coupon('coupon{{forloop.counter}}');">Select</a>
+                                    </div>
                                     {% endfor %}
                                 </div>
                             </div>
-                            
+                            <script>
+                                function select_coupon(coupon_id){
+                                   coupon=document.getElementById(coupon_id).innerHTML
+                                   console.log(coupon);
+                                   document.getElementById("enter-couponcode").value=coupon
+                                }
+
+                            </script>
                            
                             <div class="mb-30 mt-50">
                                 <div class="heading_s1 mb-3">
@@ -149,14 +159,14 @@
                                             <div class="coupon-code">{{ coupon.coupon_code }}</div>
                                             <a href="{% url 'checkout' %}" class="remove-coupon">Remove</a>
                                         </div>
-                                    {% endif %}
+                                    {% else %}
                                     <div class="left">
                                         <div class="coupon">
                                             <form action="#" method="POST">
                                                 {% csrf_token %}
                                                 <div class="form-row row justify-content-center">
                                                     <div class="form-group col-lg-6">
-                                                        <input class="font-medium" name="coupon" placeholder="Enter Your Coupon">
+                                                        <input readonly class="font-medium" name="coupon" id="enter-couponcode" placeholder="No Coupon Selected">
                                                     </div>
                                                     <div class="form-group col-lg-6">
                                                         <button type="submit" class="btn  btn-sm"><i class="fi-rs-label mr-10"></i>Apply</button>
@@ -165,6 +175,7 @@
                                             </form>
                                         </div>
                                     </div>
+                                    {% endif %}
                                 </div>
                             </div>                           
                         </div>

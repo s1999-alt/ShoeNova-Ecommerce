@@ -1,5 +1,6 @@
 from django.db import models
 from app.models import UserProfile
+from orders.models import Order
 
 
 class Wallet(models.Model):
@@ -17,6 +18,7 @@ class WalletTransaction(models.Model):
     ("DEBIT", "Debit"),
   )
   wallet = models.ForeignKey(Wallet, on_delete=models.CASCADE)
+  order = models.ForeignKey(Order, null=True, on_delete=models.SET_NULL)
   transaction_type = models.CharField(choices=TRANSACTION_TYPE_CHOICES, max_length=10)
   transaction_detail = models.CharField(max_length=50)
   amount = models.IntegerField(default=0)

@@ -4,6 +4,7 @@ from myapp.models import CartItem
 from .forms import OrderForm
 from .models import Order,PaymentMethod,Payment,OrderProduct,Coupon
 from myapp.models import Variations
+from wallet.models import Wallet,WalletTransaction
 import datetime
 import razorpay
 from django.contrib import messages
@@ -82,6 +83,8 @@ def order_summary(request ,total=0, quantity=0):
       coupon_code = request.session.get('coupon_code')
       coupon_discount = request.session.get('coupon_discount')
 
+      wallet = Wallet.objects.get(user=request.user, is_active=True)
+
       if coupon_code:
         order.coupon_code = coupon_code
         order.discount = coupon_discount
@@ -92,6 +95,7 @@ def order_summary(request ,total=0, quantity=0):
         'order':order,
         'cart_items':cart_items,
         'total':total,
+        'wallet':wallet,
       }
       return render(request, 'user/order-summary.html',context)
     context = {
@@ -99,6 +103,7 @@ def order_summary(request ,total=0, quantity=0):
       'order': order,
       'cart_items': cart_items,
       'total': total,
+      'wallet':wallet,
     }
     return render(request, 'user/order-summary.html', context)
   else:
@@ -126,16 +131,38 @@ def place_order(request, id, total=0, quantity=0):
 
   if coupon_code:
     total -= coupon_discount    
-
   if request.method == "POST":
-    payment_option = request.POST['payment_option']
+    if request.POST.get('wallet_balance'):
+      wallet_selected = int(request.POST.get('wallet_balance'))
+    else:
+      wallet_selected = request.POST.get('wallet_balance')
+
     order_number = request.POST['order_number']
+    payment_option = request.POST['payment_option']
+    
+
+    if not payment_option:
+      messages.error(request, "please choose a payment method")
+      return redirect('order_summary')
+
     try:
       payment_method = PaymentMethod.objects.get(method_name=payment_option)
       order = Order.objects.get(user = request.user, is_ordered = False, order_number = order_number)
     except Exception as e:
       print(e)
-    
+
+    if wallet_selected == 1:
+      wallet = Wallet.objects.get(user=request.user, is_active=True)
+      if wallet.balance <= total:
+        total -= wallet.balance
+        order.wallet_discount = wallet.balance
+        order.order_total = total
+        order.save()
+      else:
+        order.wallet_discount = total
+        order.order_total = 0
+        order.save()
+
     try:
       if total == 0:
         raise Exception  
@@ -184,12 +211,12 @@ def payment_success(request):
   if method == 'COD':
     try:
       order = Order.objects.get(user=request.user, is_ordered=False, order_number=order_id)
-     
     except Exception as e:
       print(e)
       return redirect('shop-product')
      
     payment_method_is_active =  PaymentMethod.objects.filter(method_name=method, is_active=True)
+    
     if payment_method_is_active.exists():
       payment = Payment(
         user = request.user,
@@ -200,6 +227,19 @@ def payment_success(request):
         status = 'SUCCESS'
       )
       payment.save()
+
+      wallet = Wallet.objects.get(user=request.user, is_active=True)
+      wallet.balance = wallet.balance - order.wallet_discount
+      wallet.save()
+
+      wallet_transaction = WalletTransaction.objects.create(
+        wallet = wallet,
+        transaction_type = 'DEBIT',
+        order = order,
+        transaction_detail = str(order.order_number),
+        amount = order.wallet_discount
+      )
+      wallet_transaction.save()
 
       order.payment = payment
       order.is_ordered = True
@@ -215,11 +255,10 @@ def payment_success(request):
         orderproduct.product = item.product
         orderproduct.quantity = item.quantity
         orderproduct.product_price = item.product.price
-        
         orderproduct.ordered = True
         orderproduct.save()
-        orderproduct.variation.set(item.variations.all())
 
+        orderproduct.variation.set(item.variations.all())
 
         product = Product.objects.get(id=item.product_id)
         product.quantity -= item.quantity
@@ -250,6 +289,19 @@ def payment_success(request):
       )
       payment.save()
 
+      wallet = Wallet.objects.get(user=request.user, is_active = True)
+      wallet.balance = wallet.balance - order.wallet_discount
+      wallet.save()
+
+      wallet_transaction = WalletTransaction.objects.create(
+        wallet = wallet,
+        transaction_type = 'DEBIT',
+        order = order,
+        transaction_detail = str(order.order_number),
+        amount = order.wallet_discount
+      )
+      wallet_transaction.save()
+
       order.payment = payment
       order.is_ordered = True
       order.save()
@@ -275,18 +327,74 @@ def payment_success(request):
       CartItem.objects.filter(user=request.user).delete()
 
       request.session["order_number"] = order_id
-      request.session["payment_id"] = 'PID-COD'+order_id
+      request.session["payment_id"] = payment_id
       return redirect('orders:payment-success-page')
       
     else:
       messages.error(request, "Invalid Payment Method Found")
       return redirect('payment-failed')
+    
+  elif method == 'WALLET':
+    payment_method_is_active = PaymentMethod.objects.filter(method_name = method, is_active = True)
+    order = Order.objects.get(user = request.user, is_ordered = False, order_number = order_id)
+
+    payment = Payment(
+      user = request.user,
+      payment_order_id = order_id,
+      payment_method = payment_method_is_active[0],
+      amount_paid = order.order_total,
+      payment_id = 'PID-WLT' + order_id,
+      status = 'SUCCESS',
+    )
+    payment.save()
+
+    wallet = Wallet.objects.get(user=request.user, is_active=True)
+    wallet.balance = wallet.balance - order.wallet_discount
+    wallet.save()
+
+    wallet_transaction = WalletTransaction.objects.create(
+      wallet = wallet,
+      transaction_type = 'DEBIT',
+      order = order,
+      transaction_detail = str(order.order_number),
+      amount = order.wallet_discount
+      )
+    wallet_transaction.save()
+
+    order.payment = payment
+    order.is_ordered = True
+    order.save()
+
+    cart_items = CartItem.objects.filter(user = request.user)
+
+    for item in cart_items:
+      orderproduct = OrderProduct()
+      orderproduct.order= order
+      orderproduct.user = request.user
+      orderproduct.product = item.product
+      orderproduct.quantity = item.quantity
+      orderproduct.product_price = item.product.price
+
+      orderproduct.ordered = True
+      orderproduct.save()
+      orderproduct.variation.set(item.variations.all())
+
+      product = Product.objects.get(id=item.product_id)
+      product.quantity -= item.quantity
+      product.save()
+
+      CartItem.objects.filter(user=request.user).delete()
+
+      request.session["order_number"] = order_id
+      request.session["payment_id"] = 'PID-WLT' + payment_id
+      return redirect('orders:payment-success-page')
+    
   else:
     return redirect('user-profile')   
         
 
 
-    
+
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def payment_failed(request):
   return HttpResponse('failed')
@@ -295,4 +403,27 @@ def payment_failed(request):
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def payment_success_page(request):
   return render(request, 'user/payment-success-page.html')
+
+
+def order_cancel_user(request,order_number):
+  order = Order.objects.get(order_number=order_number)
+  if not order.status == 'Cancelled':
+    order.status = 'Cancelled'
+    order.save()
+    wallet = Wallet.objects.get(user=request.user, is_active=True)
+    wallet.balance += float(order.order_total + order.wallet_discount)
+    wallet.save()
+
+    wallet_transaction = WalletTransaction.objects.create(wallet=wallet,
+                                                          transaction_type='CREDIT',
+                                                          transaction_detail=str(order.order_number)+ 'CANCELLED',
+                                                          amount = order.wallet_discount)
+    wallet_transaction.save()
+    return redirect('order-details', order_number=order.order_number)
+  else:
+    return redirect('order-details', order_number=order.order_number)
+
+
+
+
 

@@ -40,7 +40,6 @@ urlpatterns = [
 
     path('user-profile/', views.user_profile, name='user-profile'),
     path('order-details/<int:order_number>/', views.order_details, name='order-details'),
-
-
+  
 
 ]

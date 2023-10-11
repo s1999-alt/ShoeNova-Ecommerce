@@ -31,13 +31,10 @@
 
                                             <a class="nav-link" href="#" ><i class="fi-rs-credit-card mr-10"></i></i>Transactions</a>
 
-                                            <a class="nav-link" href="#" ><i class="fas fa-wallet mr-10"></i>
+                                            <a class="nav-link" href="{% url 'wallet:wallet' %}" ><i class="fas fa-wallet mr-10"></i>
                                             </i>My Wallet</a>
 
                                   
-
-
-                                 
                                             <a class="nav-link" href="page-login-register.html"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
 
                                     </ul>
@@ -138,7 +135,7 @@
                                             </table>
 
                                             {% if order.status == 'New' or order.status == 'Accepted' %}
-                                            <a href="#" class="btn btn-outline-danger my-2 mx-2">
+                                            <a href="{% url 'orders:order-cancel-user' order.order_number %}" class="btn btn-outline-danger my-2 mx-2">
                                                 Cancel Order
                                             </a>
                                             {% elif order.order_status == 'Delivered' %}

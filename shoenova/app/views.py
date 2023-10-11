@@ -592,7 +592,7 @@ def user_profile(request):
 
 
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def order_details(request, order_number):
     try:
         order = Order.objects.get(order_number=order_number)
@@ -605,16 +605,6 @@ def order_details(request, order_number):
         'ordered_products': ordered_products,
     }
     return render(request, 'order-details.html', context)
-
-
-
-
-
-
-
-
-
-
 
 
 

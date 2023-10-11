@@ -60,6 +60,7 @@ class Order(models.Model):
   user = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True)
   payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True)
   coupon = models.ForeignKey(Coupon, on_delete=models.DO_NOTHING, null=True)#NEED TO REMOVE THE NULL=TRUE WHENEVER I TRUNCATE THE DATABASE
+  wallet_discount = models.IntegerField(null=True) 
   order_number = models.CharField(max_length=20)
   first_name = models.CharField(max_length=50)
   last_name = models.CharField(max_length=50)

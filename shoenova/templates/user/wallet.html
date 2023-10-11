@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Shoe Nova{% endblock title %}
+{% block content %}
+    <main class="main">
+        <div class="page-header breadcrumb-wrap">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="index.html" rel="nofollow">Home</a>
+                    <span></span> Pages
+                    <span></span> Wallet
+                </div>
+            </div>
+        </div>
+        <section class="pt-150 pb-150">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-10 m-auto">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="dashboard-menu">
+                                    <ul class="nav flex-column" role="tablist">
+                                            <a class="nav-link" href="{% url 'user-profile' %}" ><i class="fi-rs-settings-sliders mr-10"></i>Dashboard</a>
+
+
+                                            <a class="nav-link" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
+                                
+
+                                            <a class="nav-link" href="#" ><i class="fi-rs-arrow-left mr-10"></i>
+                                            </i>Return and Refunds</a>
+
+                                            <a class="nav-link" href="#" ><i class="fi-rs-credit-card mr-10"></i></i>Transactions</a>
+
+                                            <a class="nav-link" href="#" ><i class="fas fa-wallet mr-10"></i>
+                                            </i>My Wallet</a>
+
+
+                                            <a class="nav-link" href="page-login-register.html"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
+
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="tab-content dashboard-content">
+                                    <div class="tab-pane fade active show" role="tabpanel" aria-labelledby="dashboard-tab">
+                                        <div class="card">
+                                            <div class="card-header d-flex flex-column align-items-center">
+                                                <!-- Wallet Icon -->
+                                                <i class="fa fa-wallet"></i>
+                                                <!-- Heading "Total Balance" -->
+                                                <h5>Total Balance</h5>
+                                                <!-- Balance in Wallet -->
+                                                <p>Rs: {{ wallet.balance }}</p>
+                                            </div>
+                                            <div class="card-body">
+                                                <!-- Wallet History -->
+                                                <!-- Add your code for wallet history here -->
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <style>
+        .btn.btn-outline-danger {
+            color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            background: aliceblue;
+        }
+        .card {
+            background-color: #FFF2D8; /* Replace with your desired color */
+            border: none; /* Remove the border if desired */
+            border-radius: 10px; /* Optional: Add rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+        }
+        .card .card-header{
+            background-color: #6A9C89;
+        }
+
+        
+
+    </style>
+    {% endblock %}
+    
