@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<style type="text/css">
+    @page {
+        size: A4;
+        margin: 1cm;
+    }
+    .table, td, th {  
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    text-align: left;
+}
+
+.table {
+    border-collapse: collapse;
+    border-color: #fff;
+    background-color: #f0f0f0;
+    border-radius: 14px;
+    width: 100%;
+    
+}
+
+.table th, td {
+        padding: 5px;
+        border-color: #fff;
+        border: 2px solid;
+        text-align: center;
+    }
+    
+    .td{
+        word-break: inherit;
+    }
+    
+    .table1 {
+        width: 100%;
+        max-width: 100%;
+        margin-top: 50px;
+        padding: 2px;
+        margin-bottom: 5px;
+        background-color: #f0f0f0;
+        border-style: solid;
+        border-color: #fff;
+        text-align: center;
+    }
+    
+    .table1 th {
+        border-color: #fff;
+        text-align: right;
+        padding: 3px;
+        width: 50%;
+    }
+    .date-head{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .list-address{
+        margin: 0;
+        padding: 0;
+    }
+    .list-address li{
+        list-style-type: none;
+        text-align: left;
+        font-style: italic;
+    }
+
+</style>
+
+
+
+<div>
+    <h1 style="text-align: center;">INVOICE</h1>
+    <div>
+        <div>
+            <!-- <td><img src="/project1/accounts/static/images/logo.png" alt="logo" /></td> -->
+            <div>
+                <p style="margin: 0;"><strong>Invoice number: </strong>{{invoice.invoice_number}}</p>
+                <p style="margin: 0;"><strong>Date: </strong>{{invoice.created_at.date}}</p>
+            </div>
+        </div>
+        <br/>
+        <div>
+            <ul class="list-address">
+                <li><strong>Invoiced To</strong></li>
+                <li>{{order.}}</li>
+                <li>{{order.address_line_1}}, {{order.address_line_2}}</li>
+                <li>{{order.city}}, {{order.pin_code}}</li>
+                <li>{{order.state}}, {{order.country}}</li>
+                <li>{{order.phone}}</li>
+            </ul>
+        </div>
+        <h3 style="text-align: center;">Product details</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                <th>#</th>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for ordered_product in ordered_products %}
+                <tr>
+                    <td>
+                        {{ forloop.counter }}
+                    </td>
+                    <td>
+                        {{ordered_product.product.get_product_name}}
+                    </td>
+                    <td>
+                        {{ordered_product.quantity}}
+                    </td>
+
+                    <td>
+                        Rs {{ordered_product.product_price}}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <table class="table1">
+            <tbody>
+                <tr>
+                    <th colspan="2" class="text-right">Sub Total:</th>
+                    <td class="text-center ">Rs {{sub_total}}</td>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-right">Coupon discount:</th>
+                    <td class="text-center text-success"><strong>Rs {{order.additional_discount|intcomma }}</strong></td>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-right">Tax:</th>
+                    <td class="text-center text-danger">Rs {{order.tax}}</td>
+                </tr>
+                
+                <tr>
+                    <th colspan="2" class="text-right">Wallet debit:</th>
+                    <td class="text-center text-success"><strong>Rs {{order.wallet_discount|intcomma }}</strong></td>
+                </tr>
+                <tr>
+                    <th colspan="2" class="text-right">Net payable amount:</th>
+                    <td class="text-center"><strong>Rs {{payable_amount|intcomma }}</strong></td>
+                </tr>
+        
+            </tbody>
+        </table>
+        <p>Payment mode: {{ order.payment.payment_method }}</p>
+    </div>
+</div>
+<hr style="margin-top: 15px;">
+{% endblock %}

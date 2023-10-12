@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect,reverse
 from django.http import HttpResponse
 from myapp.models import CartItem
 from .forms import OrderForm
-from .models import Order,PaymentMethod,Payment,OrderProduct,Coupon
+from .models import Order,PaymentMethod,Payment,OrderProduct,Coupon, Invoice
 from myapp.models import Variations
 from wallet.models import Wallet,WalletTransaction
 import datetime
@@ -12,7 +12,14 @@ from myapp.models import Product
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
-from django.conf import settings
+from django.utils import timezone
+from datetime import datetime, timedelta
+from django.db import models
+from django.http import JsonResponse
+import json
+from django.db.models import Sum
+from xhtml2pdf import pisa
+from django.template.loader import get_template
 
 
 
@@ -405,6 +412,8 @@ def payment_success_page(request):
   return render(request, 'user/payment-success-page.html')
 
 
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def order_cancel_user(request,order_number):
   order = Order.objects.get(order_number=order_number)
   if not order.status == 'Cancelled':
@@ -422,6 +431,114 @@ def order_cancel_user(request,order_number):
     return redirect('order-details', order_number=order.order_number)
   else:
     return redirect('order-details', order_number=order.order_number)
+  
+  
+
+# def get_weekly_sales():
+#     end_date = timezone.now()
+#     start_date = end_date - timedelta(days=7)
+#     weekly_sales = Order.objects.filter(created_at__range=(start_date, end_date)).exclude(status='Cancelled').aggregate(total_sales=models.Sum('order_total'))
+#     return weekly_sales['total_sales'] if weekly_sales['total_sales'] else 0
+
+# def get_monthly_sales():
+#     end_date = timezone.now()
+#     start_date = end_date - timedelta(days=30)
+#     monthly_sales = Order.objects.filter(created_at__range=(start_date, end_date)).exclude(status='Cancelled').aggregate(total_sales=models.Sum('order_total'))
+#     return monthly_sales['total_sales'] if monthly_sales['total_sales'] else 0
+
+# def get_yearly_sales():
+#     end_date = timezone.now()
+#     start_date = end_date - timedelta(days=365)
+#     yearly_sales = Order.objects.filter(created_at__range=(start_date, end_date)).exclude(status='Cancelled').aggregate(total_sales=models.Sum('order_total'))
+#     return yearly_sales['total_sales'] if yearly_sales['total_sales'] else 0
+
+
+def get_weekly_sales():
+    end_date = timezone.now()
+    start_date = end_date - timezone.timedelta(days=7)
+
+    return OrderProduct.objects.filter(
+        order__created_at__range=(start_date, end_date)
+    ).values('product').annotate(weekly_sales=Sum('quantity'))
+
+def get_monthly_sales():
+    end_date = timezone.now()
+    start_date = end_date - timezone.timedelta(days=30)
+
+    return OrderProduct.objects.filter(
+        order__created_at__range=(start_date, end_date)
+    ).values('product').annotate(monthly_sales=Sum('quantity'))
+
+def get_yearly_sales():
+    end_date = timezone.now()
+    start_date = end_date - timezone.timedelta(days=365)
+
+    return OrderProduct.objects.filter(
+        order__created_at__range=(start_date, end_date)
+    ).values('product').annotate(yearly_sales=Sum('quantity'))
+
+
+def sales_report(request):
+    weekly_sales_data = get_weekly_sales()
+    monthly_sales_data = get_monthly_sales()
+    yearly_sales_data = get_yearly_sales()
+    print(weekly_sales_data)
+    print(monthly_sales_data)
+    print(yearly_sales_data)
+    sales_data = {
+        'weekly_sales': weekly_sales_data,
+        'monthly_sales': monthly_sales_data,
+        'yearly_sales': yearly_sales_data,
+    }
+    return JsonResponse(sales_data, safe=False)
+    # return render(request, 'your_template.html', {
+    #     'weekly_sales_data': weekly_sales_data,
+    #     'monthly_sales_data': monthly_sales_data,
+    #     'yearly_sales_data': yearly_sales_data,
+    # })
+
+
+
+def generate_invoice(request, invoice_number):
+  try:
+    invoice = Invoice.objects.get(invoice_number = invoice_number)
+  except:
+    messages.warning(request, 'Invoice not generated for this order!')
+
+  try:
+    order_products = OrderProduct.objects.filter(order = invoice.order)
+
+  except Exception as  e:
+    print(e)
+
+  sub_total = 0
+
+  for i in order_products:
+    sub_total += i.product_price * i.quantity
+
+  template_path = 'user/invoice_pdf.html'
+  context = {
+    'invoice' : invoice,
+    'ordered_products' : order_products,
+    'sub_total' : sub_total,
+    'payable_amount' : invoice.order.order_total,
+    'order' : invoice.order,
+  }
+
+  response = HttpResponse(content_type='application/pdf')
+  response['Content-Disposition'] = f'filename="{invoice.invoice_number}"'
+  template = get_template(template_path)
+  html = template.render(context)
+
+
+  pisa_status = pisa.CreatePDF(
+    html, dest=response)
+
+  if pisa_status.err:
+    return HttpResponse('We had some errors <pre>' + html + '</pre>')
+  return response              
+
+
 
 
 

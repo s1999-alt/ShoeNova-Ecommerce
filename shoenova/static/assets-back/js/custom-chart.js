@@ -1,3 +1,75 @@
+// (function ($) {
+//     "use strict";
+
+
+//     // Assuming you have imported Chart.js library and defined your chart configurations.
+
+// // Get the canvas elements
+// var weeklyChartCanvas = document.getElementById('weeklyChart');
+// var monthlyChartCanvas = document.getElementById('monthlyChart');
+// var yearlyChartCanvas = document.getElementById('yearlyChart');
+
+// if (weeklyChartCanvas && monthlyChartCanvas && yearlyChartCanvas) {
+//     var weeklyChart = new Chart(weeklyChartCanvas.getContext('2d'), {
+//         // Your chart configuration here
+//         // ...
+//         data: {
+//             labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+//             datasets: [{
+//                 label: 'Weekly Sales',
+//                 data: [1,2,3,4], // Use the data returned by get_weekly_sales()
+//                 backgroundColor: 'rgba(44, 120, 220, 0.2)',
+//                 borderColor: 'rgba(44, 120, 220)',
+//             }]
+//         },
+//         // ...
+//     });
+
+//     var monthlyChart = new Chart(monthlyChartCanvas.getContext('2d'), {
+//         // Your chart configuration here
+//         // ...
+//         data: {
+//             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+//             datasets: [{
+//                 label: 'Monthly Sales',
+//                 data: [monthly_sales_data], // Use the data returned by get_monthly_sales()
+//                 backgroundColor: 'rgba(44, 120, 220, 0.2)',
+//                 borderColor: 'rgba(44, 120, 220)',
+//             }]
+//         },
+//         // ...
+//     });
+
+//     var yearlyChart = new Chart(yearlyChartCanvas.getContext('2d'), {
+//         // Your chart configuration here
+//         // ...
+//         data: {
+//             labels: ['2022', '2023'],
+//             datasets: [{
+//                 label: 'Yearly Sales',
+//                 data: [yearly_sales_data], // Use the data returned by get_yearly_sales()
+//                 backgroundColor: 'rgba(44, 120, 220, 0.2)',
+//                 borderColor: 'rgba(44, 120, 220)',
+//             }]
+//         },
+//         // ...
+//     });
+// }
+
+
+
+
+
+
+
+
+
+// })(jQuery);
+
+
+
+
+
 (function ($) {
     "use strict";
 
@@ -49,6 +121,8 @@
             }
         });
     } //End if
+
+
 
     /*Sale statistics Chart*/
     if ($('#myChart2').length) {
