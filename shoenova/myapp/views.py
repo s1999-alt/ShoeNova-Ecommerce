@@ -6,6 +6,7 @@ from myapp.models import Product,Category
 from django.utils.text import slugify
 from django.contrib import messages
 from app.models import UserProfile
+from orders.models import Order
 
 # Create your views here.
 
@@ -15,9 +16,15 @@ from app.models import UserProfile
 @login_required
 def adm_index(request):
     if request.user.is_authenticated and request.user.is_superuser:
+        orders = Order.objects.all()
+        context = {
+            'orders':orders
+        }
         messages.success(request, 'Login Successfully')
-        return render(request, 'admin-side/index.html')
-    return render(request, 'admin-side/page-admin-login.html')
+        return render(request, 'admin-side/index.html', context)
+    else:
+        messages.error(request, 'You are not authorized to access this page.')
+        return render(request, 'admin-side/page-admin-login.html')
 
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
@@ -34,7 +41,6 @@ def admin_login(request):
             if user is not None and user.is_superuser:
                 login(request,user)
                 request.session['email']=user.email
-                messages.success(request, "Login Successfully")
                 return redirect('myapp:admin-index')
             else:
                  messages.error(request,'Invalid credentials or not a superuser.')
@@ -54,11 +60,6 @@ def admin_logout(request):
 
 
     
-
-
-
-
-
 ########################## ADMIN-PRODUCT ################################
 
 #-----------Product list-view page------------------

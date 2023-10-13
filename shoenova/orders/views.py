@@ -20,7 +20,7 @@ import json
 from django.db.models import Sum
 from xhtml2pdf import pisa
 from django.template.loader import get_template
-
+import datetime
 
 
 
@@ -43,21 +43,30 @@ def order_summary(request ,total=0, quantity=0):
   for cart_item in cart_items:
     total += (cart_item.product.price * cart_item.quantity)
     quantity += cart_item.quantity
-
-  coupon_discount = 0
-  coupon_code = request.session.get('coupon_code')
-  if coupon_code:
-      try:
-        coupon = Coupon.objects.get(coupon_code = coupon_code)
-      except Exception as e:
-        print(e)
-      coupon_discount = float(request.session.get('coupon_discount'))
-      total -= coupon_discount
+  
+  
 
   if request.method == 'POST':
     form = OrderForm(request.POST)
     if form.is_valid():
       # store all the billing information inside 
+      coupon_discount = 0
+      coupon_code = request.POST.get('coupon','')
+      print(coupon_code)
+      coupon = None
+      if coupon_code:
+          try:
+            coupon = Coupon.objects.get(coupon_code = coupon_code)
+            coupon_discount = coupon.discount
+            total -= coupon_discount
+          except Exception as e:
+            
+            print(e)
+      
+      print("++++++++")
+      print(total)
+      print("++++++++") 
+
       data = Order()
       data.user = current_user
       data.first_name = form.cleaned_data['first_name']
@@ -87,15 +96,9 @@ def order_summary(request ,total=0, quantity=0):
       data.save()
 
       order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
-      coupon_code = request.session.get('coupon_code')
-      coupon_discount = request.session.get('coupon_discount')
+     
 
       wallet = Wallet.objects.get(user=request.user, is_active=True)
-
-      if coupon_code:
-        order.coupon_code = coupon_code
-        order.discount = coupon_discount
-        order.save()
 
       context = {
         'paymentmethods':PaymentMethod.objects.all(),
@@ -133,11 +136,6 @@ def place_order(request, id, total=0, quantity=0):
     total += (cart_item.product.price * cart_item.quantity)
     quantity += cart_item.quantity
 
-  coupon_code = request.session.get('coupon_code')
-  coupon_discount = request.session.get('coupon_discount')
-
-  if coupon_code:
-    total -= coupon_discount    
   if request.method == "POST":
     if request.POST.get('wallet_balance'):
       wallet_selected = int(request.POST.get('wallet_balance'))
@@ -155,6 +153,8 @@ def place_order(request, id, total=0, quantity=0):
     try:
       payment_method = PaymentMethod.objects.get(method_name=payment_option)
       order = Order.objects.get(user = request.user, is_ordered = False, order_number = order_number)
+      if order.coupon:
+        total -= order.coupon.discount   
     except Exception as e:
       print(e)
 
@@ -164,11 +164,13 @@ def place_order(request, id, total=0, quantity=0):
         total -= wallet.balance
         order.wallet_discount = wallet.balance
         order.order_total = total
-        order.save()
       else:
         order.wallet_discount = total
         order.order_total = 0
-        order.save()
+    else:
+      order.order_total = total
+      order.wallet_discount=0
+    order.save()
 
     try:
       if total == 0:
@@ -409,7 +411,16 @@ def payment_failed(request):
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def payment_success_page(request):
-  return render(request, 'user/payment-success-page.html')
+
+  order_id = request.session["order_number"]
+  print(order_id)
+
+  order = Order.objects.get(user = request.user,order_number = order_id)
+  invoice = Invoice()
+  invoice.order = order
+  invoice.save()
+
+  return render(request, 'user/payment-success-page.html',context={'invoice':invoice})
 
 
 
@@ -434,32 +445,15 @@ def order_cancel_user(request,order_number):
   
   
 
-# def get_weekly_sales():
-#     end_date = timezone.now()
-#     start_date = end_date - timedelta(days=7)
-#     weekly_sales = Order.objects.filter(created_at__range=(start_date, end_date)).exclude(status='Cancelled').aggregate(total_sales=models.Sum('order_total'))
-#     return weekly_sales['total_sales'] if weekly_sales['total_sales'] else 0
-
-# def get_monthly_sales():
-#     end_date = timezone.now()
-#     start_date = end_date - timedelta(days=30)
-#     monthly_sales = Order.objects.filter(created_at__range=(start_date, end_date)).exclude(status='Cancelled').aggregate(total_sales=models.Sum('order_total'))
-#     return monthly_sales['total_sales'] if monthly_sales['total_sales'] else 0
-
-# def get_yearly_sales():
-#     end_date = timezone.now()
-#     start_date = end_date - timedelta(days=365)
-#     yearly_sales = Order.objects.filter(created_at__range=(start_date, end_date)).exclude(status='Cancelled').aggregate(total_sales=models.Sum('order_total'))
-#     return yearly_sales['total_sales'] if yearly_sales['total_sales'] else 0
-
-
 def get_weekly_sales():
     end_date = timezone.now()
     start_date = end_date - timezone.timedelta(days=7)
 
     return OrderProduct.objects.filter(
         order__created_at__range=(start_date, end_date)
-    ).values('product').annotate(weekly_sales=Sum('quantity'))
+    ).values('product__product_name').annotate(weekly_sales=Sum('quantity'))
+
+
 
 def get_monthly_sales():
     end_date = timezone.now()
@@ -467,7 +461,9 @@ def get_monthly_sales():
 
     return OrderProduct.objects.filter(
         order__created_at__range=(start_date, end_date)
-    ).values('product').annotate(monthly_sales=Sum('quantity'))
+    ).values('product__product_name').annotate(monthly_sales=Sum('quantity'))
+
+
 
 def get_yearly_sales():
     end_date = timezone.now()
@@ -475,27 +471,21 @@ def get_yearly_sales():
 
     return OrderProduct.objects.filter(
         order__created_at__range=(start_date, end_date)
-    ).values('product').annotate(yearly_sales=Sum('quantity'))
+    ).values('product__product_name').annotate(yearly_sales=Sum('quantity'))
+
+
 
 
 def sales_report(request):
-    weekly_sales_data = get_weekly_sales()
-    monthly_sales_data = get_monthly_sales()
-    yearly_sales_data = get_yearly_sales()
-    print(weekly_sales_data)
-    print(monthly_sales_data)
-    print(yearly_sales_data)
+    weekly_sales_data = list(get_weekly_sales().values('product__product_name','weekly_sales'))  # Convert QuerySet to a list of dictionaries
+    monthly_sales_data = list(get_monthly_sales().values('product__product_name','monthly_sales'))
+    yearly_sales_data = list(get_yearly_sales().values('product__product_name','yearly_sales'))
     sales_data = {
         'weekly_sales': weekly_sales_data,
         'monthly_sales': monthly_sales_data,
         'yearly_sales': yearly_sales_data,
     }
     return JsonResponse(sales_data, safe=False)
-    # return render(request, 'your_template.html', {
-    #     'weekly_sales_data': weekly_sales_data,
-    #     'monthly_sales_data': monthly_sales_data,
-    #     'yearly_sales_data': yearly_sales_data,
-    # })
 
 
 

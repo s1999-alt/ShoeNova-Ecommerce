@@ -21,7 +21,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets-back/imgs/theme/favicon.svg' %}">
     <!-- Template CSS -->
     <link href="{% static 'assets-back/css/main.css' %}" rel="stylesheet" type="text/css" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
 </head>
 
 <body>
@@ -38,7 +38,7 @@
         <nav>
             <ul class="menu-aside">
                 <li class="menu-item active">
-                    <a class="menu-link" href="index.html"> <i class="icon material-icons md-home"></i>
+                    <a class="menu-link" href="{% url 'myapp:admin-index' %}"> <i class="icon material-icons md-home"></i>
                         <span class="text">Dashboard</span>
                     </a>
                 </li>
@@ -208,6 +208,9 @@
             </div>
         </footer>
     </main>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{% static 'assets-back/js/vendors/jquery-3.6.0.min.js' %}"></script>
     <script src="{% static 'assets-back/js/vendors/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'assets-back/js/vendors/select2.min.js' %}"></script>

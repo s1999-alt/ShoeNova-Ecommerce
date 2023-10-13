@@ -110,7 +110,7 @@ class OrderProduct(models.Model):
 class Invoice(models.Model):
    invoice_number = models.CharField(max_length=30)
    order = models.ForeignKey(Order, on_delete=models.DO_NOTHING)
-   created_at = models.DateTimeField(auto_now_add=False)
+   created_at = models.DateTimeField(auto_now_add=True)
 
    def __str__(self):
       return self.invoice_number
