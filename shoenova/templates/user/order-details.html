@@ -139,7 +139,7 @@
                                                 Cancel Order
                                             </a>
                                             {% elif order.status == 'Delivered' %}
-                                            <a href="{% url 'orders:' %}" class="btn btn-outline-primary my-2 mx-2">
+                                            <a href="{% url 'orders:order-return-user' %}" class="btn btn-outline-primary my-2 mx-2">
                                                 Return Order
                                             </a>
                                             {% endif %}

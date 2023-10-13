@@ -443,7 +443,32 @@ def order_cancel_user(request,order_number):
   else:
     return redirect('order-details', order_number=order.order_number)
   
+
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+def order_return_user(request,order_number):
+  order = Order.objects.get(order_number=order_number)
+  if not order.status == 'Returned':
+    order.status = 'Returned'
+    order.save()
+    wallet = Wallet.objects.get(user=request.user, is_active=True)
+    wallet.balance += float(order.order_total + order.wallet_discount)
+    wallet.save()
+
+    wallet_transaction = WalletTransaction.objects.create(wallet=wallet,
+                                                          transaction_type='CREDIT',
+                                                          transaction_detail=str(order.order_number)+ 'Returned',
+                                                          amount = order.wallet_discount)
+    wallet_transaction.save()
+    return redirect('order-details', order_number=order.order_number)
+  else:
+    return redirect('order-details', order_number=order.order_number)  
   
+  
+
+
+
+
 
 def get_weekly_sales():
     end_date = timezone.now()

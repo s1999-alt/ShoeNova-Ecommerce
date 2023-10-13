@@ -14,6 +14,7 @@ urlpatterns = [
 
 
   path('order-cancel-user/<int:order_number>', views.order_cancel_user, name='order-cancel-user'),
+  path('order-return-user/<int:order_number>', views.order_return_user, name='order-return-user'),
 
   path('sales-report', views.sales_report, name='sales-report'),
 
