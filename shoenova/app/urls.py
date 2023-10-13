@@ -6,6 +6,12 @@ urlpatterns = [
     path('base/', views.base_view, name='base'),
     path('login-register/', views.login_regis, name='login-register'),
     path('login-page/', views.login_page, name='login-page'),
+
+
+    path('login-without-otp/', views.login_without_otp, name='login-without-otp'),
+
+
+
     path('handlelogout/', views.handlelogout, name='handlelogout'),
     path('category/product-details/<int:id>/', views.product_details, name='product-details'),
     path('shop-product/', views.shop_product, name='shop-product'),

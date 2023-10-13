@@ -257,6 +257,62 @@ def login_page(request):
     return render(request, 'user/page-login.html')
 
 
+def login_without_otp(request):
+    
+    
+    if request.user.is_authenticated:
+        return redirect('/')
+    if request.method == "POST":
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        user = authenticate(request, username=email, password=password)
+
+        if user:
+            try:
+                cart = Cart.objects.get(cart_id = _cart_id(request))
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)
+                    
+                    #getting the product variation by cart id
+                    product_variation = []
+                    for item in cart_item:
+                        variation = item.variations.all()
+                        product_variation.append(list(variation))
+
+                    #get the cart items from the user to access his product_variations    
+                    cart_item = CartItem.objects.filter(user=user)
+                    ex_var_list = []
+                    id = []
+                    for item in cart_item:
+                        existing_variation = item.variations.all()
+                        ex_var_list.append(list(existing_variation))
+                        id.append(item.id)
+
+                    for i in product_variation:
+                        if i in ex_var_list:
+                            index = ex_var_list.index(i)
+                            item_id = id[index]
+                            item = CartItem.objects.get(id=item_id)
+                            item.quantity += 1
+                            item.user = user
+                            item.save()
+                        else:
+                            cart_item = CartItem.objects.filter(cart=cart)    
+                            for item in cart_item:
+                                item.user = user
+                                item.save()
+            except:
+                pass    
+            login(request, user)
+            messages.success(request, "Login successfull !")
+            return redirect('index')
+        else:
+            messages.warning(request, "Invalid Credentials. Please try again.")      
+
+    return render(request, 'user/login-without-otp.html')
+
+
 
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
