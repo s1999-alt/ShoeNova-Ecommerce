@@ -31,7 +31,7 @@ Shoe Nova
                 <div class="login_wrap widget-taber-content p-30 background-white border-radius-10 mb-md-5 mb-lg-0 mb-sm-5">
                   <div class="padding_eight_all bg-white">
                     <div class="heading_s1">
-                      <h3 class="mb-30">Login</h3>
+                      <h3 class="mb-30">Login With OTP</h3>
                     </div>
                     <form method="post">
                       {% csrf_token %}
@@ -55,7 +55,7 @@ Shoe Nova
                       </div>
                       <div>
                         <p>Not a User? <a href="{% url 'login-register' %}">Signup</a></p>
-                        <p>Login without OTP <a href="{% url 'login-without-otp' %}">Click here</a></p>
+                        <h5>Login without OTP <a href="{% url 'login-without-otp' %}">Click here</a></h5>
                       </div>
                     </form>
                   </div>

@@ -73,28 +73,6 @@
             </div>
         </section> <!-- content-main end// -->
 
-{% comment %} 
-        <div class="modal fade" id="cropperModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Crop Image</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <img id="cropperImage" src="" alt="Crop Image">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="cropImage">Crop</button>
-                    </div>
-                </div>
-            </div>
-        </div> {% endcomment %}
-        
-
         <script>
             document.querySelectorAll('[name^="product_images"]').forEach(function(element) {
                 var cropper = new Cropper(element, {
@@ -105,28 +83,5 @@
             });
         </script> 
 
-
-        {% comment %} <script>
-            var cropper;
-            
-            function openCropper(button) {
-                var input = button.previousElementSibling; // Get the input element
-                var img = document.getElementById('cropperImage');
-                img.src = URL.createObjectURL(input.files[0]);
-                
-                $('#cropperModal').modal('show');
-                cropper = new Cropper(img, {
-                    aspectRatio: 1,  // Set aspect ratio as needed
-                    viewMode: 1,     // Set the view mode (optional)
-                    // Add more Cropper.js options as needed
-                });
-            }
-        
-            document.getElementById('cropImage').addEventListener('click', function() {
-                var canvas = cropper.getCroppedCanvas();
-                // Process the cropped canvas as needed
-                $('#cropperModal').modal('hide');
-            });
-        </script> {% endcomment %}
 {% endblock content %}
         

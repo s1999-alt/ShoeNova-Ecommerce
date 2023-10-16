@@ -62,11 +62,7 @@ def order_summary(request ,total=0, quantity=0):
           except Exception as e:
             
             print(e)
-      
-      print("++++++++")
-      print(total)
-      print("++++++++") 
-
+            
       data = Order()
       data.user = current_user
       data.first_name = form.cleaned_data['first_name']

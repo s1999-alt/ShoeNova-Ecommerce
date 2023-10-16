@@ -1,0 +1,58 @@
+{% extends 'admin-side/base1.html' %}
+{% load static %}
+{% block content %}
+
+        <section class="content-main">
+            <div class="row">
+                <div class="col-6">
+                    <div class="content-header">
+                        <h2 class="content-title">Create Category Offer</h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form method="post" action="" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <label class="form-label" for="offer-name">Offer Name:</label>
+                                <input class="form-control" type="text"  name="product_name" required><br>
+
+                                <label class="form-label" for="ex-date">Expire Date:</label>
+                                <input class="form-control" type="date" id="date"  name="ex-date" required><br>
+                        
+                                <label class="form-label" for="category">Category:</label>
+                                <select class="form-control"  name="category" required>
+                                    {% for category in categories %}
+                                    {% if category.soft_deleted %}
+                                    <option value="{{ category.id }}">{{category.category_name}} </option>
+                                    {% endif %}
+                                    {% endfor %}
+                                    
+                                    <!-- Add more options as needed -->
+                                </select><br>
+                        
+                        
+                                <label class="form-label" for="dis-percentage">Discount Percentage:</label>
+                                <input class="form-control" type="number"  name="dis-percentage" required><br>
+
+                        
+                                <label class="form-label" for="cat_image">Category Offer Image:</label>
+                                <input class="form-control" type="file" name="cat_image" accept="image/*" required>
+                                <br>
+
+                                <label class="form-label" for="is_active">Is Active</label>
+                                <input  type="checkbox" name="is_active" id="is_active" checked required><br>
+
+                                <div>
+                                    <button type="submit" class="btn btn-md rounded font-sm hover-up">Create Now</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section> <!-- content-main end// -->
+{% endblock content %}
