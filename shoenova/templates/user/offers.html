@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Shoe Nova{% endblock title %}
+{% block content %}
+    <main class="main">
+        <div class="page-header breadcrumb-wrap">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="index.html" rel="nofollow">Home</a>
+                    <span></span> Offers
+                </div>
+            </div>
+        </div>
+        <section class="mt-50 mb-50">
+            <div class="container custom">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="single-header mb-50 text-center">
+                            <h1 class="font-xxl text-brand"> Our Offers</h1>
+                            <div class="entry-meta meta-1 font-xs mt-15 mb-15">
+                                <span class="post-by">32 Sub Categories</span>
+                                <span class="post-on has-dot">1020k Article</span>
+                                <span class="time-reading has-dot">480 Authors</span>
+                                <span class="hit-count  has-dot">29M Views</span>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-secondary border">
+                            <h3>Category Offers</h3>
+                        </div>
+                        <div class="loop-grid pr-30">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    {% for cat in category_offer %}
+                                    <article class="wow fadeIn animated hover-up mb-30">
+                                        <div class="post-thumb img-hover-scale">
+                                            <a href="blog-post-right.html">
+                                                <img src="{{cat.category_offer_image.url}}" alt="">
+                                            </a>
+                                            <div class="entry-meta">
+                                                <a class="entry-meta meta-2" href="blog-category-grid.html">Sport</a>
+                                            </div>
+                                        </div>
+                                        <div class="entry-content-2">
+                                            <h3 class="post-title mb-15">
+                                                <a href="">{{cat.offer_name}}</a></h3>
+                                            <h4>Applicable Categories</h4>    
+                                            <p class="post-exerpt mb-30">{{cat.category}}</p>
+                                            <div class="entry-meta meta-1 font-xs color-grey mt-10 pb-10">
+                                                <div>
+                                                    <span class="post-on"> <i class="fi-rs-clock"></i> 25 April 2021</span>
+                                                </div>
+                                                <a class="btn btn-dark" href="{% url 'offers:category-offer-product' cat.category_offer_slug %}">View Products</a>
+                                            </div>
+                                        </div>
+                                    </article>
+                                    {% endfor %}
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-secondary border">
+                            <h3>Product Offers</h3>
+                        </div>
+                        <div class="loop-grid pr-30">
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <article class="wow fadeIn animated hover-up mb-30">
+                                        <div class="post-thumb img-hover-scale">
+                                            <a href="blog-post-right.html">
+                                                <img src="{% static "assets/imgs/blog/blog-1.jpg" %}" alt="">
+                                            </a>
+                                            <div class="entry-meta">
+                                                <a class="entry-meta meta-2" href="blog-category-grid.html">Sport</a>
+                                            </div>
+                                        </div>
+                                        <div class="entry-content-2">
+                                            <h3 class="post-title mb-15">
+                                                <a href="blog-post-right.html">9 Things I Love About Shaving My Head</a></h3>
+                                            <p class="post-exerpt mb-30">At the Emmys, broadcast scripted shows created by people of color gained ground relative to those pitched by White show creators, while broadcast scripted shows.</p>
+                                            <div class="entry-meta meta-1 font-xs color-grey mt-10 pb-10">
+                                                <div>
+                                                    <span class="post-on"> <i class="fi-rs-clock"></i> 25 April 2021</span>
+                                                </div>
+                                                <a class="btn btn-dark" href="">View Products</a>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                        <!--post-grid-->
+                        <div class="pagination-area mt-15 mb-lg-0">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-start">
+                                    <li class="page-item active"><a class="page-link" href="#">01</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">02</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">03</a></li>
+                                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">16</a></li>
+                                    <li class="page-item"><a class="page-link" href="#"><i class="fi-rs-angle-double-small-right"></i></a></li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    {% endblock %}

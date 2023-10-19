@@ -667,7 +667,6 @@ def order_details(request, order_number):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def wishlist_page(request):
     wishlist = Wishlist.objects.filter(user=request.user)
-    print(wishlist)
     context = {
         'wishlist':wishlist
     }

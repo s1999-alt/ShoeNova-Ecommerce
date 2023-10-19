@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from app.models import UserProfile
 from django.urls import reverse
+from datetime import datetime
 
 
 
@@ -50,9 +51,28 @@ class Product(models.Model):
     
 
     def __str__(self):
-           return self.product_name 
+           return self.product_name
+
+    def product_price(self):
+        offer_percentage = 0
+
+        if self.category.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
+            offer_percentage = self.category.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).values_list('discount_percentage',flat=True).order_by('-discount_percentage').first()
+        if self.productoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
+            offer_percentage = offer_percentage + self.productoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).values_list('discount_percentage',flat=True).order_by('-discount_percentage').first()  
+
+
+        if offer_percentage >= 100:
+            offer_percentage = 100
+            
+
+        offer_price = self.price -  self.price * (offer_percentage) / (100)
+
+        return offer_price    
      
     
+
+
 
 class Cart(models.Model):
     cart_id=models.CharField(max_length=250,blank=True)
