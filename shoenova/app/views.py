@@ -524,7 +524,7 @@ def cart(request, total=0, quantity=0, cart_item=None):
             cart = Cart.objects.get(cart_id=_cart_id(request))
             cart_items = CartItem.objects.filter(cart=cart, is_active=True)
         for cart_item in cart_items:
-            total += (cart_item.product.price * cart_item.quantity)
+            total += (cart_item.product.product_price() * cart_item.quantity)
             quantity += cart_item.quantity
     except ObjectDoesNotExist:
         pass 
@@ -600,7 +600,7 @@ def checkout(request, total=0, quantity=0, cart_item=None):
             cart = Cart.objects.get(cart_id=_cart_id(request))
             cart_items = CartItem.objects.filter(cart=cart, is_active=True)
         for cart_item in cart_items:
-            total += (cart_item.product.price * cart_item.quantity)
+            total += (cart_item.product.product_price() * cart_item.quantity)
             quantity += cart_item.quantity
         
     except ObjectDoesNotExist:

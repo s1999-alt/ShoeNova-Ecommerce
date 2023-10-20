@@ -59,7 +59,7 @@
                                             </p>
                                         </td>
 
-                                        <td class="price" data-title="Price"><span>${{cart_item.product.price}} </span></td>
+                                        <td class="price" data-title="Price"><span>${{cart_item.product.product_price}} </span></td>
                                         <td class="text-center" data-title="Stock">
 
                                             <form method="POST" action="{% url 'add-cart' cart_item.product.id %}" class="detail-qty border radius mx-auto">
@@ -82,7 +82,8 @@
                                         </td>
 
                                         <td class="text-right" data-title="Cart">
-                                            <span>${{cart_item.sub_total}} </span>
+                                            <span>${% widthratio cart_item.product.product_price 1 cart_item.quantity %}</span>
+                                        
                                         </td>
                                         <td class="action" data-title="Remove"><a href="{% url 'delete-cart' cart_item.product.id cart_item.id %}" onclick="return confirm('Are You Sure to Delete this Item?')" class="text-muted" ><i class="fi-rs-trash"></i></a></td>
                                     </tr>

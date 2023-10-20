@@ -94,7 +94,7 @@
                                                         {% endif %}
                                                     </p>
                                                 </td>
-                                                <td>${{cart_item.sub_total}}</td>
+                                                <td>${% widthratio cart_item.product.product_price 1 cart_item.quantity %}</td>
                                             </tr>
                                             {% endfor %}
                                             <tr>

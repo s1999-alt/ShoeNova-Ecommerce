@@ -41,7 +41,7 @@ def order_summary(request ,total=0, quantity=0):
     return redirect('shop-product')
   
   for cart_item in cart_items:
-    total += (cart_item.product.price * cart_item.quantity)
+    total += (cart_item.product.product_price() * cart_item.quantity)
     quantity += cart_item.quantity
   
   
@@ -129,7 +129,7 @@ def place_order(request, id, total=0, quantity=0):
     return redirect('shop-product')
   
   for cart_item in cart_items:
-    total += (cart_item.product.price * cart_item.quantity)
+    total += (cart_item.product.product_price() * cart_item.quantity)
     quantity += cart_item.quantity
 
   if request.method == "POST":
@@ -259,7 +259,7 @@ def payment_success(request):
         orderproduct.user = request.user
         orderproduct.product = item.product
         orderproduct.quantity = item.quantity
-        orderproduct.product_price = item.product.price
+        orderproduct.product_price = item.product.product_price()
         orderproduct.ordered = True
         orderproduct.save()
 
@@ -319,7 +319,7 @@ def payment_success(request):
         orderproduct.user = request.user
         orderproduct.product = item.product
         orderproduct.quantity = item.quantity
-        orderproduct.product_price = item.product.price
+        orderproduct.product_price = item.product.product_price()
 
         orderproduct.ordered = True
         orderproduct.save()
@@ -378,7 +378,7 @@ def payment_success(request):
       orderproduct.user = request.user
       orderproduct.product = item.product
       orderproduct.quantity = item.quantity
-      orderproduct.product_price = item.product.price
+      orderproduct.product_price = item.product.product_price()
 
       orderproduct.ordered = True
       orderproduct.save()

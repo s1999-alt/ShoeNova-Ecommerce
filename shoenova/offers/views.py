@@ -7,10 +7,13 @@ from django.core.paginator import Paginator
 
 def offers(request):
   category_offer = CategoryOffer.objects.all()
+  product_offer = ProductOffer.objects.all()
   context = {
-    'category_offer':category_offer
+    'category_offer':category_offer,
+    'product_offer' :product_offer
   }
   return render(request, 'offers.html', context)
+
 
 
 
@@ -53,6 +56,35 @@ def category_offer_product(request, offer_slug, category=None):
 
         }
       return render(request, 'user/page-shop.html',context)
+  
+
+
+def product_offer_product(request, offer_slug):
+  try:
+    product_offer = get_object_or_404(ProductOffer, product_offer_slug=offer_slug)
+  except:
+    return redirect('shop-product')
+  
+  products = product_offer.product.filter(is_available=True)
+  paginator=Paginator(products,3)
+  page=request.GET.get('page')
+  paged_products=paginator.get_page(page)
+  product_count=products.count()
+  categories = Category.objects.all()
+
+  context = {
+    'products':paged_products,
+    'product_count':product_count,
+    'categories':categories,
+
+  }
+  return render(request, 'user/page-shop.html',context)
+
+
+
+
+  
+
 
 
 

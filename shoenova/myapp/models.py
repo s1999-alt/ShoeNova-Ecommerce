@@ -68,10 +68,9 @@ class Product(models.Model):
 
         offer_price = self.price -  self.price * (offer_percentage) / (100)
 
-        return offer_price    
+        return round(offer_price)    
      
     
-
 
 
 class Cart(models.Model):
