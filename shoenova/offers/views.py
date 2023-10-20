@@ -111,6 +111,49 @@ def add_category_offer(request):
 
 
 
+def add_product_offer(request):
+  if request.method == "POST":
+    offer_name = request.POST['offer_name']
+    expire_date = request.POST['expire_date']
+    product_id = request.POST.getlist('product')
+    dis_percentage = request.POST['dis_percentage']
+    product_offer_image = request.FILES.get('product_offer_image')
+    is_active = request.POST['is_active']
+
+    if is_active == 'on':
+      is_active = True
+    else:
+      is_active = False  
+
+    try:
+      products = Product.objects.filter(id__in=product_id)
+      if len(products) != len(product_id):
+        raise Product.DoesNotExist
+    except Product.DoesNotExist:
+      return HttpResponse("Product does not exist.")
+
+    productoffer = ProductOffer(
+      offer_name = offer_name,
+      expire_date = expire_date,
+      discount_percentage = dis_percentage,
+      product_offer_image = product_offer_image,
+      is_active = is_active,
+    )
+    productoffer.save()
+    productoffer.product.set(products)
+
+
+    return redirect('offers:add-product-offer') 
+
+  products = Product.objects.all()
+  context = {
+    'products': products 
+  }
+  return render(request, 'admin-side/add-product-offers.html',context)
+
+
+
+
 
 
 

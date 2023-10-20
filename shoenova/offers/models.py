@@ -8,11 +8,11 @@ class ProductOffer(models.Model):
   product = models.ManyToManyField(Product)
   discount_percentage = models.IntegerField(default=0)
   product_offer_slug = models.SlugField(blank=True, max_length=200,unique=True)
-  product_offer_images = models.ImageField(upload_to='photos/offerimages', null=True)
+  product_offer_image = models.ImageField(upload_to='photos/offerimages', null=True)
   is_active = models.BooleanField(default=True)
 
   def save(self, *args, **kwargs):
-    if self.discount_percentage > 100:
+    if int(self.discount_percentage) > 100:
       self.discount_percentage = 100
 
     counter = ProductOffer.objects.filter(product_offer_slug__istartswith=self.product_offer_slug).count()  

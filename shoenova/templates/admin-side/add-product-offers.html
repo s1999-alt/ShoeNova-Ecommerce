@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-6">
                     <div class="content-header">
-                        <h2 class="content-title">Create Category Offer</h2>
+                        <h2 class="content-title">Create Product Offer</h2>
                     </div>
                 </div>
             </div>
@@ -15,7 +15,7 @@
                 <div class="col-lg-6">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <form method="post" action="{% url 'offers:add-category-offer' %}" enctype="multipart/form-data">
+                            <form method="post" action="{% url 'offers:add-product-offer' %}" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 <label class="form-label" for="offer-name">Offer Name:</label>
                                 <input class="form-control" type="text"  name="offer_name" required><br>
@@ -23,11 +23,11 @@
                                 <label class="form-label" for="expire-date">Expire Date:</label>
                                 <input class="form-control" type="date" id="date"  name="expire_date" required><br>
                         
-                                <label class="form-label" for="category">Category:</label>
-                                <select class="form-control"  name="category" required>
-                                    {% for category in categories %}
-                                    {% if category.soft_deleted %}
-                                    <option value="{{ category.id }}">{{category.category_name}} </option>
+                                <label class="form-label" for="category">Product:</label>
+                                <select class="form-control"  name="product" required>
+                                    {% for product in products %}
+                                    {% if product.is_available %}
+                                    <option value="{{ product.id }}">{{product.product_name}} </option>
                                     {% endif %}
                                     {% endfor %}
                                     
@@ -39,8 +39,8 @@
                                 <input class="form-control" type="number"  name="dis_percentage" required><br>
 
                         
-                                <label class="form-label" for="cat_image">Category Offer Image:</label>
-                                <input class="form-control" type="file" name="cat_offer_image" accept="image/*" required>
+                                <label class="form-label" for="cat_image">Product Offer Image:</label>
+                                <input class="form-control" type="file" name="product_offer_image" accept="image/*" required>
                                 <br>
 
                                 <label class="form-label" for="is_active">Is Active</label>
