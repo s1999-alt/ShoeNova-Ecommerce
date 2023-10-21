@@ -95,8 +95,8 @@
         <table class="table">
             <thead>
                 <tr>
-                <th>#</th>
-                <th>Description</th>
+                <th>No</th>
+                <th>Product</th>
                 <th>Qty</th>
                 <th>Total</th>
                 </tr>
@@ -107,8 +107,9 @@
                     <td>
                         {{ forloop.counter }}
                     </td>
+                    
                     <td>
-                        {{ordered_product.product.get_product_name}}
+                        {{ordered_product.product.product_name}}
                     </td>
                     <td>
                         {{ordered_product.quantity}}
@@ -130,10 +131,6 @@
                 <tr>
                     <th colspan="2" class="text-right">Coupon discount:</th>
                     <td class="text-center text-success"><strong>Rs {{order.additional_discount|intcomma }}</strong></td>
-                </tr>
-                <tr>
-                    <th colspan="2" class="text-right">Tax:</th>
-                    <td class="text-center text-danger">Rs {{order.tax}}</td>
                 </tr>
                 
                 <tr>

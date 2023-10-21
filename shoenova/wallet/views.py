@@ -3,14 +3,16 @@ from wallet.models import Wallet
 import json
 from orders.models import Order
 from django.http import JsonResponse
-
+from app.models import UserProfile
 
 # Create your views here.
  
 def wallet(request):
+
   wallet,created = Wallet.objects.get_or_create(user=request.user, is_active=True)
+
   context = {
-    'wallet': wallet
+    'wallet': wallet,
   }
   return render(request, 'user/wallet.html', context)
 

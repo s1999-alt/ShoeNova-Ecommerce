@@ -109,6 +109,9 @@
                         </div>
                         {% if payment_method.method_name == 'RAZORPAY' %}
                         <button id="rzp-button1">Pay with Razorpay</button>
+                        
+                        {% elif payment_method.method_name == 'WALLET' %}
+                        <button id="cod-button1">Pay with Wallet</button>
                         {% else %}
                         <button id="cod-button1">Proceed with COD</button>
                         {% endif %}

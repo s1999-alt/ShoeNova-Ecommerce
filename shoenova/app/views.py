@@ -13,6 +13,9 @@ from django.core.paginator import Paginator
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from decimal import Decimal
+from wallet.models import Wallet
+import random
+import string
 
 
 
@@ -44,6 +47,7 @@ def login_regis(request):
         phone = request.POST.get("phone") 
         password = request.POST.get("password")
         confirmpassword = request.POST.get("confirmpassword")
+        referal_id = request.POST.get("referal_id")
         
         if password != confirmpassword:
             messages.warning(request, "Password is Incorrect")
@@ -58,11 +62,29 @@ def login_regis(request):
                                                              phone=phone,
                                                              password=password)
                     myuser.save()
+                    if referal_id:
+                        try:
+                            referrer = UserProfile.objects.get(referral_id=referal_id)
+                            try:
+                                user_wallet = Wallet.objects.get(user=referrer)
+                                user_wallet.balance += 250
+                                user_wallet.save()
+                            except Wallet.DoesNotExist:
+                                messages.error(request, 'No Wallet exists for this user.')
+
+                            user_wallet, created = Wallet.objects.get_or_create(user=myuser, defaults={'balance': 0})
+                            user_wallet.balance += 250
+                            user_wallet.save()
+                        except UserProfile.DoesNotExist:
+                            messages.error(request, 'Invalid referral code.')
+                                 
                     messages.success(request, "Signup Successfully..Please Login!")
                     return redirect("/login-page")
             except Exception as e:
                 # Handle any other exceptions here
                 messages.error(request, f"An error occurred: {str(e)}")
+        
+
 
         # Retain form data after an error
         retained_data = {
@@ -704,6 +726,7 @@ def remove_from_wishlist(request,id):
         messages.success(request, 'Product removed from your wishlist.')
     except:
         messages.error(request, 'Product not found in your wishlist.')
-    return redirect('wishlist-page')    
-    
+    return redirect('wishlist-page')
+
+
 
