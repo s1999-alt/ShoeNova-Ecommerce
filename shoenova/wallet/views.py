@@ -3,10 +3,10 @@ from wallet.models import Wallet
 import json
 from orders.models import Order
 from django.http import JsonResponse
-from app.models import UserProfile
+from django.views.decorators.cache import cache_control
 
 # Create your views here.
- 
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def wallet(request):
 
   wallet,created = Wallet.objects.get_or_create(user=request.user, is_active=True)
@@ -18,6 +18,7 @@ def wallet(request):
 
 
 
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def get_wallet_grand_total(request):
     order_number = request.GET.get('order_number')
     check = request.GET.get('check')

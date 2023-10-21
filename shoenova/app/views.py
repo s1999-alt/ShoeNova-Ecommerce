@@ -279,6 +279,8 @@ def login_page(request):
     return render(request, 'user/page-login.html')
 
 
+
+@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def login_without_otp(request):
     
     

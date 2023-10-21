@@ -3,8 +3,10 @@ from myapp.models import Product,Category, Wishlist
 from .models import CategoryOffer,ProductOffer
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
+from django.views.decorators.cache import cache_control
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def offers(request):
   category_offer = CategoryOffer.objects.all()
   product_offer = ProductOffer.objects.all()
@@ -16,7 +18,7 @@ def offers(request):
 
 
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def category_offer_product(request, offer_slug, category=None):
 
   try:
@@ -58,7 +60,7 @@ def category_offer_product(request, offer_slug, category=None):
       return render(request, 'user/page-shop.html',context)
   
 
-
+@cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def product_offer_product(request, offer_slug):
   try:
     product_offer = get_object_or_404(ProductOffer, product_offer_slug=offer_slug)

@@ -29,8 +29,8 @@
                         </div>
                         <div class="loop-grid pr-30">
                             <div class="row">
+                                {% for cat in category_offer %}
                                 <div class="col-lg-4">
-                                    {% for cat in category_offer %}
                                     <article class="wow fadeIn animated hover-up mb-30">
                                         <div class="post-thumb img-hover-scale">
                                             <a href="blog-post-right.html">
@@ -53,8 +53,8 @@
                                             </div>
                                         </div>
                                     </article>
-                                    {% endfor %}
                                 </div>
+                                {% endfor %}
                                 
                             </div>
                         </div>
@@ -64,8 +64,8 @@
                         </div>
                         <div class="loop-grid pr-30">
                             <div class="row">
+                                {% for product in product_offer %}
                                 <div class="col-lg-4">
-                                    {% for product in product_offer %}
                                     <article class="wow fadeIn animated hover-up mb-30">
                                         <div class="post-thumb img-hover-scale">
                                             <a href="blog-post-right.html">
@@ -88,9 +88,8 @@
                                             </div>
                                         </div>
                                     </article>
-                                    {% endfor %}
                                 </div>
-                                
+                                {% endfor %} 
                             </div>
                         </div>
 
@@ -112,4 +111,12 @@
             </div>
         </section>
     </main>
+    <style>
+        .entry-content-2 {
+            background-color: #EADBC8; /* Replace with your desired background color */
+            color: #333; /* Replace with your desired text color */
+            /* Add any other styles you want for this section */
+        }
+        
+    </style>
     {% endblock %}
