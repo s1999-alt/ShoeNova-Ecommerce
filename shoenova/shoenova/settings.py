@@ -93,11 +93,11 @@ WSGI_APPLICATION = 'shoenova.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'shoenova',
-        'USER': 'postgres',
-        'PASSWORD': 'siyad1999',
+        'NAME': config('NAME'),
+        'USER': config('USER'),
+        'PASSWORD': config('PASSWORD'),
         'HOST': 'localhost',
-        'PORT': '5432',
+        # 'PORT': '5432',
     }
 }
 
