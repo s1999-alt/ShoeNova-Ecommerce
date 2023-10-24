@@ -465,7 +465,7 @@ def order_return_user(request,order_number):
 
 
 
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+
 def get_weekly_sales():
     end_date = timezone.now()
     start_date = end_date - timezone.timedelta(days=7)
@@ -475,7 +475,7 @@ def get_weekly_sales():
     ).values('product__product_name').annotate(weekly_sales=Sum('quantity'))
 
 
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+
 def get_monthly_sales():
     end_date = timezone.now()
     start_date = end_date - timezone.timedelta(days=30)
@@ -485,7 +485,7 @@ def get_monthly_sales():
     ).values('product__product_name').annotate(monthly_sales=Sum('quantity'))
 
 
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
+
 def get_yearly_sales():
     end_date = timezone.now()
     start_date = end_date - timezone.timedelta(days=365)
@@ -496,7 +496,6 @@ def get_yearly_sales():
 
 
 
-@cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def sales_report(request):
     weekly_sales_data = list(get_weekly_sales().values('product__product_name','weekly_sales'))  # Convert QuerySet to a list of dictionaries
     monthly_sales_data = list(get_monthly_sales().values('product__product_name','monthly_sales'))
