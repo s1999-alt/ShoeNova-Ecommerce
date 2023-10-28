@@ -28,9 +28,10 @@ import string
 def index(request):
     products = Product.objects.all()
     categories = Category.objects.all()
+    
     context = {
         'products': products,
-        'categories': categories
+        'categories': categories,
     }
     return render(request, 'user/index.html',context)
 
@@ -661,7 +662,7 @@ def checkout(request, total=0, quantity=0, cart_item=None):
     return render(request, 'checkout.html',context)
 
 
-
+@login_required(login_url='/login-page')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def user_profile(request):
     order = Order.objects.filter(user=request.user,is_ordered=True)
@@ -671,7 +672,7 @@ def user_profile(request):
     return render(request, 'user-profile.html', context)
 
 
-
+@login_required(login_url='/login-page')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def order_details(request, order_number):
     try:
@@ -690,6 +691,9 @@ def order_details(request, order_number):
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def wishlist_page(request):
+    if not request.user.is_authenticated:
+        messages.info(request, 'Please login to see your wishlist.')
+        return redirect('/login-page/')
     wishlist = Wishlist.objects.filter(user=request.user)
     context = {
         'wishlist':wishlist
@@ -698,7 +702,7 @@ def wishlist_page(request):
 
 
 
-
+@login_required(login_url='/login-page')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def add_to_wishlist(request, id):
     product = Product.objects.get(id=id)
@@ -719,7 +723,7 @@ def add_to_wishlist(request, id):
     return render(request, 'wishlist.html', context)
 
 
-
+@login_required(login_url='/login-page')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def remove_from_wishlist(request,id):
     try:

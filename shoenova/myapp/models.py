@@ -68,7 +68,21 @@ class Product(models.Model):
 
         offer_price = self.price -  self.price * (offer_percentage) / (100)
 
-        return round(offer_price)    
+        return round(offer_price)
+    
+    def offer_percentage(self):
+        offer_percentage = 0
+
+        if self.category.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
+            offer_percentage = self.category.categoryoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).values_list('discount_percentage',flat=True).order_by('-discount_percentage').first()
+        if self.productoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).exists():
+            offer_percentage = offer_percentage + self.productoffer_set.filter(is_active=True, expire_date__gte=datetime.now()).values_list('discount_percentage',flat=True).order_by('-discount_percentage').first()  
+
+
+        if offer_percentage >= 100:
+            offer_percentage = 100
+            
+        return round(offer_percentage)    
      
     
 

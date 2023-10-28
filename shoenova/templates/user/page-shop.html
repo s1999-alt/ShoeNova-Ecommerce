@@ -95,7 +95,11 @@
                                             <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                         </div>
                                         <div class="product-badges product-badges-position product-badges-mrg">
-                                            <span class="hot">Hot</span>
+                                            {% if product.offer_percentage > 0 %}
+                                            <span class="hot">{{ product.offer_percentage }}%</span>
+                                            {% else %}
+                                            <span class="hot">New</span>
+                                            {% endif %}
                                         </div>
                                     </div>
                                     <div class="product-content-wrap">
