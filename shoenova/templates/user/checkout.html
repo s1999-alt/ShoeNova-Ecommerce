@@ -161,35 +161,6 @@
 
                             </script>
                            
-                            <div class="mb-30 mt-50">
-                                <div class="heading_s1 mb-3">
-                                    <h4>Applied Coupons</h4>
-                                </div>
-                                <div class="total-amount">
-                                    {% if coupon %}
-                                        <div class="applied-coupon">
-                                            <div class="coupon-code">{{ coupon.coupon_code }}</div>
-                                            <a href="{% url 'checkout' %}" class="remove-coupon">Remove</a>
-                                        </div>
-                                    {% else %}
-                                    <div class="left">
-                                        <div class="coupon">
-                                            <form action="#" method="POST">
-                                                {% csrf_token %}
-                                                <div class="form-row row justify-content-center">
-                                                    <div class="form-group col-lg-6">
-                                                        <!-- <input readonly class="font-medium" name="coupon" id="enter-couponcode" placeholder="No Coupon Selected"> -->
-                                                    </div>
-                                                    <div class="form-group col-lg-6">
-                                                        <button type="submit" class="btn  btn-sm"><i class="fi-rs-label mr-10"></i>Apply</button>
-                                                    </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>                           
                         </div>
                     </div>
             </div>

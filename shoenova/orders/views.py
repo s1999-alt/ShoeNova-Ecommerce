@@ -94,7 +94,7 @@ def order_summary(request ,total=0, quantity=0):
       order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
      
 
-      wallet = Wallet.objects.get(user=request.user, is_active=True)
+      wallet = Wallet.objects.get_or_create(user=request.user, is_active=True)
 
       context = {
         'paymentmethods':PaymentMethod.objects.all(),
