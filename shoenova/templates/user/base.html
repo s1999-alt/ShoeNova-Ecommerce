@@ -174,7 +174,9 @@
                         <div class="col-xl-3 col-lg-4">
                             <div class="header-info header-info-right">
                                 <ul>
-                                    <li><i class="fi-rs-user"></i><a href="{% url 'login-register' %}">Log In / Sign Up</a></li>
+                                    <li><i class="fi-rs-user"></i><a href="{% url 'login-page' %}">Log In</a></li>
+                                    <li class="separator">|</li>
+                                    <li><i class="fi-rs-user"></i><a href="{% url 'login-register' %}">Sign Up</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -666,4 +668,11 @@
         <script src="{% static 'assets/js/main.js' %}"></script>
         <script src="{% static 'assets/js/shop.js' %}"></script>
 </body>
+<style>
+    .separator {
+        display: inline-block;
+        margin: 0 10px; /* Adjust the spacing as needed */
+        color: #000; /* Adjust the color as needed */
+    }
+</style>
 </html>
