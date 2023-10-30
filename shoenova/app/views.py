@@ -4,7 +4,7 @@ from django.contrib import messages
 from .models import UserProfile
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
-from myapp.models import Product, Category, Cart, CartItem, Variations, Wishlist
+from myapp.models import Product, Category, Cart, CartItem, Variations, Wishlist, Banner_area
 from orders.models import Order,Coupon,OrderProduct
 from .utils import send_otp, resend_otp
 from datetime import datetime
@@ -28,10 +28,12 @@ import string
 def index(request):
     products = Product.objects.all()
     categories = Category.objects.all()
+    banner = Banner_area.objects.all()
     
     context = {
         'products': products,
         'categories': categories,
+        'banner': banner,
     }
     return render(request, 'user/index.html',context)
 
@@ -733,6 +735,9 @@ def remove_from_wishlist(request,id):
     except:
         messages.error(request, 'Product not found in your wishlist.')
     return redirect('wishlist-page')
+
+
+
 
 
 

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Category, Product, Cart, CartItem,Variations,Wishlist
+from .models import Category, Product, Cart, CartItem,Variations,Wishlist,Banner_area
 
 
 class VariationAdmin(admin.ModelAdmin):
@@ -24,3 +24,4 @@ admin.site.register(Cart, CartAdmin)
 admin.site.register(CartItem,CartItemAdmin)
 admin.site.register(Variations,VariationAdmin)
 admin.site.register(Wishlist)
+admin.site.register(Banner_area)

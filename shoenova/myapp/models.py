@@ -149,7 +149,20 @@ class CartItem(models.Model):
 
 class Wishlist(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)     
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+
+
+class Banner_area(models.Model):
+    title = models.CharField(max_length=50, default="")
+    sub_title = models.CharField(max_length=50, default="")
+    tag_line = models.CharField(max_length=50, default="")
+    image = models.ImageField(upload_to="photos/bannertop")
+    deal = models.CharField(max_length=50, default="")
+    discount = models.IntegerField()
+    link = models.CharField(max_length=100, default="")
+
+    def __str__(self) -> str:
+        return self.title        
 
 
 
