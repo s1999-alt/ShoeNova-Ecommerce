@@ -14,6 +14,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from decimal import Decimal
 from wallet.models import Wallet
+import re
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 import random
 import string
 
@@ -51,6 +54,25 @@ def login_regis(request):
         password = request.POST.get("password")
         confirmpassword = request.POST.get("confirmpassword")
         referal_id = request.POST.get("referal_id")
+
+        if not username.strip() or not email.strip() or not phone.strip() or not password.strip() or not confirmpassword.strip():
+            messages.warning(request, "Avoid the spaces and Enter the values!")
+            return render(request, 'user/page-login-register.html')
+
+        if not re.match(r'^\d+$', phone):
+            messages.warning(request, "Phone number should only contain digits.")
+            return render(request, 'user/page-login-register.html')
+
+        if not re.match(r'^[a-zA-Z0-9]+$', username):
+            messages.warning(request, "Username should contain only alphanumeric characters.")
+            return render(request, 'user/page-login-register.html')
+
+        try:
+            validate_email(email)
+        except ValidationError:
+            messages.warning(request, "Please enter a valid email address.")
+            return render(request, 'user/page-login-register.html')    
+        
         
         if password != confirmpassword:
             messages.warning(request, "Password is Incorrect")
@@ -86,8 +108,6 @@ def login_regis(request):
             except Exception as e:
                 # Handle any other exceptions here
                 messages.error(request, f"An error occurred: {str(e)}")
-        
-
 
         # Retain form data after an error
         retained_data = {
@@ -98,6 +118,7 @@ def login_regis(request):
         return render(request, 'user/page-login-register.html', {'retained_data': retained_data})
     else:
         return render(request, 'user/page-login-register.html')
+
 
 
 
@@ -215,7 +236,7 @@ def reset_password(request):
             user = UserProfile.objects.get(email=request.session['email'])
             user.set_password(password)
             user.save()
-            
+
             return redirect('password-reset-success')
         except UserProfile.DoesNotExist:
             return render(request, 'reset-password.html', {'error_message': 'Invalid email address'})
