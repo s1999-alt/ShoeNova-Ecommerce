@@ -82,6 +82,9 @@ def login_regis(request):
                     messages.warning(request, "Username Is Already Taken")
                 elif UserProfile.objects.filter(email=email).exists():
                     messages.info(request, "Email Is Already Taken")
+                elif UserProfile.objects.filter(referral_id=referal_id).exists():
+                    messages.warning(request, "Referral ID Is Already Taken")
+                    return render(request, 'user/page-login-register.html')
                 else:
                     myuser = UserProfile.objects.create_user(email=email,
                                                              phone=phone,

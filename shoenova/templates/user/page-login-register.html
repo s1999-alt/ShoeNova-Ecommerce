@@ -46,7 +46,7 @@
                       </div>
                       <div class="form-group">
                         <input type="tel" name="phone" placeholder="Phone Number" required value="{{ retained_data.phone}}" oninput="validatePhoneNumber(event)" />
-                        <span id="phone-error" style="color: red;"></span>
+                        <span id="phone-error" style="color: red; display: none;"></span>
                       </div>
                       <div class="form-group">
                         <input required="" type="password" name="password" placeholder="Password" />
@@ -106,9 +106,11 @@
   
       if (!/^\d+$/.test(phoneNumber)) {
           input.setCustomValidity("Phone number should only contain digits.");
+          errorElement.style.display = "inline"; // Show the error message
           errorElement.textContent = "Phone number should only contain digits.";
       } else {
           input.setCustomValidity("");
+          errorElement.style.display = "none"; // Hide the error message
           errorElement.textContent = "";
       }
   }
