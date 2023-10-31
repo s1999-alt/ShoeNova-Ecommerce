@@ -36,8 +36,6 @@
                     <p class="mb-50 font-sm">Your personal data will be used to support your experience throughout this website, to manage access to your account, and for other purposes described in our privacy policy</p>
 
 
-
-
                     <form method="post">
                       {% csrf_token %}
                       <div class="form-group">
@@ -47,7 +45,8 @@
                         <input type="text" required="" name="email" placeholder="Email" value="{{ retained_data.email }}" />
                       </div>
                       <div class="form-group">
-                        <input type="tel" name="phone" placeholder="Phone Number" required value="{{ retained_data.phone}}">
+                        <input type="tel" name="phone" placeholder="Phone Number" required value="{{ retained_data.phone}}" oninput="validatePhoneNumber(event)" />
+                        <span id="phone-error" style="color: red;"></span>
                       </div>
                       <div class="form-group">
                         <input required="" type="password" name="password" placeholder="Password" />
@@ -98,5 +97,22 @@
       </div>
     </section>
   </main>
+
+  <script>
+    function validatePhoneNumber(event) {
+      const input = event.target;
+      const phoneNumber = input.value;
+      const errorElement = document.getElementById("phone-error");
+  
+      if (!/^\d+$/.test(phoneNumber)) {
+          input.setCustomValidity("Phone number should only contain digits.");
+          errorElement.textContent = "Phone number should only contain digits.";
+      } else {
+          input.setCustomValidity("");
+          errorElement.textContent = "";
+      }
+  }
+  
+  </script>
   
 {% endblock %}
