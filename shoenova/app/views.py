@@ -105,6 +105,8 @@ def login_regis(request):
 def otp_regis(request):
     if request.method=="POST":
         if 'otp_resend' in request.POST:  # Check if Resend OTP button was clicked
+            del request.session['otp_secret_key']
+            del request.session['otp_valid_date']
             resend_otp(request)
             return redirect('otp-regis')  # Redirect back to OTP page after resending
 
@@ -124,8 +126,8 @@ def otp_regis(request):
                     user = get_object_or_404(UserProfile, email=email)
                     request.session['email_'] = email
                     login(request, user)
-                    del request.session['email']
 
+                    del request.session['email']
                     del request.session['otp_secret_key']
                     del request.session['otp_valid_date']
 
@@ -147,9 +149,14 @@ def password_reset_request(request):
         email = request.POST.get("email")
         try:
             if email is not None:
+                totp = pyotp.TOTP(pyotp.random_base32(), interval=60)
+                request.session['otp_secret_key'] = totp.secret
+
                 send_otp(request, email)
                 request.session['email'] = email
                 return redirect('forgot-password-otp')
+            else:
+                messages.warning(request, "Please enter an email address.")
         except UserProfile.DoesNotExist:
             messages.warning(request, "Invalid Email. Please Enter a Valid One.") 
     return render(request, 'password-reset-request.html')
@@ -160,9 +167,9 @@ def password_reset_request(request):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def forgot_password_otp(request):
     if request.method == "POST":
-        if 'otp_resend' in request.POST:  # Check if Resend OTP button was clicked
+        if 'otp_resend' in request.POST:
             resend_otp(request)
-            return redirect('forgot-password-otp')  # Redirect back to OTP page after resending
+            return redirect('forgot-password-otp')
 
         otp = request.POST['otp']
         email = request.session['email']
@@ -174,7 +181,7 @@ def forgot_password_otp(request):
             valid_until = datetime.fromisoformat(otp_valid_until)
 
             if valid_until > datetime.now():
-                totp = pyotp.TOTP(otp_secret_key, interval=120)
+                totp = pyotp.TOTP(otp_secret_key, interval=60)
                 
                 if totp.verify(otp):
                     request.session['email_']=email
@@ -208,6 +215,7 @@ def reset_password(request):
             user = UserProfile.objects.get(email=request.session['email'])
             user.set_password(password)
             user.save()
+            
             return redirect('password-reset-success')
         except UserProfile.DoesNotExist:
             return render(request, 'reset-password.html', {'error_message': 'Invalid email address'})

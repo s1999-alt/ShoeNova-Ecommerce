@@ -42,7 +42,14 @@ def send_otp(request,email):
 
 def resend_otp(request):
     email = request.session['email']
-    totp = pyotp.TOTP(request.session['otp_secret_key'], interval=120)
+    otp_secret_key = request.session.get('otp_secret_key')
+    if not otp_secret_key:
+      # Generate a new OTP secret if it's not present
+      totp = pyotp.TOTP(pyotp.random_base32(), interval=60)
+      request.session['otp_secret_key'] = totp.secret
+      otp_secret_key = totp.secret
+      
+    totp = pyotp.TOTP(request.session['otp_secret_key'], interval=60)
     otp = totp.now()
 
     subject = "Your OTP Code"
@@ -61,7 +68,7 @@ def resend_otp(request):
         server.login(from_email, 'uzaa qdox tykx vgyj')
         server.sendmail(from_email, [to_email], msg.as_string())
         server.quit()
-
+        
         valid_date = datetime.now() + timedelta(minutes=1)
         request.session['otp_valid_date'] = str(valid_date)
 
