@@ -6,7 +6,7 @@
     <title>{% block title %}{% endblock title %}</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta property="og:title" content="">
     <meta property="og:type" content="">
     <meta property="og:url" content="">
@@ -154,7 +154,6 @@
             </div>
         </div>
       
-        
         <header class="header-area header-style-1 header-height-2">
             <div class="header-top header-top-ptb-1 d-none d-lg-block">
                 <div class="container">
@@ -332,46 +331,19 @@
                             </div>
                         </div>
                       
-    
                         <div class="header-action-right d-block d-lg-none">
                             <div class="header-action-2">
                                 <div class="header-action-icon-2">
-                                    <a href="shop-wishlist.html">
+                                    <a href="{% url 'wishlist-page' %}">
                                         <img alt="Evara" src="{% static 'assets/imgs/theme/icons/icon-heart.svg' %}">
-                                        <span class="pro-count white">4</span>
+                                        <span class="pro-count white">{{wishlist_count}}</span>
                                     </a>
                                 </div>
                                 <div class="header-action-icon-2">
-                                    <a class="mini-cart-icon" href="shop-cart.html">
+                                    <a class="mini-cart-icon" href="{% url 'cart' %}">
                                         <img alt="Evara" src="{% static 'assets/imgs/theme/icons/icon-cart.svg' %}">
-                                        <span class="pro-count white">2</span>
+                                        <span class="pro-count white">{{cart_count}}</span>
                                     </a>
-                                    <div class="cart-dropdown-wrap cart-dropdown-hm2">
-                                        <ul>
-                                            <li>
-                                                <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara" src="{% static 'assets/imgs/shop/thumbnail-3.jpg' %}"></a>
-                                                </div>
-                                                <div class="shopping-cart-title">
-                                                    <h4><a href="shop-product-right.html">Plain Striola Shirts</a></h4>
-                                                    <h3><span>1 × </span>$800.00</h3>
-                                                </div>
-                                                <div class="shopping-cart-delete">
-                                                    <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                </div>
-                                            </li>
-                                
-                                        </ul>
-                                        <div class="shopping-cart-footer">
-                                            <div class="shopping-cart-total">
-                                                <h4>Total <span>$383.00</span></h4>
-                                            </div>
-                                            <div class="shopping-cart-button">
-                                                <a href="shop-cart.html">View cart</a>
-                                                <a href="shop-checkout.html">Checkout</a>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                                 <div class="header-action-icon-2 d-block d-lg-none">
                                     <div class="burger-icon burger-icon-white">
@@ -401,7 +373,7 @@
                 </div>
                 <div class="mobile-header-content-area">
                     <div class="mobile-search search-style-3 mobile-header-border">
-                        <form action="#">
+                        <form action="{% url 'search' %}">
                             <input type="text" placeholder="Search for items…">
                             <button type="submit"><i class="fi-rs-search"></i></button>
                         </form>
@@ -430,41 +402,14 @@
                         <!-- mobile menu start -->
                         <nav>
                             <ul class="mobile-menu">
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="index.html">Home</a>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'index' %}">Home</a>
                                 </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="shop-grid-right.html">shop</a>
-                
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'index' %}">About</a>
                                 </li>
-                                
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Mega menu</a>
-                                    <ul class="dropdown">
-                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Women's Fashion</a>
-                                            <ul class="dropdown">
-                                                <li><a href="shop-product-right.html">Dresses</a></li>
-                                                <li><a href="shop-product-right.html">Blouses & Shirts</a></li>
-                                                <li><a href="shop-product-right.html">Hoodies & Sweatshirts</a></li>
-                                                <li><a href="shop-product-right.html">Women's Sets</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Men's Fashion</a>
-                                            <ul class="dropdown">
-                                                <li><a href="shop-product-right.html">Jackets</a></li>
-                                                <li><a href="shop-product-right.html">Casual Faux Leather</a></li>
-                                                <li><a href="shop-product-right.html">Genuine Leather</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Technology</a>
-                                            <ul class="dropdown">
-                                                <li><a href="shop-product-right.html">Gaming Laptops</a></li>
-                                                <li><a href="shop-product-right.html">Ultraslim Laptops</a></li>
-                                                <li><a href="shop-product-right.html">Tablets</a></li>
-                                                <li><a href="shop-product-right.html">Laptop Accessories</a></li>
-                                                <li><a href="shop-product-right.html">Tablet Accessories</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'shop-product' %}">shop</a>
                                 </li>
-    
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'offers:offers' %}">Offers</a>
+                                </li>
                                 <li class="menu-item-has-children"><span class="menu-expand"></span><a href="blog-category-fullwidth.html">Blog</a>
                                 </li>
                                 <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Pages</a>
@@ -479,6 +424,8 @@
                                         <li><a href="page-404.html">404 Page</a></li>
                                     </ul>
                                 </li>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'index' %}">Contact</a>
+                                </li> 
                             </ul>
                         </nav>
                         {% for message in messages %}
@@ -543,14 +490,14 @@
                 </div>
             </section>
             <section class="section-padding footer-mid">
-                <div class="container pt-15 pb-20">
+                <div class="container pt-0 pb-0">
                     <div class="row">
                         <div class="col-lg-4 col-md-6">
                             <div class="widget-about font-md mb-md-5 mb-lg-0">
                                 <div class="logo logo-width-1 wow fadeIn animated">
                                     <a href="index.html"><img src="{% static 'assets/imgs/theme/logo.png' %}" alt="logo"></a>
                                 </div>
-                                <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
+                                <h5 class="mt-5 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
                                 <p class="wow fadeIn animated">
                                     <strong>Address: </strong>562 Wellington Road, Street 32, San Francisco
                                 </p>
@@ -560,7 +507,7 @@
                                 <p class="wow fadeIn animated">
                                     <strong>Hours: </strong>10:00 - 18:00, Mon - Sat
                                 </p>
-                                <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
+                                <h5 class="mb-5 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
                                 <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
                                     <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-facebook.svg' %}" alt=""></a>
                                     <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-twitter.svg' %}" alt=""></a>
@@ -613,7 +560,7 @@
             </section>
             <div class="container pb-20 wow fadeIn animated">
                 <div class="row">
-                    <div class="col-12 mb-20">
+                    <div class="col-12 mb-5">
                         <div class="footer-bottom"></div>
                     </div>
                     <div class="col-lg-6">
@@ -674,5 +621,39 @@
         margin: 0 10px; /* Adjust the spacing as needed */
         color: #000; /* Adjust the color as needed */
     }
+    .container {
+        overflow: hidden;
+      }
+    
+    body {
+        overflow: hidden;
+      }
+
+      /* Existing CSS... */
+
+      footer.main {
+          padding: 20px 0; /* Adjust the padding as needed */
+      }
+      
+      .section-padding.footer-mid {
+          padding: 20px 0; /* Adjust the padding as needed */
+      }
+      
+      .widget-about {
+          margin-bottom: 20px; /* Adjust the margin as needed */
+      }
+      
+      /* Additional style to decrease space between items in the newsletter section */
+      .newsletter .row > div {
+          margin-bottom: 10px; /* Adjust the margin as needed */
+      }
+      
+      /* Additional style to decrease space between items in the Install App section */
+      .install-app .col-md-8 {
+          margin-bottom: 10px; /* Adjust the margin as needed */
+      }
+      
+      /* Existing CSS... */
+        
 </style>
 </html>

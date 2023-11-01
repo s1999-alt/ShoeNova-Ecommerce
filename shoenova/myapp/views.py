@@ -222,14 +222,14 @@ def admn_enable_disable_categories(request,id):
         if category.soft_deleted:
             category.soft_deleted=False
             category.save()
-            messages.warning(request,'Category Disabled')
+            messages.success(request,'Category Enabled')
             return redirect('admn_product_category')
         else:
             category.soft_deleted=True
             category.save()
-            messages.success(request,'Category Enabled')
+            messages.warning(request,'Category Disabled')
     except:
-        messages.warning(request,'Error Occured')
+        pass
     return redirect('myapp:admn_product_category')
 
 #--------------------Edit categories---------------

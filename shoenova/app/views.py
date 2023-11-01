@@ -167,24 +167,41 @@ def otp_regis(request):
 
 
 
+# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+# def password_reset_request(request):
+#     if request.method == "POST":
+#         email = request.POST.get("email")
+#         try:
+#             if email is not None:
+#                 totp = pyotp.TOTP(pyotp.random_base32(), interval=60)
+#                 request.session['otp_secret_key'] = totp.secret
+
+#                 send_otp(request, email)
+#                 request.session['email'] = email
+#                 return redirect('forgot-password-otp')
+#             else:
+#                 messages.warning(request, "Please enter an email address.")
+#         except UserProfile.DoesNotExist:
+#             messages.warning(request, "Invalid Email. Please Enter a Valid One.") 
+#     return render(request, 'password-reset-request.html')
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def password_reset_request(request):
     if request.method == "POST":
         email = request.POST.get("email")
-        try:
-            if email is not None:
+        if email:
+            try:
+                validate_email(email)
                 totp = pyotp.TOTP(pyotp.random_base32(), interval=60)
                 request.session['otp_secret_key'] = totp.secret
-
                 send_otp(request, email)
                 request.session['email'] = email
                 return redirect('forgot-password-otp')
-            else:
-                messages.warning(request, "Please enter an email address.")
-        except UserProfile.DoesNotExist:
-            messages.warning(request, "Invalid Email. Please Enter a Valid One.") 
+            except ValidationError:
+                messages.warning(request, "Invalid Email. Please Enter a Valid One.")
+        else:
+            messages.warning(request, "Please enter an email address.")
     return render(request, 'password-reset-request.html')
-
 
 
 
@@ -231,8 +248,13 @@ def reset_password(request):
     if request.method == "POST":
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm-password")
+
+        if not password.strip() or not confirm_password.strip():
+            messages.warning(request, "Avoid the spaces and Enter the values!")
+            return render(request, 'user/reset-password.html')
         
         if password != confirm_password:
+            messages.warning(request, "Passwords do not match")
             return render(request, 'user/reset-password.html', {'error_message': 'Passwords do not match'})
         
         try:
@@ -252,8 +274,6 @@ def reset_password(request):
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def password_reset_success(request):
     return render(request, 'password-reset-success.html')
-
-
 
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
@@ -317,7 +337,6 @@ def login_page(request):
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
 def login_without_otp(request):
-    
     
     if request.user.is_authenticated:
         return redirect('/')
@@ -635,6 +654,9 @@ def delete_cart(request,id,cart_item_id):
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)  
 def search(request):
     categories=Category.objects.all()
+    products = Product.objects.none()
+    product_count = 0  
+    
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
         if keyword:

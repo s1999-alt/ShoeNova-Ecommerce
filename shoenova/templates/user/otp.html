@@ -15,8 +15,7 @@ Shoe Nova
       </div>
     </div>
   </div>
-  
-  <section class="pt-150 pb-150">
+  <section class="pt-0 pb-0">
     <div class="container">
       <div class="row">
         <div class="col-lg-10 m-auto">
@@ -27,30 +26,32 @@ Shoe Nova
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
              {% endfor %}
-        <div class="container d-flex justify-content-center align-items-center vh-100 mt-3">
+        <div class="container d-flex justify-content-center align-items-center vh-100 mt-0">
             <div class="col-lg-5">
                 <div class="login_wrap widget-taber-content p-30 background-white border-radius-10 mb-md-5 mb-lg-0 mb-sm-5">
                   <div class="padding_eight_all bg-white">
                     <div class="heading_s1">
-                      <h3 class="mb-30">OTP</h3>
+                      <h3 class="mb-30 text-center">OTP</h3>
                     </div>
-                    <form method="post">
-                      {% csrf_token %}
-                      <div class="form-group" action="">
-                        <input type="text" required="" name="otp" placeholder="OTP" />
-                      </div>
+                    <div class="otp-section">
+                      <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group" action="">
+                          <input type="text" required="" name="otp" placeholder="Enter Your OTP" />
+                        </div>
 
-                      <div class="form-group">
-                        <button type="submit" class="btn btn-fill-out btn-block hover-up" name="">Confirm</button>
-                      </div>
-                      <div class="form-group">
-                        <div id="otp-timer">Time remaining: <span id="countdown"></span></div>
-                      </div>
-                    </form>
-                    <form method="post"> <!-- Add a new form for Resend OTP -->
-                      {% csrf_token %}
-                      <button type="submit" class="btn btn-fill-out btn-block hover-up" name="otp_resend">Resend OTP</button>
-                  </form>
+                        <div class="form-group">
+                          <button type="submit" class="btn btn-fill-out btn-block hover-up" name="">Confirm</button>
+                        </div>
+                        <div class="form-group">
+                          <div id="otp-timer">Time remaining: <span id="countdown"></span></div>
+                        </div>
+                      </form>
+                      <form method="post"> <!-- Add a new form for Resend OTP -->
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-fill-out btn-block hover-up" name="otp_resend">Resend OTP</button>
+                      </form>
+                    </div>  
                   </div>
                 </div>
               </div>
@@ -78,5 +79,50 @@ Shoe Nova
     });
 </script>
 
-              
+<style>
+  /* Add this CSS to your existing styles or create a new section for it */
+.otp-section {
+    background-color: #f9f9f9; /* Set a background color for the OTP section */
+    border: 1px solid #ddd; /* Add a border for visual separation */
+    padding: 20px; /* Add padding for some space around the OTP input */
+    border-radius: 10px; /* Add border-radius for rounded corners */
+}
+
+.otp-section {
+  background-color: #f9f9f9; /* Set a background color for the OTP section */
+  border: 1px solid #ddd; /* Add a border for visual separation */
+  padding: 20px; /* Add padding for some space around the OTP input */
+  border-radius: 10px; /* Add border-radius for rounded corners */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Add a shadow effect */
+}
+
+
+/* Style the OTP input field */
+.otp-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Style the confirm button */
+.confirm-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff; /* Set a background color for the button */
+    color: #fff; /* Set text color */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.confirm-button:hover {
+    background-color: #0056b3; /* Change color on hover */
+}
+.login_wrap {
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3); /* Add a shadow effect to the login_wrap div */
+}
+
+</style>
 {% endblock content %}

@@ -786,12 +786,14 @@
                     <div class="slider-arrow slider-arrow-2 carausel-6-columns-arrow" id="carausel-6-columns-arrows"></div>
                     <div class="carausel-6-columns" id="carausel-6-columns">
                         {% for cat in categories  %}
+                         {% if not cat.soft_deleted %}
                         <div class="card-1">
                             <figure class=" img-hover-scale overflow-hidden">
                                 <a href="shop-grid-right.html"><img src="{{cat.category_image.url}}" alt=""></a>
                             </figure>
                             <h5><a href="shop-grid-right.html">{{cat.category_name}}</a></h5>
                         </div>
+                         {% endif %}
                         {% endfor %}
                     </div>
                 </div>

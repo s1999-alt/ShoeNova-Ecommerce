@@ -160,9 +160,11 @@
                                 <li><a href="{% url 'shop-product' %}">All products</a></li>
                             </ul>
                             {% for cat in categories %}
+                             {% if not cat.soft_deleted %}
                             <ul class="categories">
                                 <li><a href="{% url 'shop-product-by-category' category_slug=cat.slug %}">{{cat.category_name}}</a></li>
                             </ul>
+                             {% endif %}
                             {% endfor %}
                         </div>
                         <!-- Fillter By Price -->
