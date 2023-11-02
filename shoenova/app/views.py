@@ -21,11 +21,7 @@ import random
 import string
 
 
-
-# Create your views here.
-
 # user
-
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def index(request):
@@ -163,24 +159,6 @@ def otp_regis(request):
     return render(request, 'user/otp.html')
 
 
-
-# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-# def password_reset_request(request):
-#     if request.method == "POST":
-#         email = request.POST.get("email")
-#         try:
-#             if email is not None:
-#                 totp = pyotp.TOTP(pyotp.random_base32(), interval=60)
-#                 request.session['otp_secret_key'] = totp.secret
-
-#                 send_otp(request, email)
-#                 request.session['email'] = email
-#                 return redirect('forgot-password-otp')
-#             else:
-#                 messages.warning(request, "Please enter an email address.")
-#         except UserProfile.DoesNotExist:
-#             messages.warning(request, "Invalid Email. Please Enter a Valid One.") 
-#     return render(request, 'password-reset-request.html')
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def password_reset_request(request):
