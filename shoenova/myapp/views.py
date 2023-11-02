@@ -206,7 +206,6 @@ def admn_add_categories(request):
             description=description,
             category_image=category_images,
 
-
         )
         categories.save()
         messages.success(request, 'Category Added Successfully')
