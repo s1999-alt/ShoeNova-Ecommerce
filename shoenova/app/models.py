@@ -23,7 +23,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=30,unique=True,blank=False)
     email = models.EmailField(unique=True)
     phone= models.CharField(max_length=15, blank=False,default='')
-    referral_id = models.UUIDField(max_length=8, default=uuid.uuid4, unique=True)
+    referral_id = models.UUIDField(max_length=8, default=uuid.uuid4, unique=True, null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

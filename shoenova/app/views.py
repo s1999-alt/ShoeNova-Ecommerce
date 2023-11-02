@@ -82,15 +82,13 @@ def login_regis(request):
                     messages.warning(request, "Username Is Already Taken")
                 elif UserProfile.objects.filter(email=email).exists():
                     messages.info(request, "Email Is Already Taken")
-                elif UserProfile.objects.filter(referral_id=referal_id).exists():
-                    messages.warning(request, "Referral ID Is Already Taken")
-                    return render(request, 'user/page-login-register.html')
                 else:
                     myuser = UserProfile.objects.create_user(email=email,
                                                              phone=phone,
                                                              password=password)
                     myuser.save()
-                    if referal_id:
+
+                    if referal_id and len(referal_id) > 5:
                         try:
                             referrer = UserProfile.objects.get(referral_id=referal_id)
                             try:
@@ -105,11 +103,10 @@ def login_regis(request):
                             user_wallet.save()
                         except UserProfile.DoesNotExist:
                             messages.error(request, 'Invalid referral code.')
-                                 
-                    messages.success(request, "Signup Successfully..Please Login!")
-                    return redirect("/login-page")
+                    else:            
+                        messages.success(request, "Signup Successfully..Please Login!")
+                        return redirect("/login-page")
             except Exception as e:
-                # Handle any other exceptions here
                 messages.error(request, f"An error occurred: {str(e)}")
 
         # Retain form data after an error
@@ -656,7 +653,7 @@ def search(request):
     categories=Category.objects.all()
     products = Product.objects.none()
     product_count = 0  
-    
+
     if 'keyword' in request.GET:
         keyword = request.GET['keyword']
         if keyword:
