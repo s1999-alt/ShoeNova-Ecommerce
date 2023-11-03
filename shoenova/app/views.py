@@ -766,6 +766,16 @@ def remove_from_wishlist(request,id):
     return redirect('wishlist-page')
 
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True) 
+def about(request):
+    return render(request, 'page-about.html')
+
+
+@cache_control(no_cache=True, must_revalidate=True, no_store=True) 
+def contact(request):
+    return render(request, 'page-contact.html')
+
+
 
 
 

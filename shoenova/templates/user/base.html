@@ -183,6 +183,8 @@
                         <div class="col-xl-3 col-lg-4">
                             <div class="header-info header-info-right">
                                 <ul>
+                                    <li><i class="fi-rs-user"></i><a href="{% url 'login-page' %}">Helloo {{request.user.username}}</a></li>
+                                    <li class="separator">|</li>
                                     <li><i class="fi-rs-user"></i><a href="{% url 'handlelogout' %}">Logout</a></li>
                                 </ul>
                             </div>
@@ -262,7 +264,7 @@
                                         <li><a class="active" href="{% url 'index' %}">Home</a>
                                         </li>
                                         <li>
-                                            <a href="page-about.html">About</a>
+                                            <a href="{% url 'about' %}">About</a>
                                         </li>
     
                                         <li><a href="{% url 'shop-product' %}">Shop</a>
@@ -271,11 +273,8 @@
                                         <li><a href="{% url 'offers:offers' %}">Offers</a>
                                         </li>
     
-                                        <li><a href="blog-category-grid.html">Blog</a>
-                                        </li>
-
                                         <li>
-                                            <a href="page-contact.html">Contact</a>
+                                            <a href="{% url 'contact' %}">Contact</a>
                                         </li>
                                     </ul>
                                 </nav>
@@ -355,16 +354,14 @@
                             <ul class="mobile-menu">
                                 <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'index' %}">Home</a>
                                 </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'index' %}">About</a>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'about' %}">About</a>
                                 </li>
                                 <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'shop-product' %}">shop</a>
                                 </li>
                                 <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'offers:offers' %}">Offers</a>
                                 </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="blog-category-fullwidth.html">Blog</a>
-                                </li>
 
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'index' %}">Contact</a>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'contact' %}">Contact</a>
                                 </li> 
                             </ul>
                         </nav>

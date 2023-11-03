@@ -43,9 +43,12 @@ urlpatterns = [
     path('remove-from-wishlist/<int:id>', views.remove_from_wishlist, name='remove_from_wishlist'),
 
 
-
     path('user-profile/', views.user_profile, name='user-profile'),
     path('order-details/<int:order_number>/', views.order_details, name='order-details'),
+
+
+    path('about/', views.about, name='about'),
+    path('contact/', views.contact, name='contact'),
 
 
 

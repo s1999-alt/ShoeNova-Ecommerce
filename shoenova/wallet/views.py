@@ -23,7 +23,6 @@ def get_wallet_grand_total(request):
     order_number = request.GET.get('order_number')
     check = request.GET.get('check')
     if order_number:
-        
         wallet = Wallet.objects.get(user=request.user,is_active=True)
         order = Order.objects.get(user=request.user,is_ordered=False,order_number=order_number)
         grand_total = order.order_total
