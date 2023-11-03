@@ -122,7 +122,7 @@
                                         </div>
                                         <div class="attr-detail attr-size">
                                             <strong class="mr-10">Size</strong>
-                                            <select name="size" class="form-control">
+                                            <select name="size" class="form-control" required>
                                                 <option value="" disabled selected>Select</option>
                                                 {% for i in products.variations_set.sizes %}
                                                 <option value="{{i.variation_value | lower }}">{{i.variation_value | capfirst }}</option>
@@ -131,7 +131,6 @@
                                         </div>
                                         <div class="bt-1 border-color-1 mt-30 mb-30"></div>
                                         <div class="detail-extralink">
-                                            {% comment %} <form action="{% url "add-cart" id=products.id%}"> {% endcomment %}
                                             <div class="detail-qty border radius">
                                                 <a href="#" class="qty-down"><i class="fi-rs-angle-small-down"></i></a>
                                                 <span class="qty-val">1</span>
@@ -146,7 +145,6 @@
                                                 <a aria-label="Add To Wishlist" class="action-btn hover-up" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
                                                 <a aria-label="Compare" class="action-btn hover-up" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
                                             </div>
-                                        {% comment %} </form> {% endcomment %}
                                         </div>
                                         <ul class="product-meta font-xs color-grey mt-50">
                                             <li class="mb-5">SKU: <a href="#">FWM15VKT</a></li>
