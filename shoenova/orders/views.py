@@ -409,14 +409,13 @@ def payment_failed(request):
 def payment_success_page(request):
 
   order_id = request.session["order_number"]
-  print(order_id)
 
   order = Order.objects.get(user = request.user,order_number = order_id)
   invoice = Invoice()
   invoice.order = order
   invoice.save()
 
-  return render(request, 'user/payment-success-page.html',context={'invoice':invoice})
+  return render(request, 'user/payment-success-page.html',context={'invoice':invoice,'order':order})
 
 
 
@@ -461,10 +460,6 @@ def order_return_user(request,order_number):
     return redirect('order-details', order_number=order.order_number)  
   
   
-
-
-
-
 
 def get_weekly_sales():
     end_date = timezone.now()

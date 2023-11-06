@@ -1,7 +1,7 @@
-{% comment %} {% extends 'base.html' %} {% endcomment %}
+
 {% load static %}
 {% load humanize %}
-{% comment %} {% block content %} {% endcomment %}
+
 <style type="text/css">
     @page {
         size: A4;
@@ -69,7 +69,6 @@
 </style>
 
 
-
 <div>
     <h1 style="text-align: center;">INVOICE</h1>
     <div>
@@ -130,7 +129,7 @@
                 </tr>
                 <tr>
                     <th colspan="2" class="text-right">Coupon discount:</th>
-                    <td class="text-center text-success"><strong>Rs {{order.additional_discount|intcomma }}</strong></td>
+                    <td class="text-center text-success"><strong>Rs {{order.coupon.discount|intcomma }}</strong></td>
                 </tr>
                 
                 <tr>
@@ -148,4 +147,3 @@
     </div>
 </div>
 <hr style="margin-top: 15px;">
-{% comment %} {% endblock %} {% endcomment %}
