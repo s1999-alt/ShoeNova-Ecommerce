@@ -55,6 +55,7 @@ async function getSalesReport() {
                 type: 'line',
                 data: {
                     labels: productNames,
+                    
                     datasets: [
                         {
                             label: 'Weekly Sales',
