@@ -394,21 +394,28 @@ def product_details(request, id):
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)  
 def shop_product(request):
-    products=Product.objects.all().filter(is_available=True).order_by('id')
+    products=Product.objects.all().filter(is_available=True)
+
+    sort_option = request.GET.get('sort', 'featured')
+    if sort_option == 'low_to_high':
+        products = products.order_by('price')
+    elif sort_option == 'high_to_low':
+        products = products.order_by('-price')
+
     paginator=Paginator(products,3)
     page=request.GET.get('page')
     paged_products=paginator.get_page(page)
     product_count=products.count()
     categories=Category.objects.all()
+
     context={
         'products':paged_products,
         'product_count':product_count,
         'categories':categories,
+        'sort_option': sort_option,
 
     }
     return render(request, 'user/page-shop.html',context)
-
-
 
 
 
@@ -420,13 +427,21 @@ def shop_product_by_category(request, category_slug):
     page=request.GET.get('page')
     paged_products=paginator.get_page(page)
     product_count=products.count()
-    product_count = products.count()
     categories = Category.objects.all()
+
+    sort_option = request.GET.get('sort', 'featured')
+
+    if sort_option == 'low_to_high':
+        products = products.order_by('price')
+    elif sort_option == 'high_to_low':
+        products = products.order_by('-price')
+
     context = {
         'products': paged_products,
         'product_count': product_count,
         'categories': categories,
         'selected_category': category,  # Optional: To highlight the selected category
+        'sort_option': sort_option,
     }
     return render(request, 'user/page-shop.html', context)
 
@@ -609,7 +624,6 @@ def remove_cart(request,id, cart_item_id): #decrementing the the product quantit
     except:
         pass        
     return redirect('cart')        
-
 
 
 

@@ -44,7 +44,6 @@ def order_summary(request ,total=0, quantity=0):
     total += (cart_item.product.product_price() * cart_item.quantity)
     quantity += cart_item.quantity
   
-  
 
   if request.method == 'POST':
     form = OrderForm(request.POST)
@@ -102,6 +101,7 @@ def order_summary(request ,total=0, quantity=0):
         'cart_items':cart_items,
         'total':total,
         'wallet':wallet,
+        'coupon_discount':coupon_discount,
       }
       return render(request, 'user/order-summary.html',context)
     context = {
@@ -110,6 +110,7 @@ def order_summary(request ,total=0, quantity=0):
       'cart_items': cart_items,
       'total': total,
       'wallet':wallet,
+      'coupon_discount':coupon_discount,
     }
     return render(request, 'user/order-summary.html', context)
   else:
@@ -150,10 +151,11 @@ def place_order(request, id, total=0, quantity=0):
       payment_method = PaymentMethod.objects.get(method_name=payment_option)
       order = Order.objects.get(user = request.user, is_ordered = False, order_number = order_number)
       if order.coupon:
-        total -= order.coupon.discount   
+        total -= order.coupon.discount
+        coupon_discount = order.coupon.discount    
     except Exception as e:
       print(e)
-
+    
     if wallet_selected == 1:
       wallet = Wallet.objects.get(user=request.user, is_active=True)
       if wallet.balance <= total:
@@ -180,7 +182,7 @@ def place_order(request, id, total=0, quantity=0):
         payment = False
     except:
       payment = False
-
+    
     # request.build_absolute_uri()
     success_url = request.build_absolute_uri(reverse('orders:payment-success'))    
     failed_url = request.build_absolute_uri(reverse('orders:payment-failed'))    
@@ -192,15 +194,16 @@ def place_order(request, id, total=0, quantity=0):
       'failed_url':failed_url,
       'payment_method':payment_method,
       'payment':payment,
+      'coupon_discount':coupon_discount,
     }  
     print(payment)    
-    return render(request, 'user/payments.html',context)
-            
+    return render(request, 'user/payments.html',context)         
   order = Order.objects.get(id=id)
   context = {
     'order':order,
     'cart_items':cart_items,
     'total':total,
+    'coupon_discount':coupon_discount,
   }       
   return render(request, 'user/payments.html',context)
   

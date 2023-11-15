@@ -94,6 +94,18 @@
                                         <td class="cart_total_amount"><span class="font-lg fw-900 text-brand">${{total}}</span></td>
                                     </tr>
                                     <tr>
+                                        <td class="cart_total_label">Coupon Discount</td>
+                                        {% if coupon_discount %}
+                                        <td class="cart_total_amount"> <i class="ti-gift mr-5"></i>₹{{coupon_discount}}</td>
+                                        {% else %}
+                                        <td class="cart_total_amount"> <i class="ti-gift mr-5"></i>₹0</td>
+                                        {% endif %}
+                                    </tr>
+                                    <tr>
+                                        <td class="cart_total_label">wallet Discount</td>
+                                        <td class="cart_total_amount"> <i class="ti-gift mr-5"></i>₹{{order.wallet_discount}}</td>
+                                    </tr>
+                                    <tr>
                                         <td class="cart_total_label">Shipping</td>
                                         <td class="cart_total_amount"> <i class="ti-gift mr-5"></i> Free Shipping</td>
                                     </tr>

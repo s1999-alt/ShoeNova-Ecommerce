@@ -35,17 +35,6 @@
                                 <p> We found <strong class="text-brand">{{product_count}}</strong> items for you!</p>
                             </div>
                             <div class="sort-by-product-area">
-                                <div class="sort-by-cover mr-10">
-                                    <div class="sort-by-dropdown">
-                                        <ul>
-                                            <li><a class="active" href="#">50</a></li>
-                                            <li><a href="#">100</a></li>
-                                            <li><a href="#">150</a></li>
-                                            <li><a href="#">200</a></li>
-                                            <li><a href="#">All</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
                                 <div class="sort-by-cover">
                                     <div class="sort-by-product-wrap">
                                         <div class="sort-by">
@@ -57,9 +46,9 @@
                                     </div>
                                     <div class="sort-by-dropdown">
                                         <ul>
-                                            <li><a class="active" href="#">Featured</a></li>
-                                            <li><a href="#">Price: Low to High</a></li>
-                                            <li><a href="#">Price: High to Low</a></li>
+                                            <li><a class="active" href="?sort=featured">Featured</a></li>
+                                            <li><a href="?sort=low_to_high">Price: Low to High</a></li>
+                                            <li><a href="?sort=high_to_low">Price: High to Low</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -124,16 +113,16 @@
                                     <ul class="pagination justify-content-start">
                                         {% for i in products.paginator.page_range %}
                                            {% if products.number == i %}
-                                             <li class="page-item active"><a class="page-link" href="#">{{i}}</a></li>
+                                           <li class="page-item active"><a class="page-link" href="?page={{ i }}&sort={{ sort_option }}">{{ i }}</a></li>
                                            {% else %}
-                                             <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+                                           <li class="page-item"><a class="page-link" href="?page={{ i }}&sort={{ sort_option }}">{{ i }}</a></li>
                                            {% endif %}   
                                         {% endfor %}
 
                                         {% if products.has_next %}
-                                            <li class="page-item"><a class="page-link" href="?page={{products.next_page_number}}"><i class="fi-rs-angle-double-small-right"></i></a></li>
+                                        <li class="page-item"><a class="page-link" href="?page={{ products.next_page_number }}&sort={{ sort_option }}"><i class="fi-rs-angle-double-small-right"></i></a></li>
                                         {% else %}
-                                            <li class="page-item disabled"><a class="page-link" href="#"><i class="fi-rs-angle-double-small-right"></i></a></li>   
+                                        <li class="page-item disabled"><a class="page-link" href="#"><i class="fi-rs-angle-double-small-right"></i></a></li>  
                                         {% endif %}
                                     </ul>
                                 {% endif %}

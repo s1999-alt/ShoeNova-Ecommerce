@@ -82,9 +82,18 @@
                         <div class="table-responsive">
                             <table class="table">
                                 <tbody>
+                                    {% for cart_item in cart_items %}
                                     <tr>
                                         <td class="cart_total_label">Cart Subtotal</td>
-                                        <td class="cart_total_amount"><span class="font-lg fw-900 text-brand">${{total}}</span></td>
+                                        <td class="cart_total_amount"><span class="font-lg fw-900 text-brand">${{cart_item.sub_total}}</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="cart_total_label">Coupon Discount</td>
+                                        {% if coupon_discount %}
+                                        <td class="cart_total_amount"> <i class="ti-gift mr-5"></i>₹{{coupon_discount}}</td>
+                                        {% else %}
+                                        <td class="cart_total_amount"> <i class="ti-gift mr-5"></i>₹0</td>
+                                        {% endif %}
                                     </tr>
                                     <tr>
                                         <td class="cart_total_label">Shipping</td>
@@ -94,6 +103,7 @@
                                         <td class="cart_total_label">Total</td>
                                         <td class="cart_total_amount"><strong><span class="font-xl fw-900 text-brand">${{total}}</span></strong></td>
                                     </tr>
+                                    {% endfor %}
                                 </tbody>
                             </table>
                         </div>
