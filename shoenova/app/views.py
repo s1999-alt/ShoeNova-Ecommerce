@@ -789,6 +789,10 @@ def about(request):
 def contact(request):
     return render(request, 'page-contact.html')
 
+@cache_control(no_cache=True, must_revalidate=True, no_store=True) 
+def error_404(request, exception):
+    return render(request,'page-404.html')
+
 
 
 
