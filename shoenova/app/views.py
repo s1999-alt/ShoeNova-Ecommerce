@@ -25,7 +25,7 @@ import string
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def index(request):
-    products = Product.objects.all()
+    products=Product.objects.all().filter(is_available=True)
     categories = Category.objects.all()
     banner = Banner_area.objects.all()
     
