@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Shoe Nova{% endblock title %}
+{% block content %}
+    <main class="main">
+        <div class="page-header breadcrumb-wrap">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="index.html" rel="nofollow">Home</a>
+                    <span></span> Pages
+                    <span></span> Account
+                </div>
+            </div>
+        </div>
+        <section class="pt-100 pb-100">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-10 m-auto">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="dashboard-menu">
+                                    <ul class="nav flex-column" role="tablist">
+                                            <a class="nav-link" href="{% url 'user-profile' %}" ><i class="fi-rs-settings-sliders mr-10"></i>Dashboard</a>
+
+
+                                            <a class="nav-link" data-bs-toggle="tab" href="#orders" role="tab" aria-controls="orders" aria-selected="false"><i class="fi-rs-shopping-bag mr-10"></i>Orders</a>
+                                
+
+                                            <a class="nav-link" href="#" ><i class="fi-rs-arrow-left mr-10"></i>
+                                            </i>Return and Refunds</a>
+
+                                            <a class="nav-link" href="#" ><i class="fi-rs-credit-card mr-10"></i></i>Transactions</a>
+
+                                            <a class="nav-link" href="{% url 'wallet:wallet' %}" ><i class="fas fa-wallet mr-10"></i>
+                                            </i>My Wallet</a>
+
+                                  
+                                            <a class="nav-link" href="page-login-register.html"><i class="fi-rs-sign-out mr-10"></i>Logout</a>
+
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <div class="tab-content dashboard-content">
+                                    <div class="tab-pane fade active show" role="tabpanel" aria-labelledby="dashboard-tab">
+                                        <div class="card">
+                                            
+                                            <div class="card-header">
+                                                <strong class="d-inline-block mr-3">Order ID: {{order.order_number}}</strong>
+                                                <span>,{{order.created_at}}</span>
+                                                <br>
+                                                <span>Order Status : 
+                                                    {% if 'Cancelled' in order.status %}
+                                                    <span class="text-danger">Cancelled</span> 
+                                                    {% elif 'Returned' in order.status%}
+                                                    <span class="text-danger">Returned</span> 
+                                                    {% else %}
+                                                     <span class="text-success">{{order.status}}
+                                                     </span>
+                                                    {% endif %}</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row"> 
+                                                    <div class="col-md-8">
+                                                        <h6 class="text-muted">Delivery to</h6>
+                                                        <p>{{order.address_line_1}} <br>  
+                                                        Phone: {{order.phone}},  <br>
+                                                        Location: {{order.address_line_1}}, 
+                                                        {{order.address_line_2}}, 
+                                                        {{order.city}},  
+                                                        {{order.state}}, 
+                                                        {{order.country}} <br> 
+                                                        Pincode : {{order.pin_code}}
+                                                         </p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <h6 class="text-muted">Payment</h6>
+                                                        <span class="text-success">
+                                                            <i class="fab fa-lg fa-cc-visa"></i>
+                                                             Method :{{order.payment.payment_method}} 
+                                                        </span>
+                                                        <div class="text-success">
+                                                            <i class="fab fa-lg fa-cc-visa"></i>
+                                                             id :{{order.payment.payment_id}} 
+                                                            
+                                                        </div>
+                                                       
+                                                        <div class="text-success">
+                                                            <i class="fab fa-lg fa-cc-visa"></i>
+                                                             Status :  {{order.payment.status}} 
+                                                        </div>
+                                                       
+                                                        <p class="m-0 p-0"> 
+                                                         <span >Wallet Paid: Rs {{order.wallet_discount}} </span>
+                                                        </p>
+                                                        <p class="m-0 p-0"> 
+                                                         <span >Coupon Used: {{order.coupon.coupon_code}} </span>
+                                                        </p>
+                                                        <p class="m-0 p-0"> 
+                                                         <span >Additional Discount: {{order.additional_discount}} </span>
+                                                        </p>
+                                                        <p> 
+                                                         <span class="b">Total Paid: Rs {{order.payment.amount_paid}} </span>
+                                                        </p>
+                                                    </div>
+                                                </div> <!-- row.// -->
+                                            </div>
+
+                                            <table class="table">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="2">Product</th>
+                                                        <th>Total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                               {% for ordered_product in ordered_products %}
+                                                    <tr>
+                                                        <td class="image product-thumbnail"><img src="{{ordered_product.product.product_images.url }}" alt="#"></td>
+                                                        <td>
+                                                            <h5><a href="shop-product-full.html">{{ordered_product.product.product_name}}</a></h5> <span class="product-qty">x {{ordered_product.quantity}}</span>
+                                                            <p class="font-xs">
+                                                            
+                                                                {% for item in ordered_product.variation.all %}
+                                                                    {{item.variation_category | capfirst}} : {{item.variation_value | capfirst}}<br>
+                                                                {% endfor %}
+                                                               
+                                                            </p>
+                                                        </td>
+                                                        <td>${{ordered_product.product_price}}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                                </tbody>
+                                            </table>
+
+                                            {% if order.status == 'New' or order.status == 'Accepted' %}
+                                            <a href="{% url 'orders:order-cancel-user' order.order_number %}" class="btn btn-outline-danger my-2 mx-2">
+                                                Cancel Order
+                                            </a>
+                                            {% elif order.status == 'Delivered' %}
+                                            <a href="{% url 'orders:order-return-user' %}" class="btn btn-outline-primary my-2 mx-2">
+                                                Return Order
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <style>
+        .btn.btn-outline-danger {
+            color: #dc3545 !important;
+            border-color: #dc3545 !important;
+            background: aliceblue;
+        }
+    </style>
+    {% endblock %}
+    

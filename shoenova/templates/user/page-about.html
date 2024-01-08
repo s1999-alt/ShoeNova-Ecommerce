@@ -1,0 +1,93 @@
+﻿{% extends "base.html" %}
+{% load static %}
+{% block title %}Shoe Nova{% endblock title %}
+{% block content %}
+    <main class="main single-page">
+        <div class="page-header breadcrumb-wrap">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="index.html" rel="nofollow">Home</a>
+                    <span></span> Pages
+                    <span></span> About us
+                </div>
+            </div>
+        </div>
+        <section class="section-padding">
+            <div class="container pt-25">
+                <div class="row">
+                    <div class="col-lg-6 align-self-center mb-lg-0 mb-4">
+                        <h6 class="mt-0 mb-15 text-uppercase font-sm text-brand wow fadeIn animated">Our Company</h6>
+                        <h1 class="font-heading mb-40">
+                            We are Building The Destination For Getting Things Done
+                        </h1>
+                        <p>Tempus ultricies augue luctus et ut suscipit. Morbi arcu, ultrices purus dolor erat bibendum sapien metus.</p>
+                        <p>Tempus ultricies augue luctus et ut suscipit. Morbi arcu, ultrices purus dolor erat bibendum sapien metus. Sit mi, pharetra, morbi arcu id. Pellentesque dapibus nibh augue senectus. </p>
+                    </div>
+                    <div class="col-lg-6">
+                        <img src="{% static "assets/imgs/page/about-1.png" %}" alt="">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="work" class="mt-40 pt-50 pb-50 section-border">
+            <div class="container">
+                <div class="row mb-50">
+                    <div class="col-lg-12 col-md-12 text-center">
+                        <h6 class="mt-0 mb-5 text-uppercase  text-brand font-sm wow fadeIn animated">Shoe Nova Coporation</h6>
+                        <h2 class="mb-15 text-grey-1 wow fadeIn animated">Our main branches<br> around the world</h2>
+                        <p class="w-50 m-auto text-grey-3 wow fadeIn animated">At vero eos et accusamus et iusto odio dignissimos ducimus quiblanditiis praesentium. ebitis nesciunt voluptatum dicta reprehenderit accusamus</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 text-center mb-md-0 mb-4">
+                        <img class="btn-shadow-brand hover-up border-radius-10 bg-brand-muted wow fadeIn animated" src="{% static "assets/imgs/page/shoe-shop.jpg" %}" alt="">
+                        <h4 class="mt-30 mb-15 wow fadeIn animated">Alappuzha, Kerala</h4>
+                        <p class="text-grey-3 wow fadeIn animated">27 Division St, Kerala<br>kerala</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-md-0 mb-4">
+                        <img class="btn-shadow-brand hover-up border-radius-10 bg-brand-muted wow fadeIn animated" src="{% static "assets/imgs/page/shoe-shop-2.jpg" %}" alt="">
+                        <h4 class="mt-30 mb-15 wow fadeIn animated">Kochi, Kerala</h4>
+                        <p class="text-grey-3 wow fadeIn animated">marad, kochi<br> kerala</p>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <img class="btn-shadow-brand hover-up border-radius-10 bg-brand-muted wow fadeIn animated" src="{% static "assets/imgs/page/shoe-shop-3.jpg" %}" alt="">
+                        <h4 class="mt-30 mb-15 wow fadeIn animated">Trivandrum, Kerala</h4>
+                        <p class="text-grey-3 wow fadeIn animated">kazhakootam,<br> kerala</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="section-padding">
+            <div class="container pb-25">
+                <h3 class="section-title mb-20 wow fadeIn animated text-center"><span>Featured</span> Clients</h3>
+                <div class="carausel-6-columns-cover position-relative wow fadeIn animated">
+                    <div class="carausel-6-columns text-center" id="carausel-6-columns-3">
+                        <div class="brand-logo">
+                            <img class="img-grey-hover" src="{% static "assets/imgs/banner/brand-1.png" %}" alt="">
+                        </div>
+                        <div class="brand-logo">
+                            <img class="img-grey-hover" src="{% static "assets/imgs/banner/brand-2.png" %}" alt="">
+                        </div>
+                        <div class="brand-logo">
+                            <img class="img-grey-hover" src="{% static "assets/imgs/banner/brand-3.png" %}" alt="">
+                        </div>
+                        <div class="brand-logo">
+                            <img class="img-grey-hover" src="{% static "assets/imgs/banner/brand-4.png" %}" alt="">
+                        </div>
+                        <div class="brand-logo">
+                            <img class="img-grey-hover" src="{% static "assets/imgs/banner/brand-5.png" %}" alt="">
+                        </div>
+                        <div class="brand-logo">
+                            <img class="img-grey-hover" src="{% static "assets/imgs/banner/brand-6.png" %}" alt="">
+                        </div>
+                        <div class="brand-logo">
+                            <img class="img-grey-hover" src="{% static "assets/imgs/banner/brand-3.png" %}" alt="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+{% endblock content %}

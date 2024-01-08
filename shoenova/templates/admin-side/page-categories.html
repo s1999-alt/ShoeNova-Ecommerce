@@ -67,12 +67,12 @@
                                                         Edit
                                                     </a>
                                                     {% if cat.soft_deleted %}
-                                                    <a href="{% url 'myapp:admn_enable_disable_categories' id=cat.id %}" class="btn btn-danger rounded btn-sm font-sm">
-                                                        Disable
+                                                    <a href="{% url 'myapp:admn_enable_disable_categories' id=cat.id %}" class="btn btn-success rounded btn-sm font-sm">
+                                                        Enable
                                                     </a>
                                                     {% else %}
-                                                    <a href="{% url 'myapp:admn_enable_disable_categories' id=cat.id%}" class="btn btn-success rounded btn-sm font-sm">
-                                                        Enable
+                                                    <a href="{% url 'myapp:admn_enable_disable_categories' id=cat.id%}" class="btn btn-danger rounded btn-sm font-sm">
+                                                        Disable
                                                     </a>
                                                     {% endif %}
                                                     <a href="{% url 'myapp:admn_delete_categories' id=cat.id %}" class="btn btn-light rounded btn-sm font-sm">

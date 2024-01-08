@@ -6,15 +6,20 @@
     <title>{% block title %}{% endblock title %}</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta property="og:title" content="">
     <meta property="og:type" content="">
     <meta property="og:url" content="">
     <meta property="og:image" content="">
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/imgs/theme/favicon.svg' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700,900&display=swap" rel="stylesheet">
+
     <!-- Template CSS -->
     <link rel="stylesheet" href="{% static 'assets/css/main.css' %}">
+
 </head>
 <body>
         <!-- Quick view -->
@@ -149,7 +154,6 @@
             </div>
         </div>
       
-        
         <header class="header-area header-style-1 header-height-2">
             <div class="header-top header-top-ptb-1 d-none d-lg-block">
                 <div class="container">
@@ -169,7 +173,9 @@
                         <div class="col-xl-3 col-lg-4">
                             <div class="header-info header-info-right">
                                 <ul>
-                                    <li><i class="fi-rs-user"></i><a href="{% url 'login-register' %}">Log In / Sign Up</a></li>
+                                    <li><i class="fi-rs-user"></i><a href="{% url 'login-page' %}">Log In</a></li>
+                                    <li class="separator">|</li>
+                                    <li><i class="fi-rs-user"></i><a href="{% url 'login-register' %}">Sign Up</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -177,6 +183,8 @@
                         <div class="col-xl-3 col-lg-4">
                             <div class="header-info header-info-right">
                                 <ul>
+                                    <li><i class="fi-rs-user"></i><a href="{% url 'login-page' %}">Helloo {{request.user.username}}</a></li>
+                                    <li class="separator">|</li>
                                     <li><i class="fi-rs-user"></i><a href="{% url 'handlelogout' %}">Logout</a></li>
                                 </ul>
                             </div>
@@ -189,11 +197,11 @@
                 <div class="container">
                     <div class="header-wrap">
                         <div class="logo logo-width-1">
-                            <a href="index.html"><img style="width: 30px; ,height:30px" src="{% static 'assets/imgs/theme/logo.png' %}" alt="logo"></a>
+                            <a href="index.html"><img style="width: 30px; ,height:30px" src="{% static 'assets/imgs/theme/mylogo.jpg' %}" alt="logo"></a>
                         </div>
                         <div class="header-right">
                             <div class="search-style-2">
-                                <form action="#">
+                                <form action="{% url 'search' %}" style="width:80%" class="search" method="GET">
                                     <select class="select-active">
                                         <option>All Categories</option>
                                         <option>Women's</option>
@@ -207,60 +215,35 @@
                                         <option>Shoes</option>
                                         <option>Mother & Kids</option>
                                     </select>
-                                    <input type="text" placeholder="Search for items...">
+                                    <input type="text" placeholder="Search for items..." name="keyword">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
                                 </form>
                             </div>
                             <div class="header-action-right">
                                 <div class="header-action-2">
                                     <div class="header-action-icon-2">
-                                        <a href="shop-wishlist.html">
+
+                                        <a href="{% url 'wishlist-page' %}">
                                             <img class="svgInject" alt="Evara" src="{% static 'assets/imgs/theme/icons/icon-heart.svg' %}">
-                                            <span class="pro-count blue">4</span>
+                                            <span class="pro-count blue">{{wishlist_count}}</span>
                                         </a>
+
                                     </div>
                                     <div class="header-action-icon-2">
-                                        <a class="mini-cart-icon" href="shop-cart.html">
+                                        <a class="mini-cart-icon" href="{% url 'cart' %}">
                                             <img alt="Evara" src="{% static 'assets/imgs/theme/icons/icon-cart.svg' %}">
-                                            <span class="pro-count blue">2</span>
+                                            <span class="pro-count blue">{{cart_count}}</span>
                                         </a>
-                                        <div class="cart-dropdown-wrap cart-dropdown-hm2">
-                                            <ul>
-                                                <li>
-                                                    <div class="shopping-cart-img">
-                                                        <a href="shop-product-right.html"><img alt="Evara" src="{% static 'assets/imgs/shop/thumbnail-3.jpg' %}"></a>
-                                                    </div>
-                                                    <div class="shopping-cart-title">
-                                                        <h4><a href="shop-product-right.html">Daisy Casual Bag</a></h4>
-                                                        <h4><span>1 × </span>$800.00</h4>
-                                                    </div>
-                                                    <div class="shopping-cart-delete">
-                                                        <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="shopping-cart-img">
-                                                        <a href="shop-product-right.html"><img alt="Evara" src="{% static 'assets/imgs/shop/thumbnail-2.jpg' %}"></a>
-                                                    </div>
-                                                    <div class="shopping-cart-title">
-                                                        <h4><a href="shop-product-right.html">Corduroy Shirts</a></h4>
-                                                        <h4><span>1 × </span>$3200.00</h4>
-                                                    </div>
-                                                    <div class="shopping-cart-delete">
-                                                        <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                            <div class="shopping-cart-footer">
-                                                <div class="shopping-cart-total">
-                                                    <h4>Total <span>$4000.00</span></h4>
-                                                </div>
-                                                <div class="shopping-cart-button">
-                                                    <a href="shop-cart.html" class="outline">View cart</a>
-                                                    <a href="shop-checkout.html">Checkout</a>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
+                                    {% if request.user.is_authenticated %}
+                                    <div class="header-action-icon-2">
+                                        <a href="{% url 'user-profile' %}">
+                                            <img class="svgInject" alt="Evara" src="{% static 'assets\imgs\theme\icons\icons8-my-account-50.png' %}">
+                                        </a>
+                                    </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -281,86 +264,36 @@
                                         <li><a class="active" href="{% url 'index' %}">Home</a>
                                         </li>
                                         <li>
-                                            <a href="page-about.html">About</a>
+                                            <a href="{% url 'about' %}">About</a>
                                         </li>
     
                                         <li><a href="{% url 'shop-product' %}">Shop</a>
                                         </li>
+
+                                        <li><a href="{% url 'offers:offers' %}">Offers</a>
+                                        </li>
     
-                                        
-                                        <li><a href="blog-category-grid.html">Blog</a>
-                                        </li>
-                                        <li><a href="#">Pages <i class="fi-rs-angle-down"></i></a>
-                                            <ul class="sub-menu">
-                                                <li><a href="page-about.html">About Us</a></li>
-                                                <li><a href="page-contact.html">Contact</a></li>
-                                                <li><a href="page-account.html">My Account</a></li>
-                                                <li><a href="page-login-register.html">login/register</a></li>
-                                                <li><a href="page-purchase-guide.html">Purchase Guide</a></li>
-                                                <li><a href="page-privacy-policy.html">Privacy Policy</a></li>
-                                                <li><a href="page-terms.html">Terms of Service</a></li>
-                                                <li><a href="page-404.html">404 Page</a></li>
-                                            </ul>
-                                        </li>
                                         <li>
-                                            <a href="page-contact.html">Contact</a>
+                                            <a href="{% url 'contact' %}">Contact</a>
                                         </li>
                                     </ul>
                                 </nav>
                             </div>
                         </div>
                       
-    
                         <div class="header-action-right d-block d-lg-none">
                             <div class="header-action-2">
                                 <div class="header-action-icon-2">
-                                    <a href="shop-wishlist.html">
+                                    <a href="{% url 'wishlist-page' %}">
                                         <img alt="Evara" src="{% static 'assets/imgs/theme/icons/icon-heart.svg' %}">
-                                        <span class="pro-count white">4</span>
+                                        <span class="pro-count white">{{wishlist_count}}</span>
                                     </a>
                                 </div>
                                 <div class="header-action-icon-2">
-                                    <a class="mini-cart-icon" href="shop-cart.html">
+                                    <a class="mini-cart-icon" href="{% url 'cart' %}">
                                         <img alt="Evara" src="{% static 'assets/imgs/theme/icons/icon-cart.svg' %}">
-                                        <span class="pro-count white">2</span>
+                                        <span class="pro-count white">{{cart_count}}</span>
                                     </a>
-                                    <div class="cart-dropdown-wrap cart-dropdown-hm2">
-                                        <ul>
-                                            <li>
-                                                <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara" src="{% static 'assets/imgs/shop/thumbnail-3.jpg' %}"></a>
-                                                </div>
-                                                <div class="shopping-cart-title">
-                                                    <h4><a href="shop-product-right.html">Plain Striola Shirts</a></h4>
-                                                    <h3><span>1 × </span>$800.00</h3>
-                                                </div>
-                                                <div class="shopping-cart-delete">
-                                                    <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                </div>
-                                            </li>
-                                            {% comment %} <li>
-                                                <div class="shopping-cart-img">
-                                                    <a href="shop-product-right.html"><img alt="Evara" src="{% static 'assets/imgs/shop/thumbnail-4.jpg' %}"></a>
-                                                </div>
-                                                <div class="shopping-cart-title">
-                                                    <h4><a href="shop-product-right.html">Macbook Pro 2022</a></h4>
-                                                    <h3><span>1 × </span>$3500.00</h3>
-                                                </div>
-                                                <div class="shopping-cart-delete">
-                                                    <a href="#"><i class="fi-rs-cross-small"></i></a>
-                                                </div>
-                                            </li> {% endcomment %}
-                                        </ul>
-                                        <div class="shopping-cart-footer">
-                                            <div class="shopping-cart-total">
-                                                <h4>Total <span>$383.00</span></h4>
-                                            </div>
-                                            <div class="shopping-cart-button">
-                                                <a href="shop-cart.html">View cart</a>
-                                                <a href="shop-checkout.html">Checkout</a>
-                                            </div>
-                                        </div>
-                                    </div>
                                 </div>
                                 <div class="header-action-icon-2 d-block d-lg-none">
                                     <div class="burger-icon burger-icon-white">
@@ -390,7 +323,7 @@
                 </div>
                 <div class="mobile-header-content-area">
                     <div class="mobile-search search-style-3 mobile-header-border">
-                        <form action="#">
+                        <form action="{% url 'search' %}">
                             <input type="text" placeholder="Search for items…">
                             <button type="submit"><i class="fi-rs-search"></i></button>
                         </form>
@@ -419,55 +352,17 @@
                         <!-- mobile menu start -->
                         <nav>
                             <ul class="mobile-menu">
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="index.html">Home</a>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'index' %}">Home</a>
                                 </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="shop-grid-right.html">shop</a>
-                
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'about' %}">About</a>
                                 </li>
-                                
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Mega menu</a>
-                                    <ul class="dropdown">
-                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Women's Fashion</a>
-                                            <ul class="dropdown">
-                                                <li><a href="shop-product-right.html">Dresses</a></li>
-                                                <li><a href="shop-product-right.html">Blouses & Shirts</a></li>
-                                                <li><a href="shop-product-right.html">Hoodies & Sweatshirts</a></li>
-                                                <li><a href="shop-product-right.html">Women's Sets</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Men's Fashion</a>
-                                            <ul class="dropdown">
-                                                <li><a href="shop-product-right.html">Jackets</a></li>
-                                                <li><a href="shop-product-right.html">Casual Faux Leather</a></li>
-                                                <li><a href="shop-product-right.html">Genuine Leather</a></li>
-                                            </ul>
-                                        </li>
-                                        <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Technology</a>
-                                            <ul class="dropdown">
-                                                <li><a href="shop-product-right.html">Gaming Laptops</a></li>
-                                                <li><a href="shop-product-right.html">Ultraslim Laptops</a></li>
-                                                <li><a href="shop-product-right.html">Tablets</a></li>
-                                                <li><a href="shop-product-right.html">Laptop Accessories</a></li>
-                                                <li><a href="shop-product-right.html">Tablet Accessories</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'shop-product' %}">shop</a>
                                 </li>
-    
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="blog-category-fullwidth.html">Blog</a>
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'offers:offers' %}">Offers</a>
                                 </li>
-                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="#">Pages</a>
-                                    <ul class="dropdown">
-                                        <li><a href="page-about.html">About Us</a></li>
-                                        <li><a href="page-contact.html">Contact</a></li>
-                                        <li><a href="page-account.html">My Account</a></li>
-                                        <li><a href="page-login-register.html">login/register</a></li>
-                                        <li><a href="page-purchase-guide.html">Purchase Guide</a></li>
-                                        <li><a href="page-privacy-policy.html">Privacy Policy</a></li>
-                                        <li><a href="page-terms.html">Terms of Service</a></li>
-                                        <li><a href="page-404.html">404 Page</a></li>
-                                    </ul>
-                                </li>
+
+                                <li class="menu-item-has-children"><span class="menu-expand"></span><a href="{% url 'contact' %}">Contact</a>
+                                </li> 
                             </ul>
                         </nav>
                         {% for message in messages %}
@@ -506,7 +401,7 @@
         {% endblock %}
 
         <footer class="main">
-            <section class="newsletter p-30 text-white wow fadeIn animated">
+            <section class="newsletter p-10 text-white wow fadeIn animated">
                 <div class="container">
                     <div class="row align-items-center">
                         <div class="col-lg-7 mb-md-3 mb-lg-0">
@@ -532,14 +427,14 @@
                 </div>
             </section>
             <section class="section-padding footer-mid">
-                <div class="container pt-15 pb-20">
+                <div class="container pt-10 pb-10">
                     <div class="row">
                         <div class="col-lg-4 col-md-6">
                             <div class="widget-about font-md mb-md-5 mb-lg-0">
                                 <div class="logo logo-width-1 wow fadeIn animated">
                                     <a href="index.html"><img src="{% static 'assets/imgs/theme/logo.png' %}" alt="logo"></a>
                                 </div>
-                                <h5 class="mt-20 mb-10 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
+                                <h5 class="mt-10 mb-5 fw-600 text-grey-4 wow fadeIn animated">Contact</h5>
                                 <p class="wow fadeIn animated">
                                     <strong>Address: </strong>562 Wellington Road, Street 32, San Francisco
                                 </p>
@@ -549,7 +444,7 @@
                                 <p class="wow fadeIn animated">
                                     <strong>Hours: </strong>10:00 - 18:00, Mon - Sat
                                 </p>
-                                <h5 class="mb-10 mt-30 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
+                                <h5 class="mb-5 mt-10 fw-600 text-grey-4 wow fadeIn animated">Follow Us</h5>
                                 <div class="mobile-social-icon wow fadeIn animated mb-sm-5 mb-md-0">
                                     <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-facebook.svg' %}" alt=""></a>
                                     <a href="#"><img src="{% static 'assets/imgs/theme/icons/icon-twitter.svg' %}" alt=""></a>
@@ -600,9 +495,9 @@
                     </div>
                 </div>
             </section>
-            <div class="container pb-20 wow fadeIn animated">
+            <div class="container pb-10 wow fadeIn animated">
                 <div class="row">
-                    <div class="col-12 mb-20">
+                    <div class="col-12 mb-10">
                         <div class="footer-bottom"></div>
                     </div>
                     <div class="col-lg-6">
@@ -618,20 +513,6 @@
         </footer>
         
         <!-- Preloader Start -->
-        <div id="preloader-active">
-            <div class="preloader d-flex align-items-center justify-content-center">
-                <div class="preloader-inner position-relative">
-                    <div class="text-center">
-                        <h5 class="mb-10">Now Loading</h5>
-                        <div class="loader">
-                            <div class="bar bar1"></div>
-                            <div class="bar bar2"></div>
-                            <div class="bar bar3"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- Vendor JS-->
         <script src="{% static 'assets/js/vendor/modernizr-3.6.0.min.js' %}"></script>
         <script src="{% static 'assets/js/vendor/jquery-3.6.0.min.js' %}"></script>
@@ -656,6 +537,46 @@
         <!-- Template  JS -->
         <script src="{% static 'assets/js/main.js' %}"></script>
         <script src="{% static 'assets/js/shop.js' %}"></script>
-
 </body>
+<style>
+    .separator {
+        display: inline-block;
+        margin: 0 10px; /* Adjust the spacing as needed */
+        color: #000; /* Adjust the color as needed */
+    }
+    .container {
+        overflow: hidden;
+      }
+    
+    body {
+        overflow: hidden;
+      }
+
+      /* Existing CSS... */
+
+      footer.main {
+          padding: 20px 0; /* Adjust the padding as needed */
+      }
+      
+      .section-padding.footer-mid {
+          padding: 20px 0; /* Adjust the padding as needed */
+      }
+      
+      .widget-about {
+          margin-bottom: 20px; /* Adjust the margin as needed */
+      }
+      
+      /* Additional style to decrease space between items in the newsletter section */
+      .newsletter .row > div {
+          margin-bottom: 10px; /* Adjust the margin as needed */
+      }
+      
+      /* Additional style to decrease space between items in the Install App section */
+      .install-app .col-md-8 {
+          margin-bottom: 10px; /* Adjust the margin as needed */
+      }
+      
+      /* Existing CSS... */
+        
+</style>
 </html>

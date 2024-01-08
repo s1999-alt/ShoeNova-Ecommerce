@@ -1,5 +1,6 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin,User
 from django.db import models
+import uuid
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -22,6 +23,7 @@ class UserProfile(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=30,unique=True,blank=False)
     email = models.EmailField(unique=True)
     phone= models.CharField(max_length=15, blank=False,default='')
+    referral_id = models.UUIDField(max_length=8, default=uuid.uuid4, unique=True, null=True, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

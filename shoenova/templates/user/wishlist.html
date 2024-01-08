@@ -1,0 +1,80 @@
+﻿{% extends "base.html" %}
+{% load static %}
+{% block title %}Shoe Nova{% endblock title %}
+{% block content %}
+
+{% for message in messages %}
+<div class="alert alert-{{message.tags}} alert-dismissible fade show" role="alert">
+  <strong></strong>{{message}}
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+ {% endfor %}
+
+    <main class="main">
+        <div class="page-header breadcrumb-wrap">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="index.html" rel="nofollow">Home</a>
+                    <span></span> Shop
+                    <span></span> Wishlist
+                </div>
+            </div>
+        </div>
+        <section class="mt-50 mb-50">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        {% if wishlist %}
+                        <div class="table-responsive">
+                            <table class="table shopping-summery text-center">
+                                <thead>
+                                    <tr class="main-heading">
+                                        <th scope="col" colspan="2">Product</th>
+                                        <th scope="col">Price</th>
+                                        <th scope="col">Stock Status</th>
+                                        <th scope="col">Action</th>
+                                        <th scope="col">Remove</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in wishlist %}
+                                    <tr>
+                                        <td class="image product-thumbnail"><img src="{{i.product.product_images.url}}" alt="#"></td>
+                                        <td class="product-des product-name">
+                                            <h5 class="product-name"><a href="shop-product-right.html">{{i.product.product_name}}</a></h5>
+                                            {% comment %} <p class="font-xs">{{i.product.description}}
+                                            </p> {% endcomment %}
+                                        </td>
+                                        <td class="price" data-title="Price"><span>${{i.product.price}}</span></td>
+                                        <td class="text-center" data-title="Stock">
+                                            {% if i.product.quantity > 0 %}
+                                            <span class="color3 font-weight-bold">In Stock</span>
+                                            {% else %}
+                                            <span class="text-danger font-weight-bold">Out of stock</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-right" data-title="Cart">
+                                            <a class="btn btn-sm" href="{% url 'product-details' id=i.product.id %}"><i class="fi-rs-eye mr-5"></i>View-Details</a>
+                                        </td>
+                                        <td class="action" data-title="Remove"><a href="{% url 'remove_from_wishlist' id=i.product.id %}"><i class="fi-rs-trash"></i></a></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center">
+                            <img src="{% static 'assets\imgs\theme\wishlist-empty.svg' %}" alt="Funny Image">
+                            <h2>Your wishlist is empty!</h2>
+                        </div>
+                        <div class="text-center mt-20" >
+                            <a href="{% url "shop-product" %}" class="btn "><i class="fi-rs-shopping-bag mr-10"></i>Continue Shopping</a>
+                        </div>
+                        {% endif %}  
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    {% endblock content %}

@@ -47,7 +47,8 @@
                                 <input class="form-control" type="number"  name="quantity" required><br>
                         
                                 <label class="form-label" for="product_images">Product Image1:</label>
-                                <input class="form-control" type="file" name="product_images" accept="image/*" required><br>
+                                <input class="form-control" type="file" name="product_images" accept="image/*" required>
+                                <br>
 
                                 <label class="form-label" for="product_images">Product Image2:</label>
                                 <input class="form-control" type="file" name="product_images2" accept="image/*" required><br>
@@ -71,5 +72,16 @@
                 </div>
             </div>
         </section> <!-- content-main end// -->
-        {% endblock content %}
+
+        <script>
+            document.querySelectorAll('[name^="product_images"]').forEach(function(element) {
+                var cropper = new Cropper(element, {
+                    aspectRatio: 1,  // Set aspect ratio as needed
+                    viewMode: 1,     // Set the view mode (optional)
+                    // Add more Cropper.js options as needed
+                });
+            });
+        </script> 
+
+{% endblock content %}
         

@@ -6,6 +6,7 @@ from myapp.models import Product,Category
 from django.utils.text import slugify
 from django.contrib import messages
 from app.models import UserProfile
+from orders.models import Order
 
 # Create your views here.
 
@@ -15,9 +16,15 @@ from app.models import UserProfile
 @login_required
 def adm_index(request):
     if request.user.is_authenticated and request.user.is_superuser:
+        orders = Order.objects.all()
+        context = {
+            'orders':orders
+        }
         messages.success(request, 'Login Successfully')
-        return render(request, 'admin-side/index.html')
-    return render(request, 'admin-side/page-admin-login.html')
+        return render(request, 'admin-side/index.html', context)
+    else:
+        messages.error(request, 'You are not authorized to access this page.')
+        return render(request, 'admin-side/page-admin-login.html')
 
 
 @cache_control(no_cache=True,must_revalidate=True,no_store=True)
@@ -34,7 +41,6 @@ def admin_login(request):
             if user is not None and user.is_superuser:
                 login(request,user)
                 request.session['email']=user.email
-                messages.success(request, "Login Successfully")
                 return redirect('myapp:admin-index')
             else:
                  messages.error(request,'Invalid credentials or not a superuser.')
@@ -54,11 +60,6 @@ def admin_logout(request):
 
 
     
-
-
-
-
-
 ########################## ADMIN-PRODUCT ################################
 
 #-----------Product list-view page------------------
@@ -184,12 +185,18 @@ def admn_product_category(request):
 def admn_add_categories(request):
     if request.method=="POST":
         category_name=request.POST.get("category_name")
-        slug=request.POST.get("slug")
+        slug=slugify(category_name)
         description=request.POST.get("description")
         category_images=request.FILES.get("category_images")
+        count = 1
+
+        
+        while Category.objects.filter(slug=slug).exists():
+            slug = f"{slug}-{count}"
+            count += 1
 
 
-        if not category_name or not slug or not description or not category_images:
+        if not category_name or not description or not category_images:
             messages.warning(request,"please fill in all required fields")
             return render(request, 'admin-side/page-add-categories.html')
        
@@ -198,7 +205,6 @@ def admn_add_categories(request):
             slug=slug,
             description=description,
             category_image=category_images,
-
 
         )
         categories.save()
@@ -215,14 +221,14 @@ def admn_enable_disable_categories(request,id):
         if category.soft_deleted:
             category.soft_deleted=False
             category.save()
-            messages.warning(request,'Category Disabled')
+            messages.success(request,'Category Enabled')
             return redirect('admn_product_category')
         else:
             category.soft_deleted=True
             category.save()
-            messages.success(request,'Category Enabled')
+            messages.warning(request,'Category Disabled')
     except:
-        messages.warning(request,'Error Occured')
+        pass
     return redirect('myapp:admn_product_category')
 
 #--------------------Edit categories---------------
