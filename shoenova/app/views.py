@@ -17,8 +17,6 @@ from wallet.models import Wallet
 import re
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
-import random
-import string
 
 
 # user
